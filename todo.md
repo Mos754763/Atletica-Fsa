@@ -12,12 +12,12 @@
 - [ ] Promover o primeiro acesso do proprietário ao papel admin após o login inicial
 - [x] Implementar backoffice e CMS de produtos, categorias, fotos via S3 e estoque
 - [x] Implementar catálogo público e carrinho mobile-first
-- [ ] Implementar fluxo Mobile Order & Pay, preparo para Mercado Pago Checkout Pro e webhook assinado
+- [x] Implementar fluxo Mobile Order & Pay, preparo para Mercado Pago Checkout Pro e webhook assinado
 - [ ] Implementar integração de registro e conciliação de vendas presenciais com Mercado Pago POS
-- [ ] Implementar ODS com atualização de pedidos, alerta de novo pedido e transições de status
+- [x] Implementar ODS com atualização de pedidos, alerta de novo pedido e transições de status
 - [x] Implementar gestão de eventos, catálogo vinculado, inscrições pagas e check-in por QR/código
 - [x] Implementar relatórios de vendas por período e por evento
-- [ ] Implementar e-mails transacionais com identidade FSA via Resend
-- [ ] Configurar automações de confirmação, pagamento, preparo, pedido pronto, inscrição e lembrete de evento
+- [x] Implementar e-mails transacionais com identidade FSA via Resend
+- [x] Configurar automações de confirmação, pagamento, preparo, pedido pronto, inscrição e lembrete de evento
 - [ ] Escrever e executar testes automatizados e validar os fluxos críticos
 - [ ] Sincronizar cada fase concluída ao GitHub e preparar o deploy na Vercel

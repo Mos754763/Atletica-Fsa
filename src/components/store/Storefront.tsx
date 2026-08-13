@@ -6,6 +6,7 @@ import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { formatBRL } from "@/lib/format";
 import type { CatalogProduct } from "@/lib/catalog";
+import { createClient } from "@/lib/supabase/client";
 
 type StorefrontProps = { products: CatalogProduct[] };
 type CartLine = CatalogProduct & { quantity: number };
@@ -16,6 +17,7 @@ export function Storefront({ products }: StorefrontProps) {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [fulfillment, setFulfillment] = useState<"retirada" | "consumo_local">("retirada");
   const [paymentNotice, setPaymentNotice] = useState<string | null>(null);
+  const [checkingOut, setCheckingOut] = useState(false);
   const categories = useMemo(() => Array.from(new Map(products.filter((product) => product.category).map((product) => [product.category!.slug, product.category!])).values()), [products]);
   const visibleProducts = selectedCategory === "todos" ? products : products.filter((product) => product.category?.slug === selectedCategory);
   const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -38,6 +40,18 @@ export function Storefront({ products }: StorefrontProps) {
       const quantity = item.quantity + delta;
       return quantity > 0 ? [{ ...item, quantity: Math.min(quantity, item.stockQuantity) }] : [];
     }));
+  }
+
+  async function startCheckout() {
+    setCheckingOut(true); setPaymentNotice(null);
+    try {
+      const supabase = createClient(); const { data } = await supabase.auth.getSession();
+      if (!data.session?.access_token) { window.location.assign("/login"); return; }
+      const response = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${data.session.access_token}` }, body: JSON.stringify({ fulfillment, items: cart.map((item) => ({ productId: item.id, quantity: item.quantity })) }) });
+      const body = await response.json() as { checkoutUrl?: string; error?: string };
+      if (!response.ok || !body.checkoutUrl) throw new Error(body.error ?? "Não foi possível iniciar o checkout.");
+      window.location.assign(body.checkoutUrl);
+    } catch (checkoutError) { setPaymentNotice(checkoutError instanceof Error ? checkoutError.message : "Não foi possível iniciar o pagamento."); } finally { setCheckingOut(false); }
   }
 
   return (
@@ -71,7 +85,7 @@ export function Storefront({ products }: StorefrontProps) {
       <aside className={`store-cart ${isCartOpen ? "is-open" : ""}`} aria-label="Carrinho de compras">
         <button className="store-cart__backdrop" type="button" aria-label="Fechar carrinho" onClick={() => setCartOpen(false)} />
         <div className="store-cart__panel"><header><div><span>SEU PEDIDO</span><h2>Partiu retirada.</h2></div><button type="button" aria-label="Fechar carrinho" onClick={() => setCartOpen(false)}><X size={21} /></button></header>
-          {cart.length === 0 ? <div className="store-cart__empty"><ShoppingBag size={28} /><strong>Seu carrinho está vazio.</strong><p>Escolha os produtos da FSA para começar um pedido.</p></div> : <><div className="store-cart__items">{cart.map((item) => <article key={item.id}><div className="store-cart__thumb">FSA</div><div><h3>{item.name}</h3><span>{formatBRL(item.priceCents)}</span><div className="store-cart__quantity"><button type="button" onClick={() => changeQuantity(item.id, -1)} aria-label={`Remover uma unidade de ${item.name}`}><Minus size={14} /></button><b>{item.quantity}</b><button type="button" onClick={() => changeQuantity(item.id, 1)} aria-label={`Adicionar uma unidade de ${item.name}`}><Plus size={14} /></button></div></div><button className="store-cart__remove" type="button" onClick={() => setCart((current) => current.filter((cartItem) => cartItem.id !== item.id))} aria-label={`Remover ${item.name}`}><Trash2 size={16} /></button></article>)}</div><footer><div className="store-cart__fulfillment"><span>Como você quer receber?</span><div><button type="button" className={fulfillment === "retirada" ? "is-selected" : ""} onClick={() => setFulfillment("retirada")}>Retirada</button><button type="button" className={fulfillment === "consumo_local" ? "is-selected" : ""} onClick={() => setFulfillment("consumo_local")}>Consumir no local</button></div></div><div><span>Total</span><strong>{formatBRL(totalCents)}</strong></div><button type="button" className="store-cart__checkout" onClick={() => setPaymentNotice(`Seu pedido para ${fulfillment === "retirada" ? "retirada" : "consumo no local"} está pronto. O pagamento Mercado Pago será liberado assim que as credenciais forem configuradas.`)}>Continuar para pagamento</button>{paymentNotice && <p className="store-cart__notice" role="status">{paymentNotice}</p>}<small>Checkout seguro com Mercado Pago será ativado ao configurar as credenciais de pagamento.</small></footer></>}
+          {cart.length === 0 ? <div className="store-cart__empty"><ShoppingBag size={28} /><strong>Seu carrinho está vazio.</strong><p>Escolha os produtos da FSA para começar um pedido.</p></div> : <><div className="store-cart__items">{cart.map((item) => <article key={item.id}><div className="store-cart__thumb">FSA</div><div><h3>{item.name}</h3><span>{formatBRL(item.priceCents)}</span><div className="store-cart__quantity"><button type="button" onClick={() => changeQuantity(item.id, -1)} aria-label={`Remover uma unidade de ${item.name}`}><Minus size={14} /></button><b>{item.quantity}</b><button type="button" onClick={() => changeQuantity(item.id, 1)} aria-label={`Adicionar uma unidade de ${item.name}`}><Plus size={14} /></button></div></div><button className="store-cart__remove" type="button" onClick={() => setCart((current) => current.filter((cartItem) => cartItem.id !== item.id))} aria-label={`Remover ${item.name}`}><Trash2 size={16} /></button></article>)}</div><footer><div className="store-cart__fulfillment"><span>Como você quer receber?</span><div><button type="button" className={fulfillment === "retirada" ? "is-selected" : ""} onClick={() => setFulfillment("retirada")}>Retirada</button><button type="button" className={fulfillment === "consumo_local" ? "is-selected" : ""} onClick={() => setFulfillment("consumo_local")}>Consumir no local</button></div></div><div><span>Total</span><strong>{formatBRL(totalCents)}</strong></div><button type="button" className="store-cart__checkout" disabled={checkingOut} onClick={() => void startCheckout()}>{checkingOut ? "Abrindo Mercado Pago..." : "Continuar para pagamento"}</button>{paymentNotice && <p className="store-cart__notice" role="status">{paymentNotice}</p>}<small>Pagamento seguro processado pelo Mercado Pago.</small></footer></>}
         </div>
       </aside>
     </main>

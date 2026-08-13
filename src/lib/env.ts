@@ -10,6 +10,7 @@ export const env = {
   mercadoPagoAccessToken: optional("MERCADO_PAGO_ACCESS_TOKEN"),
   mercadoPagoWebhookSecret: optional("MERCADO_PAGO_WEBHOOK_SECRET"),
   mercadoPagoPublicKey: optional("NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY"),
+  cronSecret: optional("CRON_SECRET"),
 };
 
 export function hasSupabaseConfig() {

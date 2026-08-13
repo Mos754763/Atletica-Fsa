@@ -4,6 +4,7 @@ import "./auth.css";
 import "./store.css";
 import "./cms.css";
 import "./events-admin.css";
+import "./ods.css";
 
 export const metadata: Metadata = {
   title: "ATLETICA FSA | Um só grito, uma só torcida",
