@@ -19,5 +19,5 @@
 - [x] Implementar relatórios de vendas por período e por evento
 - [x] Implementar e-mails transacionais com identidade FSA via Resend
 - [x] Configurar automações de confirmação, pagamento, preparo, pedido pronto, inscrição e lembrete de evento
-- [ ] Escrever e executar testes automatizados e validar os fluxos críticos
+- [x] Escrever e executar testes automatizados e validar os fluxos críticos
 - [ ] Sincronizar cada fase concluída ao GitHub e preparar o deploy na Vercel

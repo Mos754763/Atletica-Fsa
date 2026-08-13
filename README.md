@@ -27,3 +27,5 @@ O projeto usa **Next.js**, **TypeScript** e **Supabase** (PostgreSQL, Auth e Sto
 ## Ambientes
 
 O repositório é desenvolvido para o banco Supabase e publicação na Vercel. Os webhooks do Mercado Pago e as automações transacionais do Resend devem ser configurados na Vercel após o primeiro deploy público.
+
+Consulte o guia completo em [`docs/deployment-vercel.md`](docs/deployment-vercel.md).
