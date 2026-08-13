@@ -5,9 +5,11 @@
 - [ ] Definir os tokens de identidade visual FSA em azul, amarelo, branco e preto
 - [x] Criar e integrar o asset do mascote coelho com tapa-olho e uniforme FSA
 - [x] Construir a landing page pública com setores, produtos e CTAs de loja/eventos
-- [ ] Modelar as tabelas do Supabase para perfis, permissões, catálogo, pedidos, eventos, inscrições e automações
-- [ ] Integrar Supabase Auth com Google OAuth e e-mail/senha
-- [ ] Implementar RBAC para admin, cozinha, caixa e cliente
+- [x] Modelar as tabelas do Supabase para perfis, permissões, catálogo, pedidos, eventos, inscrições e automações
+- [x] Integrar Supabase Auth com Google OAuth e e-mail/senha
+- [x] Implementar RBAC para admin, cozinha, caixa e cliente
+- [x] Configurar o provedor Google OAuth e os redirects locais no Supabase
+- [ ] Promover o primeiro acesso do proprietário ao papel admin após o login inicial
 - [ ] Implementar backoffice e CMS de produtos, categorias, fotos via S3 e estoque
 - [ ] Implementar catálogo público e carrinho mobile-first
 - [ ] Implementar fluxo Mobile Order & Pay, preparo para Mercado Pago Checkout Pro e webhook assinado
