@@ -5,6 +5,8 @@ import { formatBRL } from "@/lib/format";
 import { requireRole } from "@/lib/auth/require-role";
 import { checkInRegistration, createEvent, moveEventStatus } from "./actions";
 
+export const dynamic = "force-dynamic";
+
 type ManagedEvent = { id: string; title: string; status: "divulgando" | "inscricoes_abertas" | "em_andamento" | "encerrado"; starts_at: string | null; venue: string | null; registration_price_cents: number; capacity: number | null; requires_registration: boolean; event_registrations: { count: number }[] };
 const nextStatus = { divulgando: "inscricoes_abertas", inscricoes_abertas: "em_andamento", em_andamento: "encerrado" } as const;
 

@@ -7,6 +7,8 @@ import { roleLabel } from "@/lib/auth/roles";
 import { createServerAuthClient } from "@/lib/supabase/server-auth";
 import type { UserRole } from "@/types/domain";
 
+export const dynamic = "force-dynamic";
+
 export default async function AccountPage() {
   const supabase = await createServerAuthClient();
   const { data: claimsData } = await supabase.auth.getClaims();

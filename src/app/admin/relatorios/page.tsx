@@ -3,6 +3,8 @@ import { ArrowLeft, CalendarDays, CreditCard, ShoppingBag, Users } from "lucide-
 import { formatBRL } from "@/lib/format";
 import { requireRole } from "@/lib/auth/require-role";
 
+export const dynamic = "force-dynamic";
+
 export default async function ReportsPage() {
   const { supabase } = await requireRole(["admin"]); const since = new Date(); since.setDate(since.getDate() - 30);
   const [{ data: payments }, { count: ordersCount }, { count: registrationsCount }, { count: eventsCount }] = await Promise.all([

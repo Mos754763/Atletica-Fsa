@@ -4,6 +4,8 @@ import { formatBRL } from "@/lib/format";
 import { formatEventDate } from "@/lib/events";
 import { requireRole } from "@/lib/auth/require-role";
 
+export const dynamic = "force-dynamic";
+
 type Registration = { id: string; status: string; check_in_code: string; amount_cents: number; events: { title: string; starts_at: string | null; venue: string | null } | null };
 
 export default async function MyEventsPage() {

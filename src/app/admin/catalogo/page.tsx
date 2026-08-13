@@ -4,6 +4,8 @@ import { formatBRL } from "@/lib/format";
 import { requireRole } from "@/lib/auth/require-role";
 import { createCategory, createProduct } from "./actions";
 
+export const dynamic = "force-dynamic";
+
 type Category = { id: string; name: string; slug: string };
 type Product = { id: string; name: string; sku: string | null; price_cents: number; stock_quantity: number; is_active: boolean; categories: { name: string } | null };
 

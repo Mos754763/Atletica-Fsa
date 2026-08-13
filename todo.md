@@ -21,3 +21,4 @@
 - [x] Configurar automações de confirmação, pagamento, preparo, pedido pronto, inscrição e lembrete de evento
 - [x] Escrever e executar testes automatizados e validar os fluxos críticos
 - [ ] Sincronizar cada fase concluída ao GitHub e preparar o deploy na Vercel
+- [x] Corrigir o pré-render de rotas protegidas quando as variáveis Supabase não estiverem presentes durante o build da Vercel

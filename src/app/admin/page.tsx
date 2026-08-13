@@ -2,6 +2,8 @@ import Link from "next/link";
 import { BarChart3, Boxes, CalendarCog, UsersRound } from "lucide-react";
 import { requireRole } from "@/lib/auth/require-role";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPage() {
   const { profile } = await requireRole(["admin"]);
   const shortcuts = [
