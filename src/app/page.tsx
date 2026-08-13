@@ -4,7 +4,6 @@ import {
   ArrowRight,
   CalendarDays,
   ChevronRight,
-  CirclePlay,
   Handshake,
   Instagram,
   Menu,
@@ -15,8 +14,12 @@ import {
   UsersRound,
 } from "lucide-react";
 import { FsaWordmark } from "@/components/brand/FsaWordmark";
-import { RabbitMascot } from "@/components/brand/RabbitMascot";
 import { SectionTitle } from "@/components/landing/SectionTitle";
+
+const instagramUrl = "https://www.instagram.com/atleticafsa/";
+const heroArtwork = "/manus-storage/fsa-hero-gestao-2026_9b26fcc1.png";
+const storeArtwork = "/manus-storage/fsa-store-pattern_86e4b30a.png";
+const eventArtwork = "/manus-storage/fsa-events-pattern_0333410d.png";
 
 const sectors = [
   { number: "01", name: "Suprimentos", copy: "Tudo para a torcida chegar junto." },
@@ -39,6 +42,17 @@ const capabilities = [
   { icon: Package, label: "Retire sem fila", copy: "Pediu no celular, buscou com a gente." },
 ];
 
+const management = [
+  { name: "Rafa", role: "Presidente da Atlética", image: "/manus-storage/presidente-rafa_86577ab2.webp" },
+  { name: "Bella", role: "Assessora do Presidente", image: "/manus-storage/assessora-bella_2c740ca3.webp" },
+  { name: "Maju", role: "Diretora de Marketing", image: "/manus-storage/diretora-marketing-maju_e3d5385e.webp" },
+  { name: "Malu", role: "Diretora de Eventos", image: "/manus-storage/diretora-eventos-malu_0f1ed9a7.webp" },
+  { name: "Leca", role: "Diretora de Sociais", image: "/manus-storage/diretora-sociais-leca_549c166a.webp" },
+  { name: "Raposo", role: "Diretora de Suprimentos", image: "/manus-storage/diretora-suprimentos-raposo_6e2b34e5.webp" },
+  { name: "Pietro", role: "Diretor de Esportes", image: "/manus-storage/diretor-esportes-pietro_b778a70d.webp" },
+  { name: "Belote", role: "Diretor de Bateria", image: "/manus-storage/diretor-bateria-belote_2c31f6ce.webp" },
+];
+
 export default function HomePage() {
   return (
     <main>
@@ -47,6 +61,7 @@ export default function HomePage() {
           <Link href="/" aria-label="ATLETICA FSA - Página inicial"><FsaWordmark /></Link>
           <div className="site-nav__links">
             <a href="#setores">Setores</a>
+            <a href="#gestao">Gestão</a>
             <a href="#loja">Loja</a>
             <a href="#eventos">Eventos</a>
             <Link href="/login" className="nav-login">Entrar</Link>
@@ -69,8 +84,8 @@ export default function HomePage() {
             <span className="hero__yellow-orb" />
             <span className="hero__outline hero__outline--one">FSA</span>
             <span className="hero__outline hero__outline--two">FSA</span>
-            <RabbitMascot className="hero__mascot" />
-            <div className="hero__badge"><strong>2026</strong><span>DESDE<br />SEMPRE FSA</span></div>
+            <img className="hero__official-art" src={heroArtwork} alt="Mascote institucional da ATLETICA FSA para a gestão 2026" />
+            <div className="hero__badge"><strong>2026</strong><span>GESTÃO<br />FSA</span></div>
           </div>
         </div>
         <div className="hero-ticker" aria-label="Destaques da ATLETICA FSA">
@@ -98,8 +113,26 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="store-section" id="loja">
+      <section className="management-section" id="gestao">
         <div className="page-width">
+          <div className="management-heading">
+            <SectionTitle eyebrow="GESTÃO 2026" title="Quem move a FSA." copy="Conheça os rostos da gestão que transforma organização, torcida e experiências em movimento." />
+            <div className="management-heading__actions"><img className="management-section__seal" src="/manus-storage/selo-e-mascote_1868174e.webp" alt="Selo oficial da ATLETICA FSA" /><a href={instagramUrl} target="_blank" rel="noreferrer" className="text-link management-heading__link"><Instagram size={18} /> Ver no Instagram <ArrowRight size={18} /></a></div>
+          </div>
+          <div className="management-grid">
+            {management.map((member) => (
+              <article className="management-card" key={member.name}>
+                <div className="management-card__photo"><img src={member.image} alt={`${member.name}, ${member.role}, na gestão 2026 da ATLETICA FSA`} /></div>
+                <div><span>GESTÃO 2026</span><h3>{member.name}</h3><p>{member.role}</p></div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="store-section" id="loja">
+        <img className="store-section__art" src={storeArtwork} alt="" aria-hidden="true" />
+        <div className="page-width store-section__content">
           <div className="store-heading">
             <SectionTitle eyebrow="LOJA DA TORCIDA" title="Seu jeito de levar a FSA com você." inverted />
             <Link href="/loja" className="text-link text-link--light">Ver todos os produtos <ArrowRight size={18} /></Link>
@@ -117,7 +150,7 @@ export default function HomePage() {
       </section>
 
       <section className="event-section page-width" id="eventos">
-        <div className="event-poster"><span className="event-poster__top">NOITE<br />FSA</span><span className="event-poster__circle" /><span className="event-poster__date">EM<br />BREVE</span><RabbitMascot compact className="event-poster__rabbit" /></div>
+        <div className="event-poster event-poster--official"><img src={eventArtwork} alt="Arte institucional de eventos da ATLETICA FSA" /><span className="event-poster__top">NOITE<br />FSA</span><span className="event-poster__date">EM<br />BREVE</span></div>
         <div className="event-copy">
           <p className="eyebrow eyebrow--blue"><span /> AGENDA FSA</p>
           <h2>O próximo capítulo começa com a gente.</h2>
@@ -140,7 +173,7 @@ export default function HomePage() {
           <div><FsaWordmark /><p>Esporte, festa, amizade e tradição. Tudo em azul, amarelo e muita atitude.</p></div>
           <div className="footer-links"><strong>Explore</strong><Link href="/loja">Loja</Link><Link href="/eventos">Eventos</Link><a href="#setores">Setores</a></div>
           <div className="footer-links"><strong>Acesso</strong><Link href="/login">Minha conta</Link><Link href="/admin">Backoffice</Link><Link href="/ods">ODS</Link></div>
-          <a className="instagram-link" href="https://instagram.com" aria-label="Instagram da ATLETICA FSA"><Instagram size={20} /> Seguir a FSA</a>
+          <a className="instagram-link" href={instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram da ATLETICA FSA"><Instagram size={20} /> Seguir a FSA</a>
         </div>
         <div className="page-width footer-bottom"><span>© 2026 ATLETICA FSA</span><span>FEITO PARA QUEM TORCE JUNTO.</span><Handshake size={17} /></div>
       </footer>

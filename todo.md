@@ -22,3 +22,6 @@
 - [x] Escrever e executar testes automatizados e validar os fluxos críticos
 - [ ] Sincronizar cada fase concluída ao GitHub e preparar o deploy na Vercel
 - [x] Corrigir o pré-render de rotas protegidas quando as variáveis Supabase não estiverem presentes durante o build da Vercel
+- [x] Incorporar as imagens oficiais fornecidas da gestão 2026 e o selo da ATLETICA FSA na interface pública
+- [x] Gerar assets institucionais complementares sem retratar ou modificar integrantes identificáveis
+- [x] Criar seção institucional da gestão 2026 e vínculo para o Instagram oficial na landing page
