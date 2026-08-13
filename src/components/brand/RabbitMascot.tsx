@@ -1,9 +1,11 @@
+import { institutionalAsset } from "@/lib/institutional-assets";
+
 type RabbitMascotProps = {
   className?: string;
   compact?: boolean;
 };
 
-const mascotAssetUrl = "/manus-storage/fsa-rabbit-mascot_eebaa958.png";
+const mascotAssetUrl = institutionalAsset("fsa-rabbit-mascot.png");
 
 export function RabbitMascot({ className = "", compact = false }: RabbitMascotProps) {
   return (

@@ -15,11 +15,12 @@ import {
 } from "lucide-react";
 import { FsaWordmark } from "@/components/brand/FsaWordmark";
 import { SectionTitle } from "@/components/landing/SectionTitle";
+import { institutionalAsset } from "@/lib/institutional-assets";
 
 const instagramUrl = "https://www.instagram.com/atleticafsa/";
-const heroArtwork = "/manus-storage/fsa-hero-gestao-2026_9b26fcc1.png";
-const storeArtwork = "/manus-storage/fsa-store-pattern_86e4b30a.png";
-const eventArtwork = "/manus-storage/fsa-events-pattern_0333410d.png";
+const heroArtwork = institutionalAsset("fsa-hero-gestao-2026.png");
+const storeArtwork = institutionalAsset("fsa-store-pattern.png");
+const eventArtwork = institutionalAsset("fsa-events-pattern.png");
 
 const sectors = [
   { number: "01", name: "Suprimentos", copy: "Tudo para a torcida chegar junto." },
@@ -43,14 +44,14 @@ const capabilities = [
 ];
 
 const management = [
-  { name: "Rafa", role: "Presidente da Atlética", image: "/manus-storage/presidente-rafa_86577ab2.webp" },
-  { name: "Bella", role: "Assessora do Presidente", image: "/manus-storage/assessora-bella_2c740ca3.webp" },
-  { name: "Maju", role: "Diretora de Marketing", image: "/manus-storage/diretora-marketing-maju_e3d5385e.webp" },
-  { name: "Malu", role: "Diretora de Eventos", image: "/manus-storage/diretora-eventos-malu_0f1ed9a7.webp" },
-  { name: "Leca", role: "Diretora de Sociais", image: "/manus-storage/diretora-sociais-leca_549c166a.webp" },
-  { name: "Raposo", role: "Diretora de Suprimentos", image: "/manus-storage/diretora-suprimentos-raposo_6e2b34e5.webp" },
-  { name: "Pietro", role: "Diretor de Esportes", image: "/manus-storage/diretor-esportes-pietro_b778a70d.webp" },
-  { name: "Belote", role: "Diretor de Bateria", image: "/manus-storage/diretor-bateria-belote_2c31f6ce.webp" },
+  { name: "Rafa", role: "Presidente da Atlética", image: institutionalAsset("gestao-2026/presidente-rafa.webp") },
+  { name: "Bella", role: "Assessora do Presidente", image: institutionalAsset("gestao-2026/assessora-bella.webp") },
+  { name: "Maju", role: "Diretora de Marketing", image: institutionalAsset("gestao-2026/diretora-marketing-maju.webp") },
+  { name: "Malu", role: "Diretora de Eventos", image: institutionalAsset("gestao-2026/diretora-eventos-malu.webp") },
+  { name: "Leca", role: "Diretora de Sociais", image: institutionalAsset("gestao-2026/diretora-sociais-leca.webp") },
+  { name: "Raposo", role: "Diretora de Suprimentos", image: institutionalAsset("gestao-2026/diretora-suprimentos-raposo.webp") },
+  { name: "Pietro", role: "Diretor de Esportes", image: institutionalAsset("gestao-2026/diretor-esportes-pietro.webp") },
+  { name: "Belote", role: "Diretor de Bateria", image: institutionalAsset("gestao-2026/diretor-bateria-belote.webp") },
 ];
 
 export default function HomePage() {
@@ -117,7 +118,7 @@ export default function HomePage() {
         <div className="page-width">
           <div className="management-heading">
             <SectionTitle eyebrow="GESTÃO 2026" title="Quem move a FSA." copy="Conheça os rostos da gestão que transforma organização, torcida e experiências em movimento." />
-            <div className="management-heading__actions"><img className="management-section__seal" src="/manus-storage/selo-e-mascote_1868174e.webp" alt="Selo oficial da ATLETICA FSA" /><a href={instagramUrl} target="_blank" rel="noreferrer" className="text-link management-heading__link"><Instagram size={18} /> Ver no Instagram <ArrowRight size={18} /></a></div>
+            <div className="management-heading__actions"><img className="management-section__seal" src={institutionalAsset("gestao-2026/selo-e-mascote.webp")} alt="Selo oficial da ATLETICA FSA" /><a href={instagramUrl} target="_blank" rel="noreferrer" className="text-link management-heading__link"><Instagram size={18} /> Ver no Instagram <ArrowRight size={18} /></a></div>
           </div>
           <div className="management-grid">
             {management.map((member) => (

@@ -1,0 +1,28 @@
+.members-page { min-height:100vh; padding:92px max(22px,calc((100% - 1120px)/2)); background:#fdfdfd; color:var(--blue-ink); }
+.members-header { display:flex; align-items:flex-start; justify-content:space-between; gap:25px; padding-bottom:37px; border-bottom:1px solid var(--line); }
+.members-header h1 { margin:8px 0 13px; font:normal clamp(45px,6vw,75px)/.88 'Archivo Black',sans-serif; letter-spacing:-.07em; }
+.members-header p:not(.eyebrow) { max-width:545px; margin:0; color:var(--muted); line-height:1.6; }
+.members-header>a { display:inline-flex; align-items:center; gap:7px; color:var(--blue); font-size:13px; font-weight:800; white-space:nowrap; }
+.members-summary { display:grid; grid-template-columns:repeat(2,minmax(0,220px)); gap:1px; margin:28px 0; border:1px solid var(--line); background:var(--line); }
+.members-summary article { display:flex; align-items:center; gap:13px; min-height:90px; padding:20px; background:var(--white); }
+.members-summary svg { color:var(--blue); }
+.members-summary strong { display:block; font:normal 32px/.85 'Archivo Black',sans-serif; letter-spacing:-.06em; }
+.members-summary small { display:block; margin-top:6px; color:var(--muted); font-size:11px; }
+.members-layout { display:grid; grid-template-columns:minmax(270px,.36fr) minmax(0,.64fr); gap:20px; align-items:start; }
+.members-invite-card,.members-list-card { border:1px solid var(--line); background:var(--white); }
+.members-invite-card { padding:25px; }
+.members-card-title { display:flex; gap:11px; align-items:flex-start; }
+.members-card-title svg { margin-top:3px; color:var(--blue); }
+.members-card-title span,.members-list-card__head>div>span { color:var(--blue); font:700 10px 'DM Mono',monospace; letter-spacing:.11em; }
+.members-card-title h2,.members-list-card h2 { margin:5px 0 0; font:normal 23px/1 'Archivo Black',sans-serif; letter-spacing:-.05em; }
+.members-form { display:grid; gap:14px; margin-top:25px; }
+.members-form label { display:grid; gap:7px; color:var(--blue-ink); font-size:12px; font-weight:800; }
+.members-form input,.members-form select,.member-role-form select { width:100%; min-height:43px; padding:0 11px; border:1px solid var(--line); border-radius:0; outline:0; color:var(--blue-ink); background:var(--white); font:13px 'DM Sans',sans-serif; }
+.members-form input:focus,.members-form select:focus,.member-role-form select:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(11,61,145,.1); }
+.members-form button,.member-role-form button { min-height:43px; border:0; cursor:pointer; color:var(--blue-ink); background:var(--yellow); font:800 12px 'DM Sans',sans-serif; transition:transform .16s ease; }
+.members-form button:hover,.member-role-form button:hover { transform:translateY(-1px); }.members-form button:disabled,.member-role-form button:disabled,.member-role-form select:disabled { cursor:not-allowed; opacity:.55; }
+.members-invite-card>p { margin:17px 0 0; color:var(--muted); font-size:11px; line-height:1.55; }
+.members-list-card__head { display:flex; justify-content:space-between; gap:18px; align-items:flex-start; padding:25px; border-bottom:1px solid var(--line); }.members-list-card__head>span { color:var(--muted); font:11px 'DM Mono',monospace; }
+.members-table-wrap { overflow:auto; }.members-list-card table { width:100%; min-width:720px; border-collapse:collapse; text-align:left; }.members-list-card th { padding:13px 17px; color:var(--muted); border-bottom:1px solid var(--line); background:#f8fbff; font:700 10px 'DM Mono',monospace; letter-spacing:.08em; }.members-list-card td { padding:15px 17px; border-bottom:1px solid var(--line); vertical-align:middle; }.members-list-card tr:last-child td { border-bottom:0; }.members-list-card td strong,.members-list-card td small { display:block; }.members-list-card td strong { font-size:13px; }.members-list-card td small { margin-top:4px; color:var(--muted); font-size:11px; line-height:1.35; }.member-role { display:inline-flex; padding:5px 8px; border-radius:99px; font-size:10px; font-weight:800; }.member-role--admin { color:#553b00; background:var(--yellow); }.member-role--caixa { color:#063e75; background:#dcebff; }.member-role--cozinha { color:#165d3d; background:#def6e8; }.member-role--cliente { color:#5c6472; background:#eef1f5; }.member-role-form { display:grid; grid-template-columns:minmax(100px,1fr) 63px; gap:6px; min-width:170px; }.member-role-form select,.member-role-form button { min-height:34px; font-size:11px; }.members-empty { padding:30px!important; color:var(--muted); text-align:center; }
+@media(max-width:820px){.members-page{padding-top:72px}.members-layout{grid-template-columns:1fr}.members-invite-card{max-width:none}.members-header{flex-direction:column}.members-summary{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.members-summary{grid-template-columns:1fr}.members-header h1{font-size:49px}.members-list-card__head{padding:20px}.members-invite-card{padding:20px}}

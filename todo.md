@@ -26,3 +26,6 @@
 - [x] Gerar assets institucionais complementares sem retratar ou modificar integrantes identificáveis
 - [x] Criar seção institucional da gestão 2026 e vínculo para o Instagram oficial na landing page
 - [x] Provisionar moises.754763@graduacao.fsa.br como administrador geral da plataforma
+- [x] Corrigir a entrega de imagens institucionais na publicação da Vercel
+- [x] Implementar tela administrativa de membros, convites e atribuição de papéis RBAC
+- [x] Revisar e validar as políticas RLS do Supabase para o módulo administrativo
