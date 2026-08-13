@@ -15,8 +15,8 @@
 - [ ] Implementar fluxo Mobile Order & Pay, preparo para Mercado Pago Checkout Pro e webhook assinado
 - [ ] Implementar integração de registro e conciliação de vendas presenciais com Mercado Pago POS
 - [ ] Implementar ODS com atualização de pedidos, alerta de novo pedido e transições de status
-- [ ] Implementar gestão de eventos, catálogo vinculado, inscrições pagas e check-in por QR/código
-- [ ] Implementar relatórios de vendas por período e por evento
+- [x] Implementar gestão de eventos, catálogo vinculado, inscrições pagas e check-in por QR/código
+- [x] Implementar relatórios de vendas por período e por evento
 - [ ] Implementar e-mails transacionais com identidade FSA via Resend
 - [ ] Configurar automações de confirmação, pagamento, preparo, pedido pronto, inscrição e lembrete de evento
 - [ ] Escrever e executar testes automatizados e validar os fluxos críticos

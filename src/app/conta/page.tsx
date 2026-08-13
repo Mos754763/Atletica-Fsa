@@ -27,7 +27,7 @@ export default async function AccountPage() {
       </section>
       <section className="account-links" aria-label="Atalhos da conta">
         <Link href="/loja"><ShoppingBag size={23} /><span><strong>Loja FSA</strong><small>Produtos e pedidos</small></span></Link>
-        <Link href="/eventos"><CalendarDays size={23} /><span><strong>Meus eventos</strong><small>Inscrições e check-in</small></span></Link>
+        <Link href="/conta/eventos"><CalendarDays size={23} /><span><strong>Meus eventos</strong><small>Inscrições e check-in</small></span></Link>
         <Link href="/conta/pedidos"><PackageCheck size={23} /><span><strong>Meus pedidos</strong><small>Acompanhar retiradas</small></span></Link>
       </section>
       {role === "admin" && <Link className="account-admin-link" href="/admin">Acessar backoffice</Link>}
