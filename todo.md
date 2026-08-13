@@ -25,3 +25,4 @@
 - [x] Incorporar as imagens oficiais fornecidas da gestão 2026 e o selo da ATLETICA FSA na interface pública
 - [x] Gerar assets institucionais complementares sem retratar ou modificar integrantes identificáveis
 - [x] Criar seção institucional da gestão 2026 e vínculo para o Instagram oficial na landing page
+- [x] Provisionar moises.754763@graduacao.fsa.br como administrador geral da plataforma
