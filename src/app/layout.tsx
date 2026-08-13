@@ -8,6 +8,7 @@ import "./ods.css";
 import "./management.css";
 import "./institutional-pages.css";
 import "./members.css";
+import "./analytics.css";
 
 export const metadata: Metadata = {
   title: "ATLETICA FSA | Um só grito, uma só torcida",
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body><div className="ambient-scene" aria-hidden="true"><span /><span /><span /></div>{children}</body>
     </html>
   );
 }

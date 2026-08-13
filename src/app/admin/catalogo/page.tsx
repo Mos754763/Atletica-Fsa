@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Boxes, FolderPlus, Plus } from "lucide-react";
+import { ArrowLeft, Boxes, Filter, FolderPlus, Plus } from "lucide-react";
 import { formatBRL } from "@/lib/format";
 import { requireRole } from "@/lib/auth/require-role";
 import { createCategory, createProduct } from "./actions";
@@ -8,8 +8,11 @@ export const dynamic = "force-dynamic";
 
 type Category = { id: string; name: string; slug: string };
 type Product = { id: string; name: string; sku: string | null; price_cents: number; stock_quantity: number; is_active: boolean; categories: { name: string } | null };
+type SearchParams = Promise<{ q?: string; category?: string; availability?: string }>;
 
-export default async function CatalogAdminPage() {
+export default async function CatalogAdminPage({ searchParams }: { searchParams: SearchParams }) {
+  const params = await searchParams;
+  const q = (params.q ?? "").trim().toLowerCase(); const selectedCategory = params.category ?? "all"; const availability = ["all", "active", "hidden", "low_stock"].includes(params.availability ?? "") ? params.availability! : "all";
   const { supabase } = await requireRole(["admin", "caixa"]);
   const [{ data: categories }, { data: products }] = await Promise.all([
     supabase.from("categories").select("id,name,slug").order("sort_order").returns<Category[]>(),
@@ -17,6 +20,7 @@ export default async function CatalogAdminPage() {
   ]);
   const categoryList = categories ?? [];
   const productList = products ?? [];
+  const filteredProducts = productList.filter((product) => (selectedCategory === "all" || product.categories?.name === selectedCategory) && (availability === "all" || availability === "active" && product.is_active || availability === "hidden" && !product.is_active || availability === "low_stock" && product.stock_quantity <= 5) && (!q || [product.name, product.sku, product.categories?.name].filter(Boolean).join(" ").toLowerCase().includes(q)));
 
   return <main className="cms-page">
     <header className="cms-header"><div><p className="eyebrow eyebrow--blue">BACKOFFICE / CATÁLOGO</p><h1>Produtos em campo.</h1></div><Link href="/admin"><ArrowLeft size={16} /> Painel</Link></header>
@@ -33,5 +37,5 @@ export default async function CatalogAdminPage() {
       </form></article>
       <article className="cms-card cms-card--small"><div className="cms-card__title"><FolderPlus size={18} /><h2>Nova categoria</h2></div><form action={createCategory} className="cms-inline-form"><input name="name" required placeholder="Ex.: Acessórios" /><button type="submit">Criar</button></form><p>As fotos são enviadas pelo servidor ao bucket <strong>catalog-assets</strong>, compatível com o protocolo S3 do Supabase.</p></article>
     </div>
-      <section className="cms-table-card"><div className="cms-table-card__head"><div><span>INVENTÁRIO</span><h2>Catálogo atual</h2></div><span>{productList.length} itens</span></div><div className="cms-table-wrap"><table><thead><tr><th>Produto</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Status</th></tr></thead><tbody>{productList.map((product) => <tr key={product.id}><td><strong>{product.name}</strong><small>{product.sku ?? "Sem SKU"}</small></td><td>{product.categories?.name ?? "—"}</td><td>{formatBRL(product.price_cents)}</td><td>{product.stock_quantity}</td><td><span className={product.is_active ? "status-dot is-active" : "status-dot"}>{product.is_active ? "Ativo" : "Oculto"}</span></td></tr>)}{productList.length === 0 && <tr><td colSpan={5} className="cms-empty">Nenhum produto cadastrado ainda.</td></tr>}</tbody></table></div></section></section></main>;
+      <section className="cms-table-card"><div className="cms-table-card__head"><div><span>INVENTÁRIO</span><h2>Catálogo atual</h2></div><span>{filteredProducts.length} itens</span></div><form className="data-filterbar data-filterbar--catalog" method="get"><label><span>Buscar</span><input name="q" defaultValue={q} placeholder="Produto, SKU ou categoria" /></label><label><span>Categoria</span><select name="category" defaultValue={selectedCategory}><option value="all">Todas as categorias</option>{categoryList.map((category) => <option key={category.id} value={category.name}>{category.name}</option>)}</select></label><label><span>Disponibilidade</span><select name="availability" defaultValue={availability}><option value="all">Todos os itens</option><option value="active">Ativos</option><option value="hidden">Ocultos</option><option value="low_stock">Estoque baixo (≤5)</option></select></label><button type="submit"><Filter size={15} /> Filtrar</button><Link href="/admin/catalogo">Limpar</Link></form><div className="cms-table-wrap"><table><thead><tr><th>Produto</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Status</th></tr></thead><tbody>{filteredProducts.map((product) => <tr key={product.id}><td><strong>{product.name}</strong><small>{product.sku ?? "Sem SKU"}</small></td><td>{product.categories?.name ?? "—"}</td><td>{formatBRL(product.price_cents)}</td><td>{product.stock_quantity}</td><td><span className={product.is_active ? "status-dot is-active" : "status-dot"}>{product.is_active ? "Ativo" : "Oculto"}</span></td></tr>)}{filteredProducts.length === 0 && <tr><td colSpan={5} className="cms-empty">Nenhum produto corresponde aos filtros.</td></tr>}</tbody></table></div></section></section></main>;
 }

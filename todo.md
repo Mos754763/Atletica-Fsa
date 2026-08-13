@@ -29,3 +29,6 @@
 - [x] Corrigir a entrega de imagens institucionais na publicação da Vercel
 - [x] Implementar tela administrativa de membros, convites e atribuição de papéis RBAC
 - [x] Revisar e validar as políticas RLS do Supabase para o módulo administrativo
+- [x] Adicionar filtros operacionais a pedidos, membros, catálogo, eventos e relatórios
+- [x] Criar dashboard interativo com KPIs de vendas, atendimento, SLA e andamento operacional
+- [x] Implementar animações de fundo e microinterações responsivas nas páginas da plataforma
