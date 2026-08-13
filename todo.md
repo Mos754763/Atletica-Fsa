@@ -10,8 +10,8 @@
 - [x] Implementar RBAC para admin, cozinha, caixa e cliente
 - [x] Configurar o provedor Google OAuth e os redirects locais no Supabase
 - [ ] Promover o primeiro acesso do proprietário ao papel admin após o login inicial
-- [ ] Implementar backoffice e CMS de produtos, categorias, fotos via S3 e estoque
-- [ ] Implementar catálogo público e carrinho mobile-first
+- [x] Implementar backoffice e CMS de produtos, categorias, fotos via S3 e estoque
+- [x] Implementar catálogo público e carrinho mobile-first
 - [ ] Implementar fluxo Mobile Order & Pay, preparo para Mercado Pago Checkout Pro e webhook assinado
 - [ ] Implementar integração de registro e conciliação de vendas presenciais com Mercado Pago POS
 - [ ] Implementar ODS com atualização de pedidos, alerta de novo pedido e transições de status
