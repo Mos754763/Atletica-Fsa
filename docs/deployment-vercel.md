@@ -32,6 +32,12 @@ Depois da Vercel informar o domínio final, substitua os marcadores abaixo por e
 | Resend | Verifique o domínio de envio e use-o em `EMAIL_FROM`. Até isso ser feito, o remetente de testes possui restrições do provedor. |
 | Vercel → Cron Jobs | O arquivo `vercel.json` agenda o lembrete diário às `13:00 UTC` (10h em GMT-3). A Vercel invoca a rota com `CRON_SECRET`. |
 
+## Convites de membros por e-mail
+
+A tela `/admin/membros` utiliza o Supabase Auth para enviar convites. A variável `RESEND_API_KEY` da Vercel é usada pelos e-mails transacionais da aplicação, mas **não configura automaticamente** os e-mails de autenticação do Supabase.
+
+No Supabase, acesse **Authentication → Email → SMTP Settings** e conecte o SMTP do Resend com um domínio já verificado. Use `smtp.resend.com`, porta `465`, usuário `resend` e uma chave do Resend como senha. Configure também o nome e o e-mail do remetente. Sem SMTP personalizado, o Supabase restringe e-mails de convite e aplica limites de teste.[Resend SMTP](https://resend.com/docs/send-with-supabase-smtp) [Supabase SMTP](https://supabase.com/docs/guides/auth/auth-smtp)
+
 ## Primeiro administrador
 
 O primeiro login usando `moises.754763@graduacao.fsa.br` criará automaticamente um perfil de cliente. Após esse login, abra o **SQL Editor** do Supabase e execute a promoção abaixo uma única vez:
