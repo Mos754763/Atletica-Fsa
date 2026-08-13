@@ -3,8 +3,8 @@
 - [x] Conectar o projeto ao repositório GitHub Mos754763/Atletica-Fsa e definir a política de sincronização por fase
 - [x] Criar a base de aplicação compatível com Vercel, Supabase e integrações serverless
 - [ ] Definir os tokens de identidade visual FSA em azul, amarelo, branco e preto
-- [ ] Criar e integrar o asset do mascote coelho com tapa-olho e uniforme FSA
-- [ ] Construir a landing page pública com setores, produtos e CTAs de loja/eventos
+- [x] Criar e integrar o asset do mascote coelho com tapa-olho e uniforme FSA
+- [x] Construir a landing page pública com setores, produtos e CTAs de loja/eventos
 - [ ] Modelar as tabelas do Supabase para perfis, permissões, catálogo, pedidos, eventos, inscrições e automações
 - [ ] Integrar Supabase Auth com Google OAuth e e-mail/senha
 - [ ] Implementar RBAC para admin, cozinha, caixa e cliente
@@ -19,4 +19,3 @@
 - [ ] Configurar automações de confirmação, pagamento, preparo, pedido pronto, inscrição e lembrete de evento
 - [ ] Escrever e executar testes automatizados e validar os fluxos críticos
 - [ ] Sincronizar cada fase concluída ao GitHub e preparar o deploy na Vercel
-

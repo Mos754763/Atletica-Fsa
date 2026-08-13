@@ -1,39 +1,149 @@
 import Link from "next/link";
-import { ArrowRight, CalendarDays, ShoppingBag } from "lucide-react";
+import {
+  ArrowDownRight,
+  ArrowRight,
+  CalendarDays,
+  ChevronRight,
+  CirclePlay,
+  Handshake,
+  Instagram,
+  Menu,
+  Package,
+  ShoppingBag,
+  Sparkles,
+  Trophy,
+  UsersRound,
+} from "lucide-react";
 import { FsaWordmark } from "@/components/brand/FsaWordmark";
+import { RabbitMascot } from "@/components/brand/RabbitMascot";
+import { SectionTitle } from "@/components/landing/SectionTitle";
+
+const sectors = [
+  { number: "01", name: "Suprimentos", copy: "Tudo para a torcida chegar junto." },
+  { number: "02", name: "Eventos", copy: "Experiências que viram história." },
+  { number: "03", name: "Sociais", copy: "A conexão que move a FSA." },
+  { number: "04", name: "Marketing", copy: "Orgulho que ganha voz." },
+  { number: "05", name: "Esportes", copy: "Raça dentro e fora da quadra." },
+];
+
+const products = [
+  { name: "Camiseta Oficial", category: "Vestuário", price: "R$ 69,90", className: "product-art--shirt" },
+  { name: "Copo FSA", category: "Acessórios", price: "R$ 24,90", className: "product-art--cup" },
+  { name: "Moletom Titular", category: "Vestuário", price: "R$ 149,90", className: "product-art--hoodie" },
+  { name: "Chaveiro Coelho", category: "Colecionáveis", price: "R$ 14,90", className: "product-art--keychain" },
+];
+
+const capabilities = [
+  { icon: ShoppingBag, label: "Loja online", copy: "Seu pedido, seu ritmo." },
+  { icon: CalendarDays, label: "Eventos", copy: "Inscrição e check-in em um lugar." },
+  { icon: Package, label: "Retire sem fila", copy: "Pediu no celular, buscou com a gente." },
+];
 
 export default function HomePage() {
   return (
-    <main className="setup-screen">
-      <nav className="setup-nav" aria-label="Navegação principal">
-        <FsaWordmark />
-        <div className="setup-nav-actions">
-          <Link href="/eventos">Eventos</Link>
-          <Link href="/loja" className="nav-cta">Loja</Link>
-        </div>
-      </nav>
-      <section className="setup-hero">
-        <div>
-          <p className="eyebrow">PLATAFORMA INTEGRADA</p>
-          <h1>ATLETICA FSA<br /><span>em movimento.</span></h1>
-          <p className="setup-lede">A base da plataforma está sendo preparada: loja, eventos, pedidos, operação e gestão em um só ecossistema.</p>
-          <div className="setup-actions">
-            <Link href="/loja" className="button-primary"><ShoppingBag size={18} /> Conhecer a loja <ArrowRight size={18} /></Link>
-            <Link href="/eventos" className="button-secondary"><CalendarDays size={18} /> Ver eventos</Link>
+    <main>
+      <section className="hero-shell" id="inicio">
+        <nav className="site-nav page-width" aria-label="Navegação principal">
+          <Link href="/" aria-label="ATLETICA FSA - Página inicial"><FsaWordmark /></Link>
+          <div className="site-nav__links">
+            <a href="#setores">Setores</a>
+            <a href="#loja">Loja</a>
+            <a href="#eventos">Eventos</a>
+            <Link href="/login" className="nav-login">Entrar</Link>
+          </div>
+          <button className="nav-menu" aria-label="Abrir menu"><Menu size={21} /></button>
+        </nav>
+
+        <div className="hero page-width">
+          <div className="hero__copy">
+            <p className="eyebrow"><span /> UMA SÓ TORCIDA. UM SÓ GRITO.</p>
+            <h1>VESTE.<br />VIVE.<br /><em>VENCE.</em></h1>
+            <p className="hero__lede">A ATLETICA FSA transforma a energia da faculdade em esporte, conexão e experiências para levar com você.</p>
+            <div className="hero__actions">
+              <Link href="/loja" className="button button--yellow"><ShoppingBag size={18} /> Ir para a loja <ArrowRight size={17} /></Link>
+              <a href="#eventos" className="button button--ghost"><CalendarDays size={18} /> Próximos eventos</a>
+            </div>
+            <div className="hero__signal"><span className="pulse-dot" /> Plataforma integrada <ArrowDownRight size={17} /></div>
+          </div>
+          <div className="hero__mascot-wrap">
+            <span className="hero__yellow-orb" />
+            <span className="hero__outline hero__outline--one">FSA</span>
+            <span className="hero__outline hero__outline--two">FSA</span>
+            <RabbitMascot className="hero__mascot" />
+            <div className="hero__badge"><strong>2026</strong><span>DESDE<br />SEMPRE FSA</span></div>
           </div>
         </div>
-        <div className="mascot-placeholder" aria-label="Espaço reservado ao mascote coelho FSA">
-          <div className="ear ear-left" />
-          <div className="ear ear-right" />
-          <div className="rabbit-face">
-            <span className="eye-patch" />
-            <span className="rabbit-eye" />
-            <span className="rabbit-nose" />
-          </div>
-          <span className="mascot-jersey">FSA</span>
-          <small>MASCOTE EM BREVE</small>
+        <div className="hero-ticker" aria-label="Destaques da ATLETICA FSA">
+          <span>JOGOS</span><i /> <span>FESTAS</span><i /> <span>CAMPEONATOS</span><i /> <span>TORCIDA</span><i /> <span>LOJA OFICIAL</span><i /> <span>JOGOS</span><i /> <span>FESTAS</span>
         </div>
       </section>
+
+      <section className="capability-strip">
+        <div className="page-width capability-grid">
+          {capabilities.map(({ icon: Icon, label, copy }) => (
+            <div className="capability" key={label}><Icon aria-hidden="true" /><div><strong>{label}</strong><span>{copy}</span></div></div>
+          ))}
+          <Link className="capability-link" href="/login">Acessar minha conta <ChevronRight size={18} /></Link>
+        </div>
+      </section>
+
+      <section className="sector-section page-width" id="setores">
+        <SectionTitle eyebrow="A FSA É MUITO MAIS" title="Cinco frentes. A mesma vibração." copy="Da arquibancada ao próximo grande evento, cada setor deixa sua marca." />
+        <div className="sector-grid">
+          {sectors.map((sector) => (
+            <article className="sector-card" key={sector.number}>
+              <span>{sector.number}</span><ArrowDownRight size={24} /><h3>{sector.name}</h3><p>{sector.copy}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="store-section" id="loja">
+        <div className="page-width">
+          <div className="store-heading">
+            <SectionTitle eyebrow="LOJA DA TORCIDA" title="Seu jeito de levar a FSA com você." inverted />
+            <Link href="/loja" className="text-link text-link--light">Ver todos os produtos <ArrowRight size={18} /></Link>
+          </div>
+          <div className="product-grid">
+            {products.map((product) => (
+              <article className="product-card" key={product.name}>
+                <div className={`product-art ${product.className}`} aria-hidden="true"><span className="product-art__fsa">FSA</span></div>
+                <div className="product-card__meta"><span>{product.category}</span><button aria-label={`Adicionar ${product.name} ao carrinho`}><ShoppingBag size={17} /></button></div>
+                <h3>{product.name}</h3><strong>{product.price}</strong>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="event-section page-width" id="eventos">
+        <div className="event-poster"><span className="event-poster__top">NOITE<br />FSA</span><span className="event-poster__circle" /><span className="event-poster__date">EM<br />BREVE</span><RabbitMascot compact className="event-poster__rabbit" /></div>
+        <div className="event-copy">
+          <p className="eyebrow eyebrow--blue"><span /> AGENDA FSA</p>
+          <h2>O próximo capítulo começa com a gente.</h2>
+          <p>Jogos, campeonatos, festas e encontros para fazer a história acontecer. Inscreva-se, retire seus itens e viva cada momento com a FSA.</p>
+          <div className="event-copy__details"><span><CalendarDays size={18} /> Agenda sempre atualizada</span><span><UsersRound size={18} /> Check-in rápido e seguro</span></div>
+          <Link href="/eventos" className="button button--blue">Explorar eventos <ArrowRight size={17} /></Link>
+        </div>
+      </section>
+
+      <section className="manifesto-section">
+        <div className="page-width manifesto-layout">
+          <div className="manifesto-symbol"><Trophy size={52} /><span>FSA</span></div>
+          <blockquote>“A gente não acompanha. A gente <em>move</em>.”</blockquote>
+          <div className="manifesto-meta"><Sparkles size={20} /> MAIS QUE UMA ATLÉTICA<br />UMA COMUNIDADE</div>
+        </div>
+      </section>
+
+      <footer className="site-footer">
+        <div className="page-width footer-grid">
+          <div><FsaWordmark /><p>Esporte, festa, amizade e tradição. Tudo em azul, amarelo e muita atitude.</p></div>
+          <div className="footer-links"><strong>Explore</strong><Link href="/loja">Loja</Link><Link href="/eventos">Eventos</Link><a href="#setores">Setores</a></div>
+          <div className="footer-links"><strong>Acesso</strong><Link href="/login">Minha conta</Link><Link href="/admin">Backoffice</Link><Link href="/ods">ODS</Link></div>
+          <a className="instagram-link" href="https://instagram.com" aria-label="Instagram da ATLETICA FSA"><Instagram size={20} /> Seguir a FSA</a>
+        </div>
+        <div className="page-width footer-bottom"><span>© 2026 ATLETICA FSA</span><span>FEITO PARA QUEM TORCE JUNTO.</span><Handshake size={17} /></div>
+      </footer>
     </main>
   );
 }
