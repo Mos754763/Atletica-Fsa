@@ -32,3 +32,6 @@
 - [x] Adicionar filtros operacionais a pedidos, membros, catálogo, eventos e relatórios
 - [x] Criar dashboard interativo com KPIs de vendas, atendimento, SLA e andamento operacional
 - [x] Implementar animações de fundo e microinterações responsivas nas páginas da plataforma
+- [x] Auditar todas as rotas, autenticação, RBAC, RLS e a consistência dos dados operacionais
+- [x] Auditar os fluxos de pedidos, eventos, ODS, e-mail, cron, Storage e integrações externas
+- [x] Corrigir inconsistências seguras identificadas, validar integralmente e registrar o parecer técnico

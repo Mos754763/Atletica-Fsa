@@ -12,3 +12,8 @@ export function verifyMercadoPagoWebhook({ signature, requestId, dataId, secret 
   if (receivedHash.length !== expectedHash.length) return false;
   return timingSafeEqual(Buffer.from(receivedHash), Buffer.from(expectedHash));
 }
+
+export function isMercadoPagoAmountMatching(transactionAmount: number | undefined, expectedCents: number) {
+  if (!Number.isFinite(transactionAmount) || !Number.isInteger(expectedCents) || expectedCents < 0) return false;
+  return Math.round((transactionAmount as number) * 100) === expectedCents;
+}

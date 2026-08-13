@@ -20,7 +20,8 @@ export async function PATCH(request: Request) {
   const body = await request.json().catch(() => null) as { orderId?: string; status?: OrderState } | null; if (!body?.orderId || !body.status) return NextResponse.json({ error: "Atualização inválida." }, { status: 400 });
   const { data: order } = await auth.supabase.from("orders").select("id,order_number,status,customer_id,customer_email").eq("id", body.orderId).single();
   if (!order || !canMoveOrderStatus(order.status as OrderState, body.status)) return NextResponse.json({ error: "Transição de pedido inválida." }, { status: 409 });
-  const { error } = await auth.supabase.from("orders").update({ status: body.status, ready_at: body.status === "pronto" ? new Date().toISOString() : null }).eq("id", order.id); if (error) return NextResponse.json({ error: "Não foi possível atualizar o pedido." }, { status: 500 });
+  const { data: updatedOrder, error } = await auth.supabase.from("orders").update({ status: body.status, ready_at: body.status === "pronto" ? new Date().toISOString() : null }).eq("id", order.id).eq("status", order.status).select("id").maybeSingle(); if (error) return NextResponse.json({ error: "Não foi possível atualizar o pedido." }, { status: 500 });
+  if (!updatedOrder) return NextResponse.json({ error: "O pedido foi atualizado por outra operação. Atualize a fila e tente novamente." }, { status: 409 });
   await auth.supabase.from("order_status_history").insert({ order_id: order.id, status: body.status, changed_by: auth.profile.id, note: "Atualização operacional pelo ODS" });
   await sendOrderStatusEmail({ to: order.customer_email, profileId: order.customer_id, orderId: order.id, orderNumber: order.order_number, status: body.status });
   return NextResponse.json({ ok: true });
