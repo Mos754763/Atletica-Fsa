@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { ArrowRight, Chrome, Mail, ShieldCheck } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { getBrowserClient } from "@/lib/supabase/client";
 
 type AuthMode = "login" | "signup";
 
@@ -18,7 +18,7 @@ export function LoginForm() {
     setBusy(true);
     setError(null);
     try {
-      const supabase = createClient();
+      const supabase = await getBrowserClient();
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: { redirectTo: `${window.location.origin}/auth/callback` },
@@ -37,7 +37,7 @@ export function LoginForm() {
     setMessage(null);
 
     try {
-      const supabase = createClient();
+      const supabase = await getBrowserClient();
       if (mode === "login") {
         const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
         if (loginError) throw loginError;

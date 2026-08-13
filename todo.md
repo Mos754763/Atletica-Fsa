@@ -35,3 +35,7 @@
 - [x] Auditar todas as rotas, autenticação, RBAC, RLS e a consistência dos dados operacionais
 - [x] Auditar os fluxos de pedidos, eventos, ODS, e-mail, cron, Storage e integrações externas
 - [x] Corrigir inconsistências seguras identificadas, validar integralmente e registrar o parecer técnico
+- [x] Empacotar o processo de implantação, segurança, auditoria e operação em uma habilidade reutilizável
+- [x] Corrigir a configuração pública do Supabase no deployment e validar login por senha e Google OAuth
+- [x] Corrigir o elemento sobreposto na landing page móvel e aprimorar os recortes das fotos oficiais sem interface do Instagram
+- [x] Gerar e integrar imagens originais de produto para a loja da ATLETICA FSA

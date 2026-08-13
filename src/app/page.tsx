@@ -6,7 +6,6 @@ import {
   ChevronRight,
   Handshake,
   Instagram,
-  Menu,
   Package,
   ShoppingBag,
   Sparkles,
@@ -15,6 +14,7 @@ import {
 } from "lucide-react";
 import { FsaWordmark } from "@/components/brand/FsaWordmark";
 import { SectionTitle } from "@/components/landing/SectionTitle";
+import { MobileNav } from "@/components/landing/MobileNav";
 import { institutionalAsset } from "@/lib/institutional-assets";
 
 const instagramUrl = "https://www.instagram.com/atleticafsa/";
@@ -31,10 +31,10 @@ const sectors = [
 ];
 
 const products = [
-  { name: "Camiseta Oficial", category: "Vestuário", price: "R$ 69,90", className: "product-art--shirt" },
-  { name: "Copo FSA", category: "Acessórios", price: "R$ 24,90", className: "product-art--cup" },
-  { name: "Moletom Titular", category: "Vestuário", price: "R$ 149,90", className: "product-art--hoodie" },
-  { name: "Chaveiro Coelho", category: "Colecionáveis", price: "R$ 14,90", className: "product-art--keychain" },
+  { name: "Camiseta Oficial", category: "Vestuário", price: "R$ 69,90", className: "product-art--shirt", image: institutionalAsset("store/fsa-product-camiseta.png") },
+  { name: "Copo FSA", category: "Acessórios", price: "R$ 24,90", className: "product-art--cup", image: institutionalAsset("store/fsa-product-copo.png") },
+  { name: "Moletom Titular", category: "Vestuário", price: "R$ 149,90", className: "product-art--hoodie", image: institutionalAsset("store/fsa-product-moletom.png") },
+  { name: "Chaveiro Coelho", category: "Colecionáveis", price: "R$ 14,90", className: "product-art--keychain", image: institutionalAsset("store/fsa-product-chaveiro.png") },
 ];
 
 const capabilities = [
@@ -44,14 +44,14 @@ const capabilities = [
 ];
 
 const management = [
-  { name: "Rafa", role: "Presidente da Atlética", image: institutionalAsset("gestao-2026/presidente-rafa.webp") },
-  { name: "Bella", role: "Assessora do Presidente", image: institutionalAsset("gestao-2026/assessora-bella.webp") },
-  { name: "Maju", role: "Diretora de Marketing", image: institutionalAsset("gestao-2026/diretora-marketing-maju.webp") },
-  { name: "Malu", role: "Diretora de Eventos", image: institutionalAsset("gestao-2026/diretora-eventos-malu.webp") },
-  { name: "Leca", role: "Diretora de Sociais", image: institutionalAsset("gestao-2026/diretora-sociais-leca.webp") },
-  { name: "Raposo", role: "Diretora de Suprimentos", image: institutionalAsset("gestao-2026/diretora-suprimentos-raposo.webp") },
-  { name: "Pietro", role: "Diretor de Esportes", image: institutionalAsset("gestao-2026/diretor-esportes-pietro.webp") },
-  { name: "Belote", role: "Diretor de Bateria", image: institutionalAsset("gestao-2026/diretor-bateria-belote.webp") },
+  { name: "Rafa", role: "Presidente da Atlética", image: institutionalAsset("gestao-2026-clean/rafa.webp") },
+  { name: "Bella", role: "Assessora do Presidente", image: institutionalAsset("gestao-2026-clean/bella.webp") },
+  { name: "Maju", role: "Diretora de Marketing", image: institutionalAsset("gestao-2026-clean/maju.webp") },
+  { name: "Malu", role: "Diretora de Eventos", image: institutionalAsset("gestao-2026-clean/malu.webp") },
+  { name: "Leca", role: "Diretora de Sociais", image: institutionalAsset("gestao-2026-clean/leca.webp") },
+  { name: "Raposo", role: "Diretora de Suprimentos", image: institutionalAsset("gestao-2026-clean/raposo.webp") },
+  { name: "Pietro", role: "Diretor de Esportes", image: institutionalAsset("gestao-2026-clean/pietro.webp") },
+  { name: "Belote", role: "Diretor de Bateria", image: institutionalAsset("gestao-2026-clean/belote.webp") },
 ];
 
 export default function HomePage() {
@@ -67,7 +67,7 @@ export default function HomePage() {
             <a href="#eventos">Eventos</a>
             <Link href="/login" className="nav-login">Entrar</Link>
           </div>
-          <button className="nav-menu" aria-label="Abrir menu"><Menu size={21} /></button>
+          <MobileNav />
         </nav>
 
         <div className="hero page-width">
@@ -141,7 +141,7 @@ export default function HomePage() {
           <div className="product-grid">
             {products.map((product) => (
               <article className="product-card" key={product.name}>
-                <div className={`product-art ${product.className}`} aria-hidden="true"><span className="product-art__fsa">FSA</span></div>
+                <div className={`product-art ${product.className}`}><img className="product-art__image" src={product.image} alt={`${product.name} da ATLETICA FSA`} /></div>
                 <div className="product-card__meta"><span>{product.category}</span><button aria-label={`Adicionar ${product.name} ao carrinho`}><ShoppingBag size={17} /></button></div>
                 <h3>{product.name}</h3><strong>{product.price}</strong>
               </article>
