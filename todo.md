@@ -88,3 +88,8 @@
 - [x] Implementar token opaco, expirável e de uso único para retirada de pedidos por QR no ODS
 - [x] Corrigir o escopo de grants `table:*` e a auditoria do Construtor de Tabelas por migração versionada
 - [x] Validar concorrência, RLS, tipos, testes e build após o endurecimento de retirada e permissões
+
+- [x] Criar infraestrutura isolada de integração para concorrência de retirada e check-in por QR
+- [x] Implementar cenários simultâneos, autorização e idempotência para as RPCs de retirada e check-in
+- [x] Documentar e validar os comandos de teste de integração sem uso de dados de produção
+- [ ] Executar a suíte concorrente contra um projeto Supabase exclusivo de testes com as migrações aplicadas

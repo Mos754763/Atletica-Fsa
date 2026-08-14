@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:integration:qr-concurrency": "RUN_QR_CONCURRENCY_TESTS=true node scripts/test-qr-concurrency.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
