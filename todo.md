@@ -20,7 +20,7 @@
 - [x] Implementar e-mails transacionais com identidade FSA via Resend
 - [x] Configurar automações de confirmação, pagamento, preparo, pedido pronto, inscrição e lembrete de evento
 - [x] Escrever e executar testes automatizados e validar os fluxos críticos
-- [ ] Sincronizar cada fase concluída ao GitHub e preparar o deploy na Vercel
+- [x] Sincronizar cada fase concluída ao GitHub e preparar o deploy na Vercel
 - [x] Corrigir o pré-render de rotas protegidas quando as variáveis Supabase não estiverem presentes durante o build da Vercel
 - [x] Incorporar as imagens oficiais fornecidas da gestão 2026 e o selo da ATLETICA FSA na interface pública
 - [x] Gerar assets institucionais complementares sem retratar ou modificar integrantes identificáveis
@@ -81,3 +81,6 @@
 - [x] Finalizar validações técnicas, documentação e entrega versionada
 - [x] Criar guia operacional para governança, loja, retirada, eventos, automações e Construtor de Tabelas
 - [x] Corrigir o fallback visual de imagens de produto identificado na inspeção local da loja
+
+- [ ] Publicar a versão controlada na Vercel após cadastrar `PAYMENTS_ENABLED=false` em Production e Preview
+- [ ] Adicionar o workflow de CI ao GitHub com uma credencial que possua o escopo `workflow`
