@@ -49,3 +49,8 @@
 - [x] Expandir motion design para o ERP e Backoffice com entradas, transições e microinterações operacionais
 - [x] Integrar o mascote institucional da landing como elemento visual de apoio nas áreas de ERP e Backoffice
 - [x] Adicionar parallax em camadas e partículas flutuantes leves à seção de destaques da landing
+- [x] Corrigir os visuais de produto para remover formas geométricas indevidas e preservar objetos reconhecíveis
+- [x] Criar e integrar imagens institucionais específicas para os cinco setores da ATLETICA FSA
+- [x] Substituir o fundo verde inadequado do mascote por uma composição visual alinhada à identidade FSA
+- [x] Corrigir o callback do Google OAuth para retornar à área autenticada em vez da landing pública
+- [x] Restringir visibilidade e acesso ao ERP a membros autenticados com papel operacional autorizado

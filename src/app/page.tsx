@@ -25,18 +25,18 @@ const storeArtwork = institutionalAsset("fsa-store-pattern.png");
 const eventArtwork = institutionalAsset("fsa-events-pattern.png");
 
 const sectors = [
-  { number: "01", name: "Suprimentos", copy: "Tudo para a torcida chegar junto." },
-  { number: "02", name: "Eventos", copy: "Experiências que viram história." },
-  { number: "03", name: "Sociais", copy: "A conexão que move a FSA." },
-  { number: "04", name: "Marketing", copy: "Orgulho que ganha voz." },
-  { number: "05", name: "Esportes", copy: "Raça dentro e fora da quadra." },
+  { number: "01", name: "Suprimentos", copy: "Tudo para a torcida chegar junto.", image: institutionalAsset("sectors/fsa-sector-suprimentos.png") },
+  { number: "02", name: "Eventos", copy: "Experiências que viram história.", image: institutionalAsset("sectors/fsa-sector-eventos.png") },
+  { number: "03", name: "Sociais", copy: "A conexão que move a FSA.", image: institutionalAsset("sectors/fsa-sector-sociais.png") },
+  { number: "04", name: "Marketing", copy: "Orgulho que ganha voz.", image: institutionalAsset("sectors/fsa-sector-marketing.png") },
+  { number: "05", name: "Esportes", copy: "Raça dentro e fora da quadra.", image: institutionalAsset("sectors/fsa-sector-esportes.png") },
 ];
 
 const products = [
-  { name: "Camiseta Oficial", category: "Vestuário", price: "R$ 69,90", className: "product-art--shirt", image: fsaStoreAssets.camiseta },
-  { name: "Copo FSA", category: "Acessórios", price: "R$ 24,90", className: "product-art--cup", image: fsaStoreAssets.copo },
-  { name: "Moletom Titular", category: "Vestuário", price: "R$ 149,90", className: "product-art--hoodie", image: fsaStoreAssets.moletom },
-  { name: "Chaveiro Coelho", category: "Colecionáveis", price: "R$ 14,90", className: "product-art--keychain", image: fsaStoreAssets.chaveiro },
+  { name: "Camiseta Oficial", category: "Vestuário", price: "R$ 69,90", image: fsaStoreAssets.camiseta },
+  { name: "Copo FSA", category: "Acessórios", price: "R$ 24,90", image: fsaStoreAssets.copo },
+  { name: "Moletom Titular", category: "Vestuário", price: "R$ 149,90", image: fsaStoreAssets.moletom },
+  { name: "Chaveiro Coelho", category: "Colecionáveis", price: "R$ 14,90", image: fsaStoreAssets.chaveiro },
 ];
 
 const capabilities = [
@@ -68,7 +68,6 @@ export default function HomePage() {
             <a href="#gestao">Gestão</a>
             <a href="#loja">Loja</a>
             <a href="#eventos">Eventos</a>
-            <Link href="/erp">ERP</Link>
             <Link href="/login" className="nav-login">Entrar</Link>
           </div>
           <MobileNav />
@@ -107,7 +106,8 @@ export default function HomePage() {
         <div className="sector-grid">
           {sectors.map((sector, index) => (
             <MotionCard className="sector-card motion-card" delay={index * 0.05} key={sector.number}>
-              <span>{sector.number}</span><ArrowDownRight size={24} /><h3>{sector.name}</h3><p>{sector.copy}</p>
+              <div className="sector-card__photo" aria-hidden="true"><img src={sector.image} alt="" loading="lazy" /></div>
+              <div className="sector-card__content"><span>{sector.number}</span><ArrowDownRight size={24} /><h3>{sector.name}</h3><p>{sector.copy}</p></div>
             </MotionCard>
           ))}
         </div>
@@ -140,7 +140,7 @@ export default function HomePage() {
           <div className="product-grid">
             {products.map((product, index) => (
               <MotionCard className="product-card motion-card" delay={index * 0.07} key={product.name}>
-                <div className={`product-art ${product.className}`}><img className="product-art__image" src={product.image} alt={`${product.name} da ATLETICA FSA`} /></div>
+                <div className="product-art"><img className="product-art__image" src={product.image} alt={`${product.name} da ATLETICA FSA`} /></div>
                 <div className="product-card__meta"><span>{product.category}</span><MotionButton label={`Adicionar ${product.name} ao carrinho`}><ShoppingBag size={17} /></MotionButton></div>
                 <h3>{product.name}</h3><strong>{product.price}</strong>
               </MotionCard>
@@ -172,7 +172,7 @@ export default function HomePage() {
         <div className="page-width footer-grid">
           <div><FsaWordmark /><p>Esporte, festa, amizade e tradição. Tudo em azul, amarelo e muita atitude.</p></div>
           <div className="footer-links"><strong>Explore</strong><Link href="/loja">Loja</Link><Link href="/eventos">Eventos</Link><a href="#setores">Setores</a></div>
-          <div className="footer-links"><strong>Acesso</strong><Link href="/login">Minha conta</Link><Link href="/erp">ERP</Link><Link href="/ods">ODS</Link></div>
+          <div className="footer-links"><strong>Acesso</strong><Link href="/login">Minha conta</Link></div>
           <a className="instagram-link" href={instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram da ATLETICA FSA"><Instagram size={20} /> Seguir a FSA</a>
         </div>
         <div className="page-width footer-bottom"><span>© 2026 ATLETICA FSA</span><span>FEITO PARA QUEM TORCE JUNTO.</span><Handshake size={17} /></div>

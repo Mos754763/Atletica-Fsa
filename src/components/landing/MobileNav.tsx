@@ -19,7 +19,6 @@ export function MobileNav() {
           <a href="#gestao" onClick={close}>Gestão</a>
           <a href="#loja" onClick={close}>Loja</a>
           <a href="#eventos" onClick={close}>Eventos</a>
-          <Link href="/erp" onClick={close}>Acessar ERP</Link>
           <Link href="/login" onClick={close}>Entrar na FSA</Link>
         </div>
       )}

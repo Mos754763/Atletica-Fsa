@@ -21,7 +21,7 @@ export function LoginForm() {
       const supabase = await getBrowserClient();
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${window.location.origin}/auth/callback` },
+        options: { redirectTo: `${window.location.origin}/auth/callback?next=/conta` },
       });
       if (oauthError) throw oauthError;
     } catch (authError) {
@@ -48,7 +48,7 @@ export function LoginForm() {
       const { data, error: signupError } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+        options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=/conta` },
       });
       if (signupError) throw signupError;
       if (data.session) {
