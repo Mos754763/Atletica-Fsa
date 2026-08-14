@@ -84,3 +84,7 @@
 
 - [ ] Publicar a versão controlada na Vercel após cadastrar `PAYMENTS_ENABLED=false` em Production e Preview
 - [ ] Adicionar o workflow de CI ao GitHub com uma credencial que possua o escopo `workflow`
+
+- [x] Implementar token opaco, expirável e de uso único para retirada de pedidos por QR no ODS
+- [x] Corrigir o escopo de grants `table:*` e a auditoria do Construtor de Tabelas por migração versionada
+- [x] Validar concorrência, RLS, tipos, testes e build após o endurecimento de retirada e permissões

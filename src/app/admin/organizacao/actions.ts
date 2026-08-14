@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePresident } from "@/lib/auth/require-president";
 import { PERMISSION_ACTIONS, SECTOR_MEMBERSHIP_ROLES } from "@/lib/governance/permissions";
+import { isValidTableGrantScope } from "@/lib/governance/table-grants";
 import { createServiceClient } from "@/lib/supabase/server";
 
 const slugSchema = z.string().trim().toLowerCase().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use letras minúsculas, números e hífens.").max(80);
@@ -62,6 +63,12 @@ export async function grantSectorPermission(formData: FormData) {
   const { userId } = await requirePresident();
   const values = grantSchema.parse({ sectorId: formData.get("sectorId") || undefined, profileId: formData.get("profileId"), resourceKey: formData.get("resourceKey"), action: formData.get("action"), note: formData.get("note") || undefined });
   const service = createServiceClient();
+  if (!isValidTableGrantScope(values.resourceKey, values.sectorId)) throw new Error("Escolha uma tabela ou todas as tabelas de um setor específico.");
+  if (values.resourceKey !== "table:*") {
+    const tableId = values.resourceKey.slice("table:".length);
+    const { data: table } = await service.from("custom_tables").select("sector_id").eq("id", tableId).is("deleted_at", null).maybeSingle();
+    if (!table || table.sector_id !== values.sectorId) throw new Error("A tabela selecionada não pertence ao setor informado.");
+  }
   let existingQuery = service.from("permission_grants").select("id").eq("profile_id", values.profileId).eq("resource_key", values.resourceKey).eq("action", values.action).is("revoked_at", null);
   existingQuery = values.sectorId ? existingQuery.eq("sector_id", values.sectorId) : existingQuery.is("sector_id", null);
   const { data: existing, error: lookupError } = await existingQuery.maybeSingle();

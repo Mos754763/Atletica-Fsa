@@ -47,6 +47,9 @@ try {
   const ticketing = await client.query(
     "select exists(select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname = 'create_event_registration_ticket') as has_issue_function, exists(select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname = 'settle_paid_event_ticket') as has_settlement_function, exists(select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname = 'check_in_event_ticket') as has_checkin_function",
   );
+  const pickupSecurity = await client.query(
+    "select exists(select 1 from information_schema.columns where table_schema = 'public' and table_name = 'orders' and column_name = 'pickup_qr_expires_at') as has_expiry, exists(select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname = 'confirm_order_pickup_by_qr') as has_confirm_function, exists(select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname = 'advance_ods_order') as has_ods_function, exists(select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname = 'validate_table_permission_grant') as has_grant_validation, exists(select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname = 'validate_custom_table_record') as has_record_validation",
+  );
 
   if (tables.rowCount !== expectedTables.length) {
     throw new Error(`Tabelas encontradas: ${tables.rowCount}/${expectedTables.length}.`);
@@ -71,6 +74,9 @@ try {
   }
   if (!ticketing.rows[0].has_issue_function || !ticketing.rows[0].has_settlement_function || !ticketing.rows[0].has_checkin_function) {
     throw new Error("Emissão, liquidação ou check-in atômico de ingressos não está presente no banco.");
+  }
+  if (!pickupSecurity.rows[0].has_expiry || !pickupSecurity.rows[0].has_confirm_function || !pickupSecurity.rows[0].has_ods_function || !pickupSecurity.rows[0].has_grant_validation || !pickupSecurity.rows[0].has_record_validation) {
+    throw new Error("QR opaco de retirada ou validação setorial de grants não está presente no banco.");
   }
 
   console.log(`Esquema validado: ${tables.rowCount} tabelas, ${policies.rows[0].total} políticas, RLS em ${rls.rows[0].total} tabelas, liquidação, proteção de papéis, governança, Construtor e ingressos disponíveis.`);

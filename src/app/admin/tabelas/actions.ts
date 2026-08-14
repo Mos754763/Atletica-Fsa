@@ -5,6 +5,7 @@ import { z } from "zod";
 import { requireAdminShell } from "@/lib/auth/require-admin-shell";
 import { createServiceClient } from "@/lib/supabase/server";
 import { normalizeBuilderRecord } from "@/lib/table-builder/record-values";
+import { grantMatchesTable } from "@/lib/governance/table-grants";
 
 const fieldTypes = ["text", "number", "date", "single_select", "multi_select", "person", "checkbox"] as const;
 const slug = z.string().trim().toLowerCase().regex(/^[a-z0-9]+(?:-[a-z0-9-]+)*$/, "Use letras minúsculas, números e hífens.").max(80);
@@ -19,7 +20,7 @@ async function assertTableAccess(tableId: string, action: "ver" | "criar" | "edi
     service.from("sector_memberships").select("id").eq("profile_id", session.userId).eq("sector_id", table.sector_id).eq("role", "diretor").is("ended_at", null).maybeSingle(),
     service.from("permission_grants").select("resource_key,sector_id,action").eq("profile_id", session.userId).eq("action", action).is("revoked_at", null),
   ]);
-  const explicit = (grants ?? []).some((grant) => (!grant.sector_id || grant.sector_id === table.sector_id) && ["*", "table:*", `table:${table.id}`].includes(grant.resource_key));
+  const explicit = (grants ?? []).some((grant) => grantMatchesTable({ resourceKey: grant.resource_key, sectorId: grant.sector_id, action: grant.action }, table.id, table.sector_id, action));
   if (!director && !explicit) throw new Error("Você não possui esta permissão nesta tabela.");
   return { ...session, table, service };
 }

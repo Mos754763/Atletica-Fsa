@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, Database, FilePlus2, Table2, Trash2 } from "lucide-react";
 import { requireAdminShell } from "@/lib/auth/require-admin-shell";
 import { createServiceClient } from "@/lib/supabase/server";
+import { grantMatchesTable } from "@/lib/governance/table-grants";
 import { createCustomField, createCustomRecord, createCustomTable, createCustomView, restoreCustomRecord, trashCustomRecord } from "./actions";
 import "./tabelas.css";
 
@@ -29,8 +30,7 @@ export default async function TableBuilderPage({ searchParams }: { searchParams:
     service.from("custom_tables").select("id,sector_id,name,slug,description,sector:sectors!custom_tables_sector_id_fkey(name)").is("deleted_at", null).order("name").returns<CustomTable[]>(),
   ]);
   const directorSectorIds = new Set((memberships ?? []).filter((row) => row.role === "diretor").map((row) => row.sector_id));
-  const canSeeAll = session.profile.is_president || (grants ?? []).some((grant) => grant.action === "ver" && ["*", "table:*"] .includes(grant.resource_key));
-  const tables = (rawTables ?? []).filter((table) => canSeeAll || directorSectorIds.has(table.sector_id) || (grants ?? []).some((grant) => grant.action === "ver" && (!grant.sector_id || grant.sector_id === table.sector_id) && ["*", "table:*", `table:${table.id}`].includes(grant.resource_key)));
+  const tables = (rawTables ?? []).filter((table) => session.profile.is_president || directorSectorIds.has(table.sector_id) || (grants ?? []).some((grant) => grantMatchesTable({ resourceKey: grant.resource_key, sectorId: grant.sector_id, action: grant.action }, table.id, table.sector_id, "ver")));
   const selected = tables.find((table) => table.id === params.table) ?? tables[0];
   const [{ data: fields }, { data: records }, { data: trash }, { data: views }] = selected ? await Promise.all([
     service.from("custom_table_fields").select("id,name,slug,field_type,is_required,config_json").eq("table_id", selected.id).is("deleted_at", null).order("sort_order").returns<Field[]>(),
