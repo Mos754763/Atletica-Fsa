@@ -110,3 +110,5 @@
 - [x] Criar pedido manual no Backoffice com validação de itens, estoque, preço e auditoria
 - [x] Auditar a integração Mercado Pago contra a documentação oficial sem habilitar pagamentos reais
 - [x] Validar as correções de interface, sessão, pedido manual, testes e build
+- [x] Implementar proteção persistente contra replay, timeout e retentativa segura no webhook Mercado Pago
+- [x] Ampliar testes de webhook para cenários de replay, rede, valor e liquidação idempotente

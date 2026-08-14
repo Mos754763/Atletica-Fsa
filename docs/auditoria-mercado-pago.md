@@ -19,17 +19,22 @@ O fluxo implementado atende aos controles técnicos essenciais de Checkout Pro: 
 | Valor | `transaction_amount` é normalizado para centavos e comparado com `total_cents` ou `amount_cents`. | Conforme |
 | Referência desconhecida | Pedido/inscrição não encontrados são ignorados sem criar pagamento ou alterar estoque. | Conforme |
 | Duplicidade | `payments.provider_reference` é único e a liquidação de inventário é protegida por `inventory_committed_at`. | Conforme |
+| Replay de Webhook | `payment_webhook_events` registra uma chave única por pagamento e timestamp assinado; eventos finalizados só recebem reconhecimento de duplicidade. | Conforme |
+| Janela temporal | O timestamp `ts` da assinatura precisa estar dentro de cinco minutos e não pode estar mais de um minuto à frente do relógio do servidor. | Conforme |
+| Falha transitória do provedor | A consulta do pagamento aplica timeout de oito segundos e até três tentativas com espera exponencial e jitter para rede, `408`, `429` e `5xx`. | Conforme |
 | Falha de estoque após aprovação | A RPC de liquidação bloqueia o pedido, libera reservas e sinaliza necessidade de estorno manual. | Conforme |
 
 ## Testes automatizados adicionados
 
-O arquivo `src/lib/payments/mercado-pago.test.ts` cobre a assinatura válida, assinaturas inválidas ou incompletas, igualdade do valor em centavos e divergências de total. A idempotência e o cenário de referência desconhecida permanecem protegidos no caminho de integração: a restrição única de `provider_reference` impede registros duplicados e `settle_paid_order_inventory()` retorna sem nova baixa quando `inventory_committed_at` já está preenchido. A rota retorna `ignored: "unknown_order"` ou `ignored: "unknown_registration"` antes de qualquer mutação para referências inexistentes.
+O arquivo `src/lib/payments/mercado-pago.test.ts` cobre a assinatura válida, assinaturas inválidas ou incompletas, igualdade do valor em centavos e divergências de total. Ele também cobre timestamp expirado/futuro, repetição de falha transitória seguida de sucesso e ausência de retentativa para erros definitivos do provedor. A idempotência e o cenário de referência desconhecida permanecem protegidos no caminho de integração: a restrição única de `provider_reference` impede registros duplicados, a tabela `payment_webhook_events` bloqueia a repetição de um mesmo evento assinado e `settle_paid_order_inventory()` retorna sem nova baixa quando `inventory_committed_at` já está preenchido. A rota retorna `ignored: "unknown_order"` ou `ignored: "unknown_registration"` antes de qualquer mutação para referências inexistentes.
 
 | Cenário | Resposta esperada |
 |---|---|
 | Assinatura adulterada | HTTP 401 e nenhuma consulta/alteração comercial. |
+| Timestamp fora da janela | HTTP 401 e evento não é gravado para processamento. |
 | Total divergente | HTTP 409 e nenhuma liquidação de estoque ou ingresso. |
-| Webhook repetido | Upsert pelo identificador do provedor e liquidação idempotente, sem segunda baixa. |
+| Webhook repetido | A chave do evento já finalizado retorna `duplicate: true`; não consulta novamente o provedor nem faz segunda baixa. |
+| Falha transitória na API | A chave fica como `failed`, a rota responde HTTP 503 e o provedor pode reenviar o evento assinado. |
 | Referência ausente ou inexistente | Evento reconhecido como ignorado, sem alterar pedidos, ingressos ou pagamentos. |
 
 ## Condições externas antes da ativação comercial
