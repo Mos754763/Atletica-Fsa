@@ -112,3 +112,5 @@
 - [x] Validar as correções de interface, sessão, pedido manual, testes e build
 - [x] Implementar proteção persistente contra replay, timeout e retentativa segura no webhook Mercado Pago
 - [x] Ampliar testes de webhook para cenários de replay, rede, valor e liquidação idempotente
+- [x] Implementar trilha de atividades do CRM por usuário com acesso, alteração, tentativa bloqueada e contexto operacional
+- [x] Mapear e preparar a arquitetura de integração segura com plataformas externas de eventos

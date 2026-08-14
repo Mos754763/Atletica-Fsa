@@ -17,6 +17,9 @@ export async function requireRole(allowedRoles: readonly UserRole[]) {
     .single();
 
   if (!profile || !canAccessRole(profile.role as UserRole, allowedRoles)) {
+    if (profile) {
+      await supabase.rpc("record_crm_access_denied", { p_allowed_roles: [...allowedRoles] });
+    }
     redirect("/conta?acesso=negado");
   }
 
