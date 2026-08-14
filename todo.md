@@ -117,3 +117,6 @@
 - [x] Validar a viabilidade, credenciais e contratos da integração de homologação com a Sympla
 - [x] Implementar adaptador e infraestrutura de sincronização Sympla sem alterar o sistema mestre dos eventos
 - [x] Espelhar no sistema os eventos criados na Sympla, preservando origem externa e impedindo operações internas indevidas
+- [x] Implementar reprocessamento administrativo auditável de dead letters da sincronização Sympla
+- [x] Implementar alertas Slack deduplicados para falhas de sincronização e registrar a entrega do alerta
+- [x] Cobrir reprocessamento, deduplicação, rede, permissão e resolução de incidentes com testes automatizados

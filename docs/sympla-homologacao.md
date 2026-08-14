@@ -26,6 +26,9 @@ Na documentação pública consultada não há um recurso de webhook ou callback
 | Migração `20260814210000_sympla_homologation_integration.sql` | Cria integrações, vínculos futuros, registros externos, execuções e fila de falhas. | RLS permite leitura operacional apenas a administradores; payload externo fica separado das tabelas nativas. |
 | `/admin/integracoes/sympla` | Painel administrativo para executar e auditar a sincronização manual. | A página e a ação de servidor exigem o papel `admin`. |
 | `/api/cron/sympla-sync` | Sincronização incremental a cada 15 minutos após publicação na Vercel. | Requer `Authorization: Bearer CRON_SECRET`, processa somente leitura e devolve `503` em falha para observabilidade. |
+| Migrações `20260814230000` e `20260814230500` | Criam a deduplicação persistente de alertas, o bloqueio de replay e o responsável pela resolução da falha. | A ocorrência não é resolvida até uma nova sincronização bem-sucedida; o administrador responsável é preservado. |
+| `src/lib/integrations/slack-alerts.ts` | Emite alerta sanitizado ao canal Slack para falhas terminais da sincronização. | Usa `SLACK_SYMPLA_ALERT_WEBHOOK_URL` somente no servidor, timeout de 8 segundos e não envia token, payload, QR ou dados de participantes. |
+| Reprocessar em `/admin/integracoes/sympla` | Permite a um administrador reivindicar e reexecutar uma dead letter. | Impede execução concorrente por 10 minutos, registra tentativa, nova execução e resolução apenas após sucesso. |
 
 ## Validação realizada
 
@@ -36,6 +39,21 @@ A credencial de servidor foi aceita pela rota leve de listagem de eventos. A sin
 Eventos publicados na Sympla são criados ou atualizados na agenda pública e administrativa da ATLETICA FSA com origem visível **Sympla**. A página pública apresenta o botão “Ver inscrições na Sympla”, que abre a URL informada pelo provedor. A área administrativa mostra a origem e suprime lote, transição de status e controles internos de check-in para esses espelhos.
 
 Se o evento for cancelado na Sympla, o espelho local passa a `encerrado` e deixa de ser listado publicamente. Uma alteração futura de nome, data, imagem ou URL na Sympla atualiza o mesmo espelho no próximo ciclo; não cria duplicata.
+
+## Falhas, reprocessamento e alertas
+
+Quando uma sincronização falha, a plataforma cria uma entrada em `event_sync_dead_letters`, registra a execução em `event_sync_runs` e tenta entregar um alerta resumido ao Slack. A chave de deduplicação combina a integração, o código de falha e uma janela horária. Por isso, uma mesma indisponibilidade não gera uma avalanche de notificações, mas uma nova ocorrência em janela posterior continua visível para a equipe.
+
+O administrador deve corrigir a causa antes de usar **Reprocessar** na tela de integrações. A ação não apaga a ocorrência: ela a reivindica atomicamente, inicia uma execução de origem `replay` e só preenche `resolved_at`, `resolved_by` e `last_replay_run_id` após sucesso. Se falhar novamente, a dead letter permanece pendente e o histórico é preservado.
+
+| Situação | Estado da ocorrência | Comportamento do alerta |
+|---|---|---|
+| Token inválido, evento inválido ou contrato incompatível | Pendente até intervenção administrativa. | Alerta deduplicado no Slack; corrigir a causa antes do replay. |
+| Timeout, `429` ou `5xx` do provedor | Pendente, mas passível de nova execução segura. | Um alerta por categoria e janela; o cron pode tentar novamente. |
+| Reprocessamento concorrente | Não altera a ocorrência já reivindicada. | Não cria nova entrega de alerta. |
+| Reprocessamento concluído | Marcada como resolvida, com administrador e execução vinculados. | Nenhuma notificação adicional é enviada. |
+
+Os testes cobrem geração de chave por janela, conteúdo sanitizado, entrega HTTP bem-sucedida, indisponibilidade do Slack, ausência de configuração, falha de rede, conexão real do webhook e isolamento do sincronizador Sympla.
 
 ## Próxima decisão operacional
 

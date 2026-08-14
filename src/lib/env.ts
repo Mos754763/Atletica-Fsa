@@ -13,6 +13,7 @@ export const env = {
   paymentsEnabled: optional("PAYMENTS_ENABLED") === "true",
   cronSecret: optional("CRON_SECRET"),
   symplaApiToken: optional("SYMPLA_API_TOKEN"),
+  slackSymplaAlertWebhookUrl: optional("SLACK_SYMPLA_ALERT_WEBHOOK_URL"),
 };
 
 export function hasSupabaseConfig() {
