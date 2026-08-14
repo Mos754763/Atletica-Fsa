@@ -32,10 +32,10 @@ export default async function AccountPage() {
         <Link href="/conta/eventos"><CalendarDays size={23} /><span><strong>Meus eventos</strong><small>Inscrições e check-in</small></span></Link>
         <Link href="/conta/pedidos"><PackageCheck size={23} /><span><strong>Meus pedidos</strong><small>Acompanhar retiradas</small></span></Link>
       </section>
-      {(role === "admin" || role === "cozinha") && (
+      {(role === "admin" || role === "caixa" || role === "cozinha") && (
         <nav className="account-admin-actions" aria-label="Atalhos operacionais">
-          {role === "admin" && <Link className="account-admin-link" href="/admin">Acessar backoffice</Link>}
-          <Link className="account-admin-link" href="/ods">Abrir ODS</Link>
+          <Link className="account-admin-link" href="/erp">{role === "cozinha" ? "Abrir backoffice" : "Abrir ERP"}</Link>
+          {(role === "admin" || role === "cozinha") && <Link className="account-admin-link" href="/ods">Abrir ODS</Link>}
         </nav>
       )}
     </main>

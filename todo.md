@@ -42,3 +42,6 @@
 - [x] Corrigir responsividade da área de conta em dispositivos móveis
 - [x] Auditar e aperfeiçoar layout, UI e UX das telas públicas, de conta e operacionais
 - [x] Substituir a terminologia visível de cozinha por backoffice preservando o papel técnico e as permissões
+- [x] Substituir os visuais de produto com blocos geométricos por imagens de produto coerentes com a identidade FSA
+- [x] Reestruturar o backoffice como ERP com navegação lateral, visão geral, módulos e ações rápidas inspirados no padrão ClickUp
+- [x] Tornar o acesso ao ERP visível e funcional a partir da conta e das principais áreas administrativas

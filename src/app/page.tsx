@@ -16,6 +16,7 @@ import { FsaWordmark } from "@/components/brand/FsaWordmark";
 import { SectionTitle } from "@/components/landing/SectionTitle";
 import { MobileNav } from "@/components/landing/MobileNav";
 import { institutionalAsset } from "@/lib/institutional-assets";
+import { fsaStoreAssets } from "@/lib/store-product-assets";
 
 const instagramUrl = "https://www.instagram.com/atleticafsa/";
 const heroArtwork = institutionalAsset("fsa-hero-gestao-2026.png");
@@ -31,10 +32,10 @@ const sectors = [
 ];
 
 const products = [
-  { name: "Camiseta Oficial", category: "Vestuário", price: "R$ 69,90", className: "product-art--shirt", image: institutionalAsset("store/fsa-product-camiseta.png") },
-  { name: "Copo FSA", category: "Acessórios", price: "R$ 24,90", className: "product-art--cup", image: institutionalAsset("store/fsa-product-copo.png") },
-  { name: "Moletom Titular", category: "Vestuário", price: "R$ 149,90", className: "product-art--hoodie", image: institutionalAsset("store/fsa-product-moletom.png") },
-  { name: "Chaveiro Coelho", category: "Colecionáveis", price: "R$ 14,90", className: "product-art--keychain", image: institutionalAsset("store/fsa-product-chaveiro.png") },
+  { name: "Camiseta Oficial", category: "Vestuário", price: "R$ 69,90", className: "product-art--shirt", image: fsaStoreAssets.camiseta },
+  { name: "Copo FSA", category: "Acessórios", price: "R$ 24,90", className: "product-art--cup", image: fsaStoreAssets.copo },
+  { name: "Moletom Titular", category: "Vestuário", price: "R$ 149,90", className: "product-art--hoodie", image: fsaStoreAssets.moletom },
+  { name: "Chaveiro Coelho", category: "Colecionáveis", price: "R$ 14,90", className: "product-art--keychain", image: fsaStoreAssets.chaveiro },
 ];
 
 const capabilities = [
@@ -65,6 +66,7 @@ export default function HomePage() {
             <a href="#gestao">Gestão</a>
             <a href="#loja">Loja</a>
             <a href="#eventos">Eventos</a>
+            <Link href="/erp">ERP</Link>
             <Link href="/login" className="nav-login">Entrar</Link>
           </div>
           <MobileNav />
@@ -173,7 +175,7 @@ export default function HomePage() {
         <div className="page-width footer-grid">
           <div><FsaWordmark /><p>Esporte, festa, amizade e tradição. Tudo em azul, amarelo e muita atitude.</p></div>
           <div className="footer-links"><strong>Explore</strong><Link href="/loja">Loja</Link><Link href="/eventos">Eventos</Link><a href="#setores">Setores</a></div>
-          <div className="footer-links"><strong>Acesso</strong><Link href="/login">Minha conta</Link><Link href="/admin">Backoffice</Link><Link href="/ods">ODS</Link></div>
+          <div className="footer-links"><strong>Acesso</strong><Link href="/login">Minha conta</Link><Link href="/erp">ERP</Link><Link href="/ods">ODS</Link></div>
           <a className="instagram-link" href={instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram da ATLETICA FSA"><Instagram size={20} /> Seguir a FSA</a>
         </div>
         <div className="page-width footer-bottom"><span>© 2026 ATLETICA FSA</span><span>FEITO PARA QUEM TORCE JUNTO.</span><Handshake size={17} /></div>
