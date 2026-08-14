@@ -28,3 +28,11 @@ export async function uploadCatalogImage(file: File, productId: string) {
   const { data } = supabase.storage.from("catalog-assets").getPublicUrl(storageKey);
   return { storageKey, publicUrl: data.publicUrl };
 }
+
+export async function deleteCatalogImages(storageKeys: Array<string | null | undefined>) {
+  const validKeys = storageKeys.filter((storageKey): storageKey is string => Boolean(storageKey));
+  if (!validKeys.length) return;
+  const supabase = createServiceClient();
+  const { error } = await supabase.storage.from("catalog-assets").remove(validKeys);
+  if (error) throw new Error("O registro foi atualizado, mas não foi possível remover uma foto do armazenamento.");
+}

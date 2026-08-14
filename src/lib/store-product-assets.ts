@@ -8,6 +8,7 @@ export const fsaStoreAssets = {
 } as const;
 
 export function resolveFsaProductImage(productName: string, fallback: string | null) {
+  if (fallback) return fallback;
   const normalizedName = productName.toLocaleLowerCase("pt-BR");
   if (normalizedName.includes("camiseta")) return fsaStoreAssets.camiseta;
   if (normalizedName.includes("copo")) return fsaStoreAssets.copo;

@@ -93,3 +93,8 @@
 - [x] Implementar cenários simultâneos, autorização e idempotência para as RPCs de retirada e check-in
 - [x] Documentar e validar os comandos de teste de integração sem uso de dados de produção
 - [ ] Executar a suíte concorrente contra um projeto Supabase exclusivo de testes com as migrações aplicadas
+
+- [x] Corrigir o carregamento e os estados de mídia nas telas do ERP e do catálogo
+- [x] Implementar upload, edição, exclusão e ordenação de produtos e imagens no CMS
+- [x] Adicionar pré-visualização administrativa sincronizada com landing page e loja pública
+- [x] Validar persistência de catálogo, URLs de imagem, sincronização pública, testes e build

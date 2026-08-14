@@ -17,7 +17,8 @@ import { SectionTitle } from "@/components/landing/SectionTitle";
 import { FloatingParticles, HeroMotion, HighlightParallax, MagneticLink, MotionButton, MotionCard, MotionReveal, ParallaxArtwork, PointerAura } from "@/components/landing/LandingMotion";
 import { MobileNav } from "@/components/landing/MobileNav";
 import { institutionalAsset } from "@/lib/institutional-assets";
-import { fsaStoreAssets } from "@/lib/store-product-assets";
+import { getCatalog } from "@/lib/catalog";
+import { formatBRL } from "@/lib/format";
 
 const instagramUrl = "https://www.instagram.com/atleticafsa/";
 const heroArtwork = institutionalAsset("fsa-hero-gestao-2026.png");
@@ -30,13 +31,6 @@ const sectors = [
   { number: "03", name: "Sociais", copy: "A conexão que move a FSA.", image: institutionalAsset("sectors/fsa-sector-sociais.png") },
   { number: "04", name: "Marketing", copy: "Orgulho que ganha voz.", image: institutionalAsset("sectors/fsa-sector-marketing.png") },
   { number: "05", name: "Esportes", copy: "Raça dentro e fora da quadra.", image: institutionalAsset("sectors/fsa-sector-esportes.png") },
-];
-
-const products = [
-  { name: "Camiseta Oficial", category: "Vestuário", price: "R$ 69,90", image: fsaStoreAssets.camiseta },
-  { name: "Copo FSA", category: "Acessórios", price: "R$ 24,90", image: fsaStoreAssets.copo },
-  { name: "Moletom Titular", category: "Vestuário", price: "R$ 149,90", image: fsaStoreAssets.moletom },
-  { name: "Chaveiro Coelho", category: "Colecionáveis", price: "R$ 14,90", image: fsaStoreAssets.chaveiro },
 ];
 
 const capabilities = [
@@ -56,7 +50,11 @@ const management = [
   { name: "Belote", role: "Diretor de Bateria", image: institutionalAsset("gestao-2026-clean/belote.webp") },
 ];
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const catalog = await getCatalog();
+  const products = catalog.filter((product) => product.isFeatured).slice(0, 4);
   return (
     <main>
       <PointerAura />
@@ -139,12 +137,13 @@ export default function HomePage() {
           </MotionReveal>
           <div className="product-grid">
             {products.map((product, index) => (
-              <MotionCard className="product-card motion-card" delay={index * 0.07} key={product.name}>
-                <div className="product-art"><img className="product-art__image" src={product.image} alt={`${product.name} da ATLETICA FSA`} /></div>
-                <div className="product-card__meta"><span>{product.category}</span><MotionButton label={`Adicionar ${product.name} ao carrinho`}><ShoppingBag size={17} /></MotionButton></div>
-                <h3>{product.name}</h3><strong>{product.price}</strong>
+              <MotionCard className="product-card motion-card" delay={index * 0.07} key={product.id}>
+                <div className="product-art">{product.imageUrl ? <img className="product-art__image" src={product.imageUrl} alt={`${product.name} da ATLETICA FSA`} /> : <span className="product-art__fallback">FSA</span>}</div>
+                <div className="product-card__meta"><span>{product.category?.name ?? "Produtos FSA"}</span><MotionButton label={`Adicionar ${product.name} ao carrinho`}><ShoppingBag size={17} /></MotionButton></div>
+                <h3>{product.name}</h3><strong>{formatBRL(product.priceCents)}</strong>
               </MotionCard>
             ))}
+            {products.length === 0 && <p className="store-section__empty">Nenhum destaque disponível agora. Acompanhe a loja oficial para conhecer os próximos produtos.</p>}
           </div>
         </div>
       </section>
