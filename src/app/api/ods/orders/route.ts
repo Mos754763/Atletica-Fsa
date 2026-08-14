@@ -10,7 +10,7 @@ const visibleStates: OrderState[] = ["pago", "em_preparo", "pronto"];
 
 export async function GET(request: Request) {
   const auth = await getApiProfile(request); if ("error" in auth) return auth.error;
-  if (!["admin", "cozinha"].includes(auth.profile.role)) return NextResponse.json({ error: "Acesso restrito à operação." }, { status: 403 });
+  if (!["admin", "cozinha", "caixa"].includes(auth.profile.role)) return NextResponse.json({ error: "Acesso restrito à operação." }, { status: 403 });
   const { data, error } = await auth.supabase.from("orders").select("id,order_number,status,fulfillment,customer_name,notes,created_at,order_items(product_name,quantity)").in("status", visibleStates).order("created_at", { ascending: true });
   if (error) return NextResponse.json({ error: "Não foi possível carregar a fila." }, { status: 500 });
   return NextResponse.json({ orders: data ?? [] });
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
 
 export async function PATCH(request: Request) {
   const auth = await getApiProfile(request); if ("error" in auth) return auth.error;
-  if (!["admin", "cozinha"].includes(auth.profile.role)) return NextResponse.json({ error: "Acesso restrito à operação." }, { status: 403 });
+  if (!["admin", "cozinha", "caixa"].includes(auth.profile.role)) return NextResponse.json({ error: "Acesso restrito à operação." }, { status: 403 });
   const body = await request.json().catch(() => null) as { orderId?: string; status?: OrderState; pickupToken?: string } | null; if (!body?.orderId || !body.status) return NextResponse.json({ error: "Atualização inválida." }, { status: 400 });
   const { data: order } = await auth.supabase.from("orders").select("id,order_number,status,customer_id,customer_email,fulfillment,pickup_code").eq("id", body.orderId).single();
   if (!order || !canMoveOrderStatus(order.status as OrderState, body.status)) return NextResponse.json({ error: "Transição de pedido inválida." }, { status: 409 });
@@ -35,4 +35,34 @@ export async function PATCH(request: Request) {
   }
   await sendOrderStatusEmail({ to: order.customer_email, profileId: order.customer_id, orderId: order.id, orderNumber: order.order_number, status: body.status });
   return NextResponse.json({ ok: true });
+}
+
+export async function POST(request: Request) {
+  const auth = await getApiProfile(request); if ("error" in auth) return auth.error;
+  if (!["admin", "cozinha", "caixa"].includes(auth.profile.role)) return NextResponse.json({ error: "Acesso restrito à operação." }, { status: 403 });
+
+  const body = await request.json().catch(() => null) as {
+    fulfillment?: string;
+    paymentMethod?: string;
+    customerName?: string;
+    notes?: string;
+    items?: Array<{ productId?: string; variantId?: string | null; quantity?: number }>;
+  } | null;
+
+  if (!body || !["retirada", "consumo_local"].includes(body.fulfillment ?? "") || !["pix_presencial", "dinheiro"].includes(body.paymentMethod ?? "") || !Array.isArray(body.items) || body.items.length < 1 || body.items.length > 30) {
+    return NextResponse.json({ error: "Dados do pedido manual inválidos." }, { status: 400 });
+  }
+
+  const items = body.items.map((item) => ({ product_id: item.productId, variant_id: item.variantId ?? null, quantity: item.quantity }));
+  const operationalClient = createAuthenticatedServerClient(auth.accessToken);
+  const { data, error } = await operationalClient.rpc("create_manual_order", {
+    p_fulfillment: body.fulfillment,
+    p_payment_method: body.paymentMethod,
+    p_customer_name: body.customerName ?? "",
+    p_items: items,
+    p_notes: body.notes ?? "",
+  });
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 422 });
+  return NextResponse.json({ order: Array.isArray(data) ? data[0] : data }, { status: 201 });
 }

@@ -102,3 +102,11 @@
 - [x] Implementar modo escuro persistente e acessível na landing, loja, conta e ERP
 - [x] Adicionar controle de tema com suporte a teclado e preferência inicial do sistema
 - [x] Validar contraste, persistência, testes e build do modo escuro
+
+- [x] Remover o mascote com carregamento quebrado das telas de login e ERP
+- [x] Padronizar a exibição e edição de valores monetários em reais brasileiros
+- [x] Corrigir o logout da área de conta e adicionar estados de carregamento suaves
+- [x] Tornar a sidebar do ERP retrátil e acessível em desktop e mobile
+- [x] Criar pedido manual no Backoffice com validação de itens, estoque, preço e auditoria
+- [x] Auditar a integração Mercado Pago contra a documentação oficial sem habilitar pagamentos reais
+- [x] Validar as correções de interface, sessão, pedido manual, testes e build

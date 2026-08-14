@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireRole } from "@/lib/auth/require-role";
 import { deleteCatalogImages, uploadCatalogImage } from "@/lib/storage/catalog-images";
+import { brlInputToCents } from "@/lib/money";
 
 const productSchema = z.object({
   name: z.string().trim().min(3).max(120),
@@ -21,6 +22,12 @@ const salesBatchSchema = z.object({ productId: z.string().uuid(), variantId: z.s
 const productIdSchema = z.string().uuid();
 const productImageIdSchema = z.string().uuid();
 
+function priceInCents(value: FormDataEntryValue | null) {
+  const cents = brlInputToCents(value);
+  if (!Number.isSafeInteger(cents) || cents < 0) throw new Error("Informe um preço válido em reais, como 69,90.");
+  return cents;
+}
+
 function slugify(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
@@ -37,7 +44,7 @@ function parseProduct(formData: FormData) {
     sku: formData.get("sku") || undefined,
     description: formData.get("description") || undefined,
     categoryId: formData.get("categoryId") || undefined,
-    priceCents: formData.get("priceCents"),
+    priceCents: priceInCents(formData.get("priceBrl")),
     stockQuantity: formData.get("stockQuantity"),
     imageUrl: formData.get("imageUrl") || "",
     isFeatured: formData.get("isFeatured") === "on",
@@ -166,7 +173,8 @@ export async function deleteProduct(formData: FormData) {
 
 export async function createVariant(formData: FormData) {
   const { supabase, userId } = await requireRole(["admin", "caixa"]);
-  const values = variantSchema.parse({ productId: formData.get("productId"), name: formData.get("name"), sku: formData.get("sku") || undefined, priceCents: formData.get("priceCents") || undefined, stockQuantity: formData.get("stockQuantity"), attributes: formData.get("attributes") || undefined });
+  const rawPrice = formData.get("priceBrl");
+  const values = variantSchema.parse({ productId: formData.get("productId"), name: formData.get("name"), sku: formData.get("sku") || undefined, priceCents: rawPrice ? priceInCents(rawPrice) : undefined, stockQuantity: formData.get("stockQuantity"), attributes: formData.get("attributes") || undefined });
   const attributes = values.attributes ? { descricao: values.attributes } : {};
   const { data: variant, error } = await supabase.from("product_variants").insert({ product_id: values.productId, name: values.name, sku: values.sku || null, price_cents: values.priceCents ?? null, stock_quantity: values.stockQuantity, attributes }).select("id").single();
   if (error || !variant) throw new Error("Não foi possível cadastrar a variação.");
@@ -177,7 +185,8 @@ export async function createVariant(formData: FormData) {
 
 export async function createSalesBatch(formData: FormData) {
   const { supabase, userId } = await requireRole(["admin", "caixa"]);
-  const values = salesBatchSchema.parse({ productId: formData.get("productId"), variantId: formData.get("variantId") || undefined, name: formData.get("name"), priceCents: formData.get("priceCents") || undefined, minimumQuantity: formData.get("minimumQuantity") || undefined, targetQuantity: formData.get("targetQuantity") || undefined, opensAt: formData.get("opensAt") || undefined, closesAt: formData.get("closesAt") || undefined, instructions: formData.get("instructions") || undefined });
+  const rawPrice = formData.get("priceBrl");
+  const values = salesBatchSchema.parse({ productId: formData.get("productId"), variantId: formData.get("variantId") || undefined, name: formData.get("name"), priceCents: rawPrice ? priceInCents(rawPrice) : undefined, minimumQuantity: formData.get("minimumQuantity") || undefined, targetQuantity: formData.get("targetQuantity") || undefined, opensAt: formData.get("opensAt") || undefined, closesAt: formData.get("closesAt") || undefined, instructions: formData.get("instructions") || undefined });
   const opensAt = values.opensAt ? new Date(values.opensAt).toISOString() : null;
   const closesAt = values.closesAt ? new Date(values.closesAt).toISOString() : null;
   if (opensAt && closesAt && new Date(closesAt) <= new Date(opensAt)) throw new Error("O encerramento do lote deve ocorrer depois da abertura.");
