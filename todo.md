@@ -123,3 +123,5 @@
 - [x] Implementar verificação semanal automática das rotas cron e métricas de saúde das integrações
 - [x] Implementar alertas de pico e recuperação com deduplicação persistente
 - [x] Aplicar migração de tipos de alerta e cobrir a saúde das integrações com testes automatizados
+
+- [x] Versionar e integrar o monitoramento de saúde na branch principal sem acionar publicação manual na Vercel
