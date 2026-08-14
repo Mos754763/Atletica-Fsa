@@ -25,15 +25,19 @@ export default async function AccountPage() {
       <section className="account-hero">
         <p className="eyebrow">MINHA CONTA</p>
         <h1>Oi, {name}.</h1>
-        <p><span className="role-pill"><Shield size={14} /> {roleLabel(role)}</span> Sua área FSA está pronta para acompanhar pedidos e eventos.</p>
+        <p className="account-hero__copy"><span className="role-pill"><Shield size={14} /> {roleLabel(role)}</span><span>Sua área FSA está pronta para acompanhar pedidos e eventos.</span></p>
       </section>
       <section className="account-links" aria-label="Atalhos da conta">
         <Link href="/loja"><ShoppingBag size={23} /><span><strong>Loja FSA</strong><small>Produtos e pedidos</small></span></Link>
         <Link href="/conta/eventos"><CalendarDays size={23} /><span><strong>Meus eventos</strong><small>Inscrições e check-in</small></span></Link>
         <Link href="/conta/pedidos"><PackageCheck size={23} /><span><strong>Meus pedidos</strong><small>Acompanhar retiradas</small></span></Link>
       </section>
-      {role === "admin" && <Link className="account-admin-link" href="/admin">Acessar backoffice</Link>}
-      {(role === "admin" || role === "cozinha") && <Link className="account-admin-link" href="/ods">Abrir ODS</Link>}
+      {(role === "admin" || role === "cozinha") && (
+        <nav className="account-admin-actions" aria-label="Atalhos operacionais">
+          {role === "admin" && <Link className="account-admin-link" href="/admin">Acessar backoffice</Link>}
+          <Link className="account-admin-link" href="/ods">Abrir ODS</Link>
+        </nav>
+      )}
     </main>
   );
 }
