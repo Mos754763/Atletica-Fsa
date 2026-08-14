@@ -21,14 +21,21 @@ Na documentação pública consultada não há um recurso de webhook ou callback
 | Componente | Responsabilidade | Garantia de segurança |
 |---|---|---|
 | `src/lib/integrations/sympla.ts` | Cliente da API, cabeçalho `s_token`, timeout de 8 segundos e retentativa limitada para rede, `408`, `429` e `5xx`. | O token é lido somente de `SYMPLA_API_TOKEN` no servidor e não integra a resposta da API interna. |
-| `src/lib/integrations/sympla-sync.ts` | Consulta e normalização do catálogo de eventos. | Somente cria ou atualiza o cache externo; não chama rotinas de pedido, pagamento, ticket, QR, estoque ou check-in. |
+| `src/lib/integrations/sympla-sync.ts` | Consulta, normaliza e espelha os eventos da Sympla na agenda FSA. | O espelho usa chave única de provedor/evento, mantém `requires_registration=false` e não chama rotinas de pedido, pagamento, ticket, QR, estoque ou check-in. |
+| Migração `20260814220000_sympla_event_mirroring.sql` | Adiciona origem, identificador e URL externa ao evento espelhado. | Eventos de origem `sympla` são identificados e vinculados ao registro externo sem se tornarem eventos comerciais internos. |
 | Migração `20260814210000_sympla_homologation_integration.sql` | Cria integrações, vínculos futuros, registros externos, execuções e fila de falhas. | RLS permite leitura operacional apenas a administradores; payload externo fica separado das tabelas nativas. |
 | `/admin/integracoes/sympla` | Painel administrativo para executar e auditar a sincronização manual. | A página e a ação de servidor exigem o papel `admin`. |
 | `/api/cron/sympla-sync` | Sincronização incremental a cada 15 minutos após publicação na Vercel. | Requer `Authorization: Bearer CRON_SECRET`, processa somente leitura e devolve `503` em falha para observabilidade. |
 
 ## Validação realizada
 
-A credencial de servidor foi aceita pela rota leve de listagem de eventos. A sincronização de homologação foi executada e persistiu somente o catálogo externo e uma execução auditável. Os testes cobrem normalização, envio restrito do token no cabeçalho, rejeição sem retentativa de `401`, conectividade real e persistência de catálogo isolado.
+A credencial de servidor foi aceita pela rota leve de listagem de eventos. A sincronização de homologação foi executada e persistiu o catálogo externo, o espelho idempotente na tabela `events`, o vínculo de origem e uma execução auditável. Os testes cobrem normalização, envio restrito do token no cabeçalho, rejeição sem retentativa de `401`, conectividade real e materialização isolada de eventos.
+
+## Como os eventos aparecem na plataforma
+
+Eventos publicados na Sympla são criados ou atualizados na agenda pública e administrativa da ATLETICA FSA com origem visível **Sympla**. A página pública apresenta o botão “Ver inscrições na Sympla”, que abre a URL informada pelo provedor. A área administrativa mostra a origem e suprime lote, transição de status e controles internos de check-in para esses espelhos.
+
+Se o evento for cancelado na Sympla, o espelho local passa a `encerrado` e deixa de ser listado publicamente. Uma alteração futura de nome, data, imagem ou URL na Sympla atualiza o mesmo espelho no próximo ciclo; não cria duplicata.
 
 ## Próxima decisão operacional
 

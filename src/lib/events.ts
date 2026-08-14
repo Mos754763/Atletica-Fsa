@@ -15,6 +15,8 @@ export type FsaEvent = {
   registrationPriceCents: number;
   capacity: number | null;
   requiresRegistration: boolean;
+  externalProvider: "sympla" | null;
+  externalUrl: string | null;
   ticketLots: EventTicketLot[];
 };
 
@@ -30,7 +32,7 @@ export type EventTicketLot = {
 
 type EventRow = {
   id: string; title: string; slug: string; description: string | null; cover_url: string | null; venue: string | null;
-  starts_at: string | null; ends_at: string | null; status: EventState; registration_price_cents: number; capacity: number | null; requires_registration: boolean;
+  starts_at: string | null; ends_at: string | null; status: EventState; registration_price_cents: number; capacity: number | null; requires_registration: boolean; external_provider: "sympla" | null; external_url: string | null;
 };
 
 type TicketLotRow = {
@@ -59,7 +61,7 @@ export function formatEventDate(value: string | null) {
 export async function getPublicEvents() {
   if (!hasSupabaseConfig() || !env.supabaseSecretKey) return [] as FsaEvent[];
   const supabase = createServiceClient();
-  const { data } = await supabase.from("events").select("id,title,slug,description,cover_url,venue,starts_at,ends_at,status,registration_price_cents,capacity,requires_registration").neq("status", "encerrado").order("starts_at", { ascending: true, nullsFirst: false }).returns<EventRow[]>();
+  const { data } = await supabase.from("events").select("id,title,slug,description,cover_url,venue,starts_at,ends_at,status,registration_price_cents,capacity,requires_registration,external_provider,external_url").neq("status", "encerrado").order("starts_at", { ascending: true, nullsFirst: false }).returns<EventRow[]>();
   const events = data ?? [];
   const eventIds = events.map((event) => event.id);
   const now = new Date().toISOString();
@@ -73,5 +75,5 @@ export async function getPublicEvents() {
     next.push({ id: lot.id, name: lot.name, description: lot.description, priceCents: lot.price_cents, quantityTotal: lot.quantity_total, quantitySold: lot.quantity_sold, maxPerCustomer: lot.max_per_customer });
     lotsByEvent.set(lot.event_id, next);
   }
-  return events.map((event) => ({ id: event.id, title: event.title, slug: event.slug, description: event.description, coverUrl: event.cover_url, venue: event.venue, startsAt: event.starts_at, endsAt: event.ends_at, status: event.status, registrationPriceCents: event.registration_price_cents, capacity: event.capacity, requiresRegistration: event.requires_registration, ticketLots: lotsByEvent.get(event.id) ?? [] }));
+  return events.map((event) => ({ id: event.id, title: event.title, slug: event.slug, description: event.description, coverUrl: event.cover_url, venue: event.venue, startsAt: event.starts_at, endsAt: event.ends_at, status: event.status, registrationPriceCents: event.registration_price_cents, capacity: event.capacity, requiresRegistration: event.requires_registration, externalProvider: event.external_provider, externalUrl: event.external_url, ticketLots: lotsByEvent.get(event.id) ?? [] }));
 }

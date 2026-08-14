@@ -19,6 +19,16 @@ export function normalizeSymplaEvent(event: SymplaEvent) {
   };
 }
 
+function symplaEventSlug(externalId: string) {
+  const normalized = externalId.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "").slice(0, 90);
+  return `sympla-${normalized || "evento"}`;
+}
+
+function symplaEventStatus(event: ReturnType<typeof normalizeSymplaEvent>) {
+  if (event.isCancelled) return "encerrado";
+  return event.isPublished ? "inscricoes_abertas" : "divulgando";
+}
+
 export async function syncSymplaEventCatalog(initiatedBy?: string, triggerSource: "manual" | "cron" | "replay" = "manual") {
   const supabase = createServiceClient();
   const { data: integration, error: integrationError } = await supabase
@@ -37,9 +47,11 @@ export async function syncSymplaEventCatalog(initiatedBy?: string, triggerSource
 
   try {
     const response = await listSymplaEvents(integration.sync_cursor ?? undefined);
-    const rows = response.data.map((event) => {
+    const normalizedEvents = response.data.map((event) => {
       const normalized = normalizeSymplaEvent(event);
       return {
+        event,
+        normalized,
         integration_id: integration.id,
         record_type: "event",
         external_id: event.id,
@@ -51,6 +63,45 @@ export async function syncSymplaEventCatalog(initiatedBy?: string, triggerSource
       };
     });
 
+    const mirrorRows = normalizedEvents.map(({ normalized }) => ({
+      title: normalized.title,
+      slug: symplaEventSlug(normalized.externalId),
+      description: "Evento publicado e gerenciado pela Sympla.",
+      cover_url: normalized.imageUrl,
+      starts_at: normalized.startsAt,
+      ends_at: normalized.endsAt,
+      status: symplaEventStatus(normalized),
+      registration_price_cents: 0,
+      requires_registration: false,
+      external_provider: "sympla",
+      external_event_id: normalized.externalId,
+      external_url: normalized.url,
+    }));
+
+    let mirroredByExternalId = new Map<string, { id: string; external_event_id: string }>();
+    if (mirrorRows.length) {
+      const { data: mirroredEvents, error: mirrorError } = await supabase
+        .from("events")
+        .upsert(mirrorRows, { onConflict: "external_provider,external_event_id" })
+        .select("id,external_event_id");
+      if (mirrorError) throw new Error("Não foi possível espelhar os eventos retornados pela Sympla.");
+      mirroredByExternalId = new Map((mirroredEvents ?? []).map((event) => [event.external_event_id as string, event as { id: string; external_event_id: string }]));
+
+      const links = normalizedEvents.flatMap(({ normalized }) => {
+        const internal = mirroredByExternalId.get(normalized.externalId);
+        return internal ? [{ integration_id: integration.id, internal_event_id: internal.id, external_event_id: normalized.externalId, sync_direction: "inbound_read_only", status: "active", created_by: initiatedBy ?? null }] : [];
+      });
+      if (links.length) {
+        const { error: linkError } = await supabase.from("event_external_links").upsert(links, { onConflict: "integration_id,external_event_id" });
+        if (linkError) throw new Error("Não foi possível vincular os espelhos de eventos da Sympla.");
+      }
+    }
+
+    const rows = normalizedEvents.map(({ event, normalized, ...record }) => ({
+      ...record,
+      normalized_data: normalized,
+      raw_payload: event,
+    }));
     if (rows.length) {
       const { error } = await supabase.from("external_event_records").upsert(rows, { onConflict: "integration_id,record_type,external_id" });
       if (error) throw new Error("Não foi possível persistir os eventos retornados pela Sympla.");
@@ -59,8 +110,8 @@ export async function syncSymplaEventCatalog(initiatedBy?: string, triggerSource
     const nextCursor = response.pagination?.next_cursor ?? null;
     await supabase.from("event_integrations").update({ sync_cursor: nextCursor, last_synced_at: new Date().toISOString(), last_sync_status: "succeeded" }).eq("id", integration.id);
     await supabase.from("event_sync_runs").update({ status: "succeeded", records_read: rows.length, records_upserted: rows.length, cursor_after: nextCursor, completed_at: new Date().toISOString() }).eq("id", run.id);
-    await supabase.from("crm_activity_logs").insert({ actor_id: initiatedBy ?? null, actor_kind: initiatedBy ? "user" : "integration", action: "sympla.catalog_sync", outcome: "succeeded", resource_type: "event_integration", resource_id: integration.id, source: "external_sync", summary: `${rows.length} evento(s) consultado(s) da Sympla em modo de leitura`, metadata_json: { provider: "sympla", sync_run_id: run.id, records_read: rows.length } });
-    return { integrationId: integration.id as string, syncRunId: run.id as string, recordsRead: rows.length, nextCursor };
+    await supabase.from("crm_activity_logs").insert({ actor_id: initiatedBy ?? null, actor_kind: initiatedBy ? "user" : "integration", action: "sympla.catalog_sync", outcome: "succeeded", resource_type: "event_integration", resource_id: integration.id, source: "external_sync", summary: `${rows.length} evento(s) consultado(s) e ${mirroredByExternalId.size} espelhado(s) da Sympla`, metadata_json: { provider: "sympla", sync_run_id: run.id, records_read: rows.length, records_mirrored: mirroredByExternalId.size } });
+    return { integrationId: integration.id as string, syncRunId: run.id as string, recordsRead: rows.length, recordsMirrored: mirroredByExternalId.size, nextCursor };
   } catch (error) {
     const message = error instanceof Error ? error.message.slice(0, 600) : "Falha desconhecida na sincronização Sympla.";
     await supabase.from("event_sync_runs").update({ status: "failed", error_code: "sympla_sync_failed", error_detail: message, completed_at: new Date().toISOString() }).eq("id", run.id);

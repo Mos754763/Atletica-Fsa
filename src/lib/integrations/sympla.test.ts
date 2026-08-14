@@ -28,7 +28,7 @@ describe.runIf(Boolean(process.env.SYMPLA_API_TOKEN))("credencial Sympla forneci
     await expect(verifySymplaConnection()).resolves.toMatchObject({ connected: true });
   }, 20_000);
 
-  test("persiste somente o catálogo externo e a execução auditável da homologação", async () => {
-    await expect(syncSymplaEventCatalog(undefined, "replay")).resolves.toMatchObject({ recordsRead: expect.any(Number) });
+  test("espelha eventos externos e mantém a execução auditável sem criar vendas internas", async () => {
+    await expect(syncSymplaEventCatalog(undefined, "replay")).resolves.toMatchObject({ recordsRead: expect.any(Number), recordsMirrored: expect.any(Number) });
   }, 25_000);
 });

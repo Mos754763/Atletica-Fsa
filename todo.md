@@ -116,3 +116,4 @@
 - [x] Mapear e preparar a arquitetura de integração segura com plataformas externas de eventos
 - [x] Validar a viabilidade, credenciais e contratos da integração de homologação com a Sympla
 - [x] Implementar adaptador e infraestrutura de sincronização Sympla sem alterar o sistema mestre dos eventos
+- [x] Espelhar no sistema os eventos criados na Sympla, preservando origem externa e impedindo operações internas indevidas

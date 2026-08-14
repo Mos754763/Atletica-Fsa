@@ -27,7 +27,7 @@ export async function createEvent(formData: FormData) {
 
 export async function moveEventStatus(formData: FormData) {
   const { supabase } = await requireRole(["admin"]); const id = z.string().uuid().parse(formData.get("eventId")); const next = eventStatusSchema.parse(formData.get("nextStatus"));
-  const { data: event } = await supabase.from("events").select("status").eq("id", id).single(); if (!event || !canMoveEventStatus(event.status as EventState, next)) throw new Error("Transição de status inválida.");
+  const { data: event } = await supabase.from("events").select("status,external_provider").eq("id", id).single(); if (!event || event.external_provider || !canMoveEventStatus(event.status as EventState, next)) throw new Error("Eventos espelhados da Sympla são atualizados pela origem externa.");
   const { error } = await supabase.from("events").update({ status: next }).eq("id", id); if (error) throw new Error("Não foi possível atualizar o status."); revalidatePath("/admin/eventos"); revalidatePath("/eventos");
 }
 
@@ -36,15 +36,16 @@ export async function createTicketLot(formData: FormData) {
   const values = ticketLotSchema.parse({ eventId: formData.get("eventId"), name: formData.get("name"), description: formData.get("description") || undefined, priceCents: formData.get("priceCents"), quantityTotal: formData.get("quantityTotal"), salesStartAt: formData.get("salesStartAt") || undefined, salesEndAt: formData.get("salesEndAt") || undefined });
   const start = values.salesStartAt ? new Date(values.salesStartAt) : null; const end = values.salesEndAt ? new Date(values.salesEndAt) : null;
   if ((start && Number.isNaN(start.valueOf())) || (end && Number.isNaN(end.valueOf())) || (start && end && end <= start)) throw new Error("Período do lote inválido.");
+  const { data: event } = await supabase.from("events").select("external_provider").eq("id", values.eventId).single(); if (!event || event.external_provider) throw new Error("Eventos espelhados da Sympla não aceitam lotes internos.");
   const { error } = await supabase.from("event_ticket_lots").insert({ event_id: values.eventId, name: values.name, description: values.description || null, price_cents: values.priceCents, quantity_total: values.quantityTotal, sales_start_at: start?.toISOString() ?? null, sales_end_at: end?.toISOString() ?? null, is_active: false, created_by: userId });
   if (error) throw new Error("Não foi possível criar o lote de ingresso."); revalidatePath("/admin/eventos");
 }
 
 export async function setTicketLotActive(formData: FormData) {
   const { supabase } = await requireRole(["admin"]); const lotId = z.string().uuid().parse(formData.get("lotId")); const active = formData.get("active") === "true";
-  const { data: lot } = await supabase.from("event_ticket_lots").select("id,event_id,quantity_total,quantity_sold,events(status)").eq("id", lotId).single();
-  const event = lot?.events as { status?: string } | null;
-  if (!lot || (active && (event?.status !== "inscricoes_abertas" || lot.quantity_sold >= lot.quantity_total))) throw new Error("Este lote não pode ser publicado neste momento.");
+  const { data: lot } = await supabase.from("event_ticket_lots").select("id,event_id,quantity_total,quantity_sold,events(status,external_provider)").eq("id", lotId).single();
+  const event = lot?.events as { status?: string; external_provider?: string | null } | null;
+  if (!lot || event?.external_provider || (active && (event?.status !== "inscricoes_abertas" || lot.quantity_sold >= lot.quantity_total))) throw new Error("Este lote não pode ser publicado neste momento.");
   const { error } = await supabase.from("event_ticket_lots").update({ is_active: active }).eq("id", lotId); if (error) throw new Error("Não foi possível atualizar o lote."); revalidatePath("/admin/eventos"); revalidatePath("/eventos");
 }
 
