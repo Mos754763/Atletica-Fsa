@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CARD_HOVER, CARD_TAP, MAGNETIC_SPRING, MOTION_SPRING, REVEAL_VARIANTS } from "./motion-config";
+import { CARD_HOVER, CARD_TAP, HIGHLIGHT_PARTICLE_COUNT, MAGNETIC_SPRING, MOTION_SPRING, REVEAL_VARIANTS } from "./motion-config";
 
 describe("motion configuration", () => {
   it("uses spring transitions with controlled damping", () => {
@@ -12,5 +12,10 @@ describe("motion configuration", () => {
     expect(CARD_HOVER).toEqual({ y: -5, scale: 1.01 });
     expect(CARD_TAP).toEqual({ scale: 0.985 });
     expect(REVEAL_VARIANTS.hidden).toMatchObject({ opacity: 0, y: 26 });
+  });
+
+  it("limits decorative particles to a lightweight fixed set", () => {
+    expect(HIGHLIGHT_PARTICLE_COUNT).toBe(12);
+    expect(HIGHLIGHT_PARTICLE_COUNT).toBeLessThanOrEqual(16);
   });
 });

@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { FsaWordmark } from "@/components/brand/FsaWordmark";
 import { SectionTitle } from "@/components/landing/SectionTitle";
-import { HeroMotion, MagneticLink, MotionButton, MotionCard, MotionReveal, ParallaxArtwork, PointerAura } from "@/components/landing/LandingMotion";
+import { FloatingParticles, HeroMotion, HighlightParallax, MagneticLink, MotionButton, MotionCard, MotionReveal, ParallaxArtwork, PointerAura } from "@/components/landing/LandingMotion";
 import { MobileNav } from "@/components/landing/MobileNav";
 import { institutionalAsset } from "@/lib/institutional-assets";
 import { fsaStoreAssets } from "@/lib/store-product-assets";
@@ -92,13 +92,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="capability-strip">
-        <div className="page-width capability-grid">
+      <section className="capability-strip capability-strip--motion">
+        <FloatingParticles />
+        <HighlightParallax><div className="page-width capability-grid">
           {capabilities.map(({ icon: Icon, label, copy }, index) => (
             <MotionReveal className="capability motion-reveal" delay={index * 0.06} key={label}><Icon aria-hidden="true" /><div><strong>{label}</strong><span>{copy}</span></div></MotionReveal>
           ))}
           <Link className="capability-link" href="/login">Acessar minha conta <ChevronRight size={18} /></Link>
-        </div>
+        </div></HighlightParallax>
       </section>
 
       <section className="sector-section page-width" id="setores">
