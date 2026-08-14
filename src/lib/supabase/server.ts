@@ -10,3 +10,14 @@ export function createServiceClient() {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }
+
+export function createAuthenticatedServerClient(accessToken: string) {
+  if (!env.supabaseUrl || !env.supabaseSecretKey) {
+    throw new Error("Configuração privada do Supabase ausente.");
+  }
+
+  return createSupabaseClient(env.supabaseUrl, env.supabaseSecretKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+    global: { headers: { Authorization: `Bearer ${accessToken}` } },
+  });
+}

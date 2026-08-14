@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, Filter, MailPlus, ShieldCheck, UsersRound } from "lucide-react";
-import { requireRole } from "@/lib/auth/require-role";
+import { requirePresident } from "@/lib/auth/require-president";
 import { manageableRoles, roleDescription } from "@/lib/members";
 import type { UserRole } from "@/types/domain";
 import { inviteMember, updateMemberRole } from "./actions";
@@ -13,7 +13,7 @@ type SearchParams = Promise<{ q?: string; role?: string }>;
 export default async function MembersAdminPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
   const q = (params.q ?? "").trim().toLowerCase(); const selectedRole = manageableRoles.some((role) => role.value === params.role) ? params.role! : "all";
-  const { supabase, userId } = await requireRole(["admin"]);
+  const { supabase, userId } = await requirePresident();
   const { data } = await supabase.from("profiles").select("id,email,display_name,role,created_at").order("created_at", { ascending: false }).returns<MemberProfile[]>();
   const allMembers = data ?? [];
   const members = allMembers.filter((member) => (selectedRole === "all" || member.role === selectedRole) && (!q || [member.display_name, member.email].filter(Boolean).join(" ").toLowerCase().includes(q)));

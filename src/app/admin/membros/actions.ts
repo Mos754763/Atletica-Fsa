@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireRole } from "@/lib/auth/require-role";
+import { requirePresident } from "@/lib/auth/require-president";
 import { env } from "@/lib/env";
 import { assertMemberRoleChange } from "@/lib/members";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -29,7 +29,7 @@ async function inviteRedirectUrl() {
 }
 
 export async function inviteMember(formData: FormData) {
-  await requireRole(["admin"]);
+  await requirePresident();
   const values = inviteSchema.parse({ displayName: formData.get("displayName"), email: formData.get("email"), role: formData.get("role") });
   const service = createServiceClient();
   const { data, error } = await service.auth.admin.inviteUserByEmail(values.email, {
@@ -46,7 +46,7 @@ export async function inviteMember(formData: FormData) {
 }
 
 export async function updateMemberRole(formData: FormData) {
-  const { userId } = await requireRole(["admin"]);
+  const { userId } = await requirePresident();
   const memberId = z.string().uuid().parse(formData.get("memberId"));
   const nextRole = roleSchema.parse(formData.get("role"));
   const service = createServiceClient();

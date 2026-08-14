@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
-import { BarChart3, Boxes, CalendarDays, ChevronRight, LayoutDashboard, ListChecks, ShoppingBag, UsersRound } from "lucide-react";
+import { BarChart3, Bot, Boxes, Building2, CalendarDays, ChevronRight, LayoutDashboard, ListChecks, ShoppingBag, Table2, UsersRound } from "lucide-react";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { FsaWordmark } from "@/components/brand/FsaWordmark";
 import { RabbitMascot } from "@/components/brand/RabbitMascot";
@@ -11,22 +11,24 @@ import { roleLabel } from "@/lib/auth/roles";
 import { MOTION_SPRING } from "@/lib/motion-config";
 import type { UserRole } from "@/types/domain";
 
-type ErpSidebarProps = { displayName: string; role: UserRole };
-type NavigationItem = { href: string; label: string; icon: typeof LayoutDashboard; adminOnly?: boolean };
+type ErpSidebarProps = { displayName: string; role: UserRole; isPresident: boolean; canAccessBuilder: boolean };
+type NavigationItem = { href: string; label: string; icon: typeof LayoutDashboard; adminOnly?: boolean; presidentOnly?: boolean };
 
 const navigationItems: NavigationItem[] = [
   { href: "/admin", label: "Visão geral", icon: LayoutDashboard },
   { href: "/admin/pedidos", label: "Pedidos", icon: ShoppingBag },
   { href: "/admin/catalogo", label: "Catálogo", icon: Boxes, adminOnly: true },
   { href: "/admin/eventos", label: "Eventos", icon: CalendarDays, adminOnly: true },
-  { href: "/admin/membros", label: "Pessoas", icon: UsersRound, adminOnly: true },
+  { href: "/admin/membros", label: "Pessoas", icon: UsersRound, adminOnly: true, presidentOnly: true },
   { href: "/admin/relatorios", label: "Relatórios", icon: BarChart3 },
 ];
 
-export function ErpSidebar({ displayName, role }: ErpSidebarProps) {
+export function ErpSidebar({ displayName, role, isPresident, canAccessBuilder }: ErpSidebarProps) {
   const pathname = usePathname();
   const reducedMotion = useReducedMotion();
-  const availableItems = role === "cozinha" ? navigationItems.filter((item) => item.href === "/admin") : navigationItems.filter((item) => !item.adminOnly || role === "admin");
+  const availableItems = role === "cliente" ? [] : role === "cozinha"
+    ? navigationItems.filter((item) => item.href === "/admin")
+    : navigationItems.filter((item) => (!item.adminOnly || role === "admin") && (!item.presidentOnly || isPresident));
 
   return (
     <aside className="erp-sidebar">
@@ -42,6 +44,9 @@ export function ErpSidebar({ displayName, role }: ErpSidebarProps) {
           const isActive = href === "/admin" ? pathname === href : pathname.startsWith(href);
           return <Link href={href} className={isActive ? "is-active" : ""} key={href}><Icon size={17} /><span>{label}</span>{isActive && <ChevronRight size={15} />}</Link>;
         })}
+        {isPresident && <Link href="/admin/organizacao" className={pathname.startsWith("/admin/organizacao") ? "is-active" : ""}><Building2 size={17} /><span>Governança</span>{pathname.startsWith("/admin/organizacao") && <ChevronRight size={15} />}</Link>}
+        {isPresident && <Link href="/admin/automacoes" className={pathname.startsWith("/admin/automacoes") ? "is-active" : ""}><Bot size={17} /><span>Automações</span>{pathname.startsWith("/admin/automacoes") && <ChevronRight size={15} />}</Link>}
+        {canAccessBuilder && <Link href="/admin/tabelas" className={pathname.startsWith("/admin/tabelas") ? "is-active" : ""}><Table2 size={17} /><span>Tabelas</span>{pathname.startsWith("/admin/tabelas") && <ChevronRight size={15} />}</Link>}
         {(role === "admin" || role === "cozinha") && <Link href="/ods"><ListChecks size={17} /><span>ODS de pedidos</span></Link>}
       </motion.nav>
 

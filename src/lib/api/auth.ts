@@ -10,5 +10,5 @@ export async function getApiProfile(request: Request) {
   if (userError || !userData.user) return { error: NextResponse.json({ error: "Sessão inválida." }, { status: 401 }) } as const;
   const { data: profile } = await supabase.from("profiles").select("id,email,display_name,role").eq("id", userData.user.id).single();
   if (!profile) return { error: NextResponse.json({ error: "Perfil não localizado." }, { status: 403 }) } as const;
-  return { supabase, profile: { ...profile, role: profile.role as UserRole } } as const;
+  return { supabase, accessToken: token, profile: { ...profile, role: profile.role as UserRole } } as const;
 }

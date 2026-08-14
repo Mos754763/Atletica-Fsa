@@ -54,3 +54,30 @@
 - [x] Substituir o fundo verde inadequado do mascote por uma composição visual alinhada à identidade FSA
 - [x] Corrigir o callback do Google OAuth para retornar à área autenticada em vez da landing pública
 - [x] Restringir visibilidade e acesso ao ERP a membros autenticados com papel operacional autorizado
+- [x] Consolidar e documentar o panorama atual da plataforma ATLETICA FSA
+- [x] Detalhar fluxos operacionais, matriz de permissões e pendências externas da plataforma
+- [x] Auditar requisitos recebidos contra código, banco, integrações e fluxos reais
+- [x] Criar backlog priorizado por urgência, dependência, impacto e critério de aceite
+- [x] Corrigir bloqueadores de lançamento e lacunas de segurança comercial identificadas
+- [x] Evoluir governança de setores, pessoas, papéis e permissões granulares
+- [ ] Completar funcionalidades de loja, estoque, lotes, retirada e conciliação operacional
+- [x] Implementar variações de produto, reserva atômica de estoque e baixa idempotente após pagamento aprovado
+- [x] Disponibilizar retirada por código e QR Code com confirmação pelo Backoffice no ODS
+- [x] Adicionar CMS para variações e rascunhos de lotes de pré-venda
+- [ ] Ativar lotes de pré-venda após definição de sinal, quantidade mínima e política de estorno
+- [x] Implementar automações auditáveis, fila de e-mail e manutenção programada
+- [x] Criar fila de e-mail com prioridade, deduplicação, tentativas, logs e processamento pelo cron protegido
+- [x] Criar templates editáveis e painel da Presidência para regras auditáveis por mudança de status de pedido
+- [x] Integrar expiração diária de reservas de estoque à rotina agendada já configurada
+- [ ] Expandir gatilhos e ações de automação após os diretores definirem as três regras prioritárias de cada setor
+- [x] Construir o Construtor de Tabelas Nível B com auditoria e visões
+- [x] Implementar Construtor de Tabelas com setores, campos tipados, registros JSONB, visões e permissões por setor
+- [x] Implementar auditoria de metadados e registros, com lixeira restaurável para registros do Construtor
+- [ ] Concluir formatos visuais Kanban, Calendário e Galeria após definição das três primeiras tabelas de cada setor
+- [x] Expandir ingressos, check-in QR e operação de pedidos em evento
+- [x] Implementar ingressos por lote, emissão após pagamento, QR individual, transferência e check-in atômico
+- [x] Integrar a confirmação de pagamento de ingresso ao webhook Mercado Pago com validação de valor
+- [ ] Integrar atendimento de maquininha Mercado Pago POS após disponibilização do dispositivo, credenciais e escopo da conta
+- [x] Finalizar validações técnicas, documentação e entrega versionada
+- [x] Criar guia operacional para governança, loja, retirada, eventos, automações e Construtor de Tabelas
+- [x] Corrigir o fallback visual de imagens de produto identificado na inspeção local da loja

@@ -11,5 +11,6 @@ describe("máquina de estados do pedido", () => {
   it("bloqueia saltos e mudanças após encerramento", () => {
     expect(canMoveOrderStatus("aguardando_pagamento", "pronto")).toBe(false);
     expect(canMoveOrderStatus("entregue", "em_preparo")).toBe(false);
+    expect(canMoveOrderStatus("cancelado", "pago")).toBe(false);
   });
 });
