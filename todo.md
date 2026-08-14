@@ -98,3 +98,7 @@
 - [x] Implementar upload, edição, exclusão e ordenação de produtos e imagens no CMS
 - [x] Adicionar pré-visualização administrativa sincronizada com landing page e loja pública
 - [x] Validar persistência de catálogo, URLs de imagem, sincronização pública, testes e build
+
+- [x] Implementar modo escuro persistente e acessível na landing, loja, conta e ERP
+- [x] Adicionar controle de tema com suporte a teclado e preferência inicial do sistema
+- [x] Validar contraste, persistência, testes e build do modo escuro
