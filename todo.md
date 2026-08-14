@@ -120,3 +120,6 @@
 - [x] Implementar reprocessamento administrativo auditável de dead letters da sincronização Sympla
 - [x] Implementar alertas Slack deduplicados para falhas de sincronização e registrar a entrega do alerta
 - [x] Cobrir reprocessamento, deduplicação, rede, permissão e resolução de incidentes com testes automatizados
+- [x] Implementar verificação semanal automática das rotas cron e métricas de saúde das integrações
+- [x] Implementar alertas de pico e recuperação com deduplicação persistente
+- [x] Aplicar migração de tipos de alerta e cobrir a saúde das integrações com testes automatizados
