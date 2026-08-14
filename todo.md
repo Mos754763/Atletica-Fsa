@@ -40,3 +40,5 @@
 - [x] Corrigir o elemento sobreposto na landing page móvel e aprimorar os recortes das fotos oficiais sem interface do Instagram
 - [x] Gerar e integrar imagens originais de produto para a loja da ATLETICA FSA
 - [x] Corrigir responsividade da área de conta em dispositivos móveis
+- [x] Auditar e aperfeiçoar layout, UI e UX das telas públicas, de conta e operacionais
+- [x] Substituir a terminologia visível de cozinha por backoffice preservando o papel técnico e as permissões

@@ -8,6 +8,7 @@
 .events-heading::after { content:""; position:absolute; z-index:-1; width:390px; height:390px; right:4%; top:-98px; opacity:.19; background:url("https://tbxihkzuyzszrfxqmleq.supabase.co/storage/v1/object/public/catalog-assets/institutional/fsa-events-pattern.png") center/cover no-repeat; border-radius:50%; transform:rotate(8deg); }
 .ods-page { position:relative; isolation:isolate; overflow:hidden; }
 .ods-page::before { content:""; position:absolute; z-index:-1; width:510px; height:510px; right:-162px; top:-164px; opacity:.08; background:url("https://tbxihkzuyzszrfxqmleq.supabase.co/storage/v1/object/public/catalog-assets/institutional/fsa-ods-pattern.png") center/cover no-repeat; border-radius:50%; }
-.ods-page .ods-board { position:relative; background-color:rgba(255,255,255,.95); }
+.ods-page .ods-board { position:relative; isolation:isolate; background-color:transparent; }
 .ods-page .ods-board::before { content:""; position:absolute; inset:0; pointer-events:none; opacity:.035; background:url("https://tbxihkzuyzszrfxqmleq.supabase.co/storage/v1/object/public/catalog-assets/institutional/fsa-ods-pattern.png") center/300px repeat; }
+.events-empty>div{display:grid;gap:6px}.events-empty strong,.events-empty span{display:block}
 @media(max-width:620px){.management-heading__actions{align-items:flex-end;flex-direction:column-reverse}.store-hero::after{width:230px;height:230px;right:-78px;top:-49px}.events-heading::after{width:260px;height:260px;right:-70px;top:-42px}.ods-page::before{width:330px;height:330px;right:-120px;top:-72px}}
