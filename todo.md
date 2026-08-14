@@ -45,3 +45,4 @@
 - [x] Substituir os visuais de produto com blocos geométricos por imagens de produto coerentes com a identidade FSA
 - [x] Reestruturar o backoffice como ERP com navegação lateral, visão geral, módulos e ações rápidas inspirados no padrão ClickUp
 - [x] Tornar o acesso ao ERP visível e funcional a partir da conta e das principais áreas administrativas
+- [x] Implementar camada de motion interativa na landing com cursor luminoso, microinterações, parallax e revelações por rolagem

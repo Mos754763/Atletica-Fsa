@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { FsaWordmark } from "@/components/brand/FsaWordmark";
 import { SectionTitle } from "@/components/landing/SectionTitle";
+import { HeroMotion, MagneticLink, MotionButton, MotionCard, MotionReveal, ParallaxArtwork, PointerAura } from "@/components/landing/LandingMotion";
 import { MobileNav } from "@/components/landing/MobileNav";
 import { institutionalAsset } from "@/lib/institutional-assets";
 import { fsaStoreAssets } from "@/lib/store-product-assets";
@@ -58,6 +59,7 @@ const management = [
 export default function HomePage() {
   return (
     <main>
+      <PointerAura />
       <section className="hero-shell" id="inicio">
         <nav className="site-nav page-width" aria-label="Navegação principal">
           <Link href="/" aria-label="ATLETICA FSA - Página inicial"><FsaWordmark /></Link>
@@ -74,22 +76,16 @@ export default function HomePage() {
 
         <div className="hero page-width">
           <div className="hero__copy">
-            <p className="eyebrow"><span /> UMA SÓ TORCIDA. UM SÓ GRITO.</p>
-            <h1>VESTE.<br />VIVE.<br /><em>VENCE.</em></h1>
-            <p className="hero__lede">A ATLETICA FSA transforma a energia da faculdade em esporte, conexão e experiências para levar com você.</p>
+            <MotionReveal delay={0.04}><p className="eyebrow"><span /> UMA SÓ TORCIDA. UM SÓ GRITO.</p></MotionReveal>
+            <MotionReveal delay={0.1}><h1>VESTE.<br />VIVE.<br /><em>VENCE.</em></h1></MotionReveal>
+            <MotionReveal delay={0.17}><p className="hero__lede">A ATLETICA FSA transforma a energia da faculdade em esporte, conexão e experiências para levar com você.</p></MotionReveal>
             <div className="hero__actions">
-              <Link href="/loja" className="button button--yellow"><ShoppingBag size={18} /> Ir para a loja <ArrowRight size={17} /></Link>
+              <MagneticLink href="/loja" className="button button--yellow"><ShoppingBag size={18} /> Ir para a loja <ArrowRight size={17} /></MagneticLink>
               <a href="#eventos" className="button button--ghost"><CalendarDays size={18} /> Próximos eventos</a>
             </div>
             <div className="hero__signal"><span className="pulse-dot" /> Plataforma integrada <ArrowDownRight size={17} /></div>
           </div>
-          <div className="hero__mascot-wrap">
-            <span className="hero__yellow-orb" />
-            <span className="hero__outline hero__outline--one">FSA</span>
-            <span className="hero__outline hero__outline--two">FSA</span>
-            <img className="hero__official-art" src={heroArtwork} alt="Mascote institucional da ATLETICA FSA para a gestão 2026" />
-            <div className="hero__badge"><strong>2026</strong><span>GESTÃO<br />FSA</span></div>
-          </div>
+          <HeroMotion artwork={heroArtwork} />
         </div>
         <div className="hero-ticker" aria-label="Destaques da ATLETICA FSA">
           <span>JOGOS</span><i /> <span>FESTAS</span><i /> <span>CAMPEONATOS</span><i /> <span>TORCIDA</span><i /> <span>LOJA OFICIAL</span><i /> <span>JOGOS</span><i /> <span>FESTAS</span>
@@ -98,77 +94,77 @@ export default function HomePage() {
 
       <section className="capability-strip">
         <div className="page-width capability-grid">
-          {capabilities.map(({ icon: Icon, label, copy }) => (
-            <div className="capability" key={label}><Icon aria-hidden="true" /><div><strong>{label}</strong><span>{copy}</span></div></div>
+          {capabilities.map(({ icon: Icon, label, copy }, index) => (
+            <MotionReveal className="capability motion-reveal" delay={index * 0.06} key={label}><Icon aria-hidden="true" /><div><strong>{label}</strong><span>{copy}</span></div></MotionReveal>
           ))}
           <Link className="capability-link" href="/login">Acessar minha conta <ChevronRight size={18} /></Link>
         </div>
       </section>
 
       <section className="sector-section page-width" id="setores">
-        <SectionTitle eyebrow="A FSA É MUITO MAIS" title="Cinco frentes. A mesma vibração." copy="Da arquibancada ao próximo grande evento, cada setor deixa sua marca." />
+        <MotionReveal className="motion-reveal"><SectionTitle eyebrow="A FSA É MUITO MAIS" title="Cinco frentes. A mesma vibração." copy="Da arquibancada ao próximo grande evento, cada setor deixa sua marca." /></MotionReveal>
         <div className="sector-grid">
-          {sectors.map((sector) => (
-            <article className="sector-card" key={sector.number}>
+          {sectors.map((sector, index) => (
+            <MotionCard className="sector-card motion-card" delay={index * 0.05} key={sector.number}>
               <span>{sector.number}</span><ArrowDownRight size={24} /><h3>{sector.name}</h3><p>{sector.copy}</p>
-            </article>
+            </MotionCard>
           ))}
         </div>
       </section>
 
       <section className="management-section" id="gestao">
         <div className="page-width">
-          <div className="management-heading">
+          <MotionReveal className="management-heading motion-reveal">
             <SectionTitle eyebrow="GESTÃO 2026" title="Quem move a FSA." copy="Conheça os rostos da gestão que transforma organização, torcida e experiências em movimento." />
             <div className="management-heading__actions"><img className="management-section__seal" src={institutionalAsset("gestao-2026/selo-e-mascote.webp")} alt="Selo oficial da ATLETICA FSA" /><a href={instagramUrl} target="_blank" rel="noreferrer" className="text-link management-heading__link"><Instagram size={18} /> Ver no Instagram <ArrowRight size={18} /></a></div>
-          </div>
+          </MotionReveal>
           <div className="management-grid">
-            {management.map((member) => (
-              <article className="management-card" key={member.name}>
+            {management.map((member, index) => (
+              <MotionCard className="management-card motion-card" delay={(index % 4) * 0.06} key={member.name}>
                 <div className="management-card__photo"><img src={member.image} alt={`${member.name}, ${member.role}, na gestão 2026 da ATLETICA FSA`} /></div>
                 <div><span>GESTÃO 2026</span><h3>{member.name}</h3><p>{member.role}</p></div>
-              </article>
+              </MotionCard>
             ))}
           </div>
         </div>
       </section>
 
       <section className="store-section" id="loja">
-        <img className="store-section__art" src={storeArtwork} alt="" aria-hidden="true" />
+        <ParallaxArtwork className="store-section__art" src={storeArtwork} />
         <div className="page-width store-section__content">
-          <div className="store-heading">
+          <MotionReveal className="store-heading motion-reveal">
             <SectionTitle eyebrow="LOJA DA TORCIDA" title="Seu jeito de levar a FSA com você." inverted />
             <Link href="/loja" className="text-link text-link--light">Ver todos os produtos <ArrowRight size={18} /></Link>
-          </div>
+          </MotionReveal>
           <div className="product-grid">
-            {products.map((product) => (
-              <article className="product-card" key={product.name}>
+            {products.map((product, index) => (
+              <MotionCard className="product-card motion-card" delay={index * 0.07} key={product.name}>
                 <div className={`product-art ${product.className}`}><img className="product-art__image" src={product.image} alt={`${product.name} da ATLETICA FSA`} /></div>
-                <div className="product-card__meta"><span>{product.category}</span><button aria-label={`Adicionar ${product.name} ao carrinho`}><ShoppingBag size={17} /></button></div>
+                <div className="product-card__meta"><span>{product.category}</span><MotionButton label={`Adicionar ${product.name} ao carrinho`}><ShoppingBag size={17} /></MotionButton></div>
                 <h3>{product.name}</h3><strong>{product.price}</strong>
-              </article>
+              </MotionCard>
             ))}
           </div>
         </div>
       </section>
 
       <section className="event-section page-width" id="eventos">
-        <div className="event-poster event-poster--official"><img src={eventArtwork} alt="Arte institucional de eventos da ATLETICA FSA" /><span className="event-poster__top">NOITE<br />FSA</span><span className="event-poster__date">EM<br />BREVE</span></div>
-        <div className="event-copy">
+        <MotionReveal className="event-poster event-poster--official motion-reveal"><img src={eventArtwork} alt="Arte institucional de eventos da ATLETICA FSA" /><span className="event-poster__top">NOITE<br />FSA</span><span className="event-poster__date">EM<br />BREVE</span></MotionReveal>
+        <MotionReveal className="event-copy motion-reveal" delay={0.08}>
           <p className="eyebrow eyebrow--blue"><span /> AGENDA FSA</p>
           <h2>O próximo capítulo começa com a gente.</h2>
           <p>Jogos, campeonatos, festas e encontros para fazer a história acontecer. Inscreva-se, retire seus itens e viva cada momento com a FSA.</p>
           <div className="event-copy__details"><span><CalendarDays size={18} /> Agenda sempre atualizada</span><span><UsersRound size={18} /> Check-in rápido e seguro</span></div>
           <Link href="/eventos" className="button button--blue">Explorar eventos <ArrowRight size={17} /></Link>
-        </div>
+        </MotionReveal>
       </section>
 
       <section className="manifesto-section">
-        <div className="page-width manifesto-layout">
+        <MotionReveal className="page-width manifesto-layout motion-reveal">
           <div className="manifesto-symbol"><Trophy size={52} /><span>FSA</span></div>
           <blockquote>“A gente não acompanha. A gente <em>move</em>.”</blockquote>
           <div className="manifesto-meta"><Sparkles size={20} /> MAIS QUE UMA ATLÉTICA<br />UMA COMUNIDADE</div>
-        </div>
+        </MotionReveal>
       </section>
 
       <footer className="site-footer">
