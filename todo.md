@@ -114,3 +114,5 @@
 - [x] Ampliar testes de webhook para cenários de replay, rede, valor e liquidação idempotente
 - [x] Implementar trilha de atividades do CRM por usuário com acesso, alteração, tentativa bloqueada e contexto operacional
 - [x] Mapear e preparar a arquitetura de integração segura com plataformas externas de eventos
+- [x] Validar a viabilidade, credenciais e contratos da integração de homologação com a Sympla
+- [x] Implementar adaptador e infraestrutura de sincronização Sympla sem alterar o sistema mestre dos eventos

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
-import { BarChart3, Bot, Boxes, Building2, CalendarDays, ChevronRight, LayoutDashboard, ListChecks, PanelLeftClose, PanelLeftOpen, ScrollText, ShoppingBag, Table2, UsersRound } from "lucide-react";
+import { BarChart3, Bot, Boxes, Building2, CalendarDays, ChevronRight, LayoutDashboard, ListChecks, PanelLeftClose, PanelLeftOpen, PlugZap, ScrollText, ShoppingBag, Table2, UsersRound } from "lucide-react";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { FsaWordmark } from "@/components/brand/FsaWordmark";
 import { roleLabel } from "@/lib/auth/roles";
@@ -50,6 +50,7 @@ export function ErpSidebar({ displayName, role, isPresident, canAccessBuilder, c
         {availableItems.map(({ href, label, icon: Icon }) => { const isActive = getItemClassName(href) === "is-active"; return <Link href={href} className={getItemClassName(href)} aria-current={isActive ? "page" : undefined} title={collapsed ? label : undefined} key={href}><Icon size={17} /><span>{label}</span>{isActive && <ChevronRight size={15} />}</Link>; })}
         {isPresident && <Link href="/admin/organizacao" className={getItemClassName("/admin/organizacao")} aria-current={pathname.startsWith("/admin/organizacao") ? "page" : undefined} title={collapsed ? "Governança" : undefined}><Building2 size={17} /><span>Governança</span>{pathname.startsWith("/admin/organizacao") && <ChevronRight size={15} />}</Link>}
         {isPresident && <Link href="/admin/automacoes" className={getItemClassName("/admin/automacoes")} aria-current={pathname.startsWith("/admin/automacoes") ? "page" : undefined} title={collapsed ? "Automações" : undefined}><Bot size={17} /><span>Automações</span>{pathname.startsWith("/admin/automacoes") && <ChevronRight size={15} />}</Link>}
+        {role === "admin" && <Link href="/admin/integracoes/sympla" className={getItemClassName("/admin/integracoes/sympla")} aria-current={pathname.startsWith("/admin/integracoes/sympla") ? "page" : undefined} title={collapsed ? "Integração Sympla" : undefined}><PlugZap size={17} /><span>Integração Sympla</span>{pathname.startsWith("/admin/integracoes/sympla") && <ChevronRight size={15} />}</Link>}
         {isPresident && role === "admin" && <Link href="/admin/atividades" className={getItemClassName("/admin/atividades")} aria-current={pathname.startsWith("/admin/atividades") ? "page" : undefined} title={collapsed ? "Atividades" : undefined}><ScrollText size={17} /><span>Atividades</span>{pathname.startsWith("/admin/atividades") && <ChevronRight size={15} />}</Link>}
         {canAccessBuilder && <Link href="/admin/tabelas" className={getItemClassName("/admin/tabelas")} aria-current={pathname.startsWith("/admin/tabelas") ? "page" : undefined} title={collapsed ? "Tabelas" : undefined}><Table2 size={17} /><span>Tabelas</span>{pathname.startsWith("/admin/tabelas") && <ChevronRight size={15} />}</Link>}
         {(role === "admin" || role === "cozinha" || role === "caixa") && <Link href="/ods" className={getItemClassName("/ods")} aria-current={pathname === "/ods" ? "page" : undefined} title={collapsed ? "ODS de pedidos" : undefined}><ListChecks size={17} /><span>ODS de pedidos</span>{pathname === "/ods" && <ChevronRight size={15} />}</Link>}

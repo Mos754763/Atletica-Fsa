@@ -12,6 +12,7 @@ export const env = {
   mercadoPagoPublicKey: optional("NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY"),
   paymentsEnabled: optional("PAYMENTS_ENABLED") === "true",
   cronSecret: optional("CRON_SECRET"),
+  symplaApiToken: optional("SYMPLA_API_TOKEN"),
 };
 
 export function hasSupabaseConfig() {
