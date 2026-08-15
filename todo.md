@@ -166,3 +166,6 @@
 - [x] Corrigir a tipagem de rota nula na barra lateral ERP revelada pelo build de produção
 - [x] Fixar `NODE_ENV=production` no build para impedir a regressão do erro de pré-render do Next.js
 - [x] Isolar o teste opcional de credencial Slack da suíte unitária para evitar timeout de rede externa
+- [x] Documentar a inspeção de logs serverless e a investigação de falhas ocultas na Vercel
+- [x] Validar e documentar a cobertura Slack para falhas de cron e webhook em produção
+- [x] Documentar a matriz de testes de idempotência Mercado Pago para eventos duplicados e concorrentes
