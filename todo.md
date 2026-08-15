@@ -158,3 +158,7 @@
 - [x] Verificar os logs e evidências de agendamento e execução dos cron jobs diários na Vercel; nenhuma execução automática havia ocorrido no recorte de logs consultado
 - [x] Auditar todos os webhooks e rotas de notificação configurados, incluindo Mercado Pago, Sympla, Slack e cron interno
 - [ ] Definir e implementar, após escolha do canal, monitoramento periódico e alertas externos para falhas de cron
+- [ ] Configurar o alerta Slack em Production e Preview e validar uma entrega controlada
+- [ ] Criar script manual de diagnóstico dos cron jobs e testes automatizados do seu contrato de saída
+- [ ] Simular com segurança uma notificação assinada do Mercado Pago sem gerar conciliação comercial
+- [ ] Documentar todas as variáveis de ambiente, escopo e procedimento de configuração na Vercel e Supabase
