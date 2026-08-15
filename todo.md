@@ -146,3 +146,9 @@
 - [x] Documentar plano de implementação, endpoints, segurança e homologação da integração Mercado Pago POS
 - [x] Especificar migration SQL, controles de idempotência e payloads da integração Mercado Pago Point
 - [x] Implementar suíte automatizada de resiliência Point para idempotência, assinatura de webhook, deduplicação, concorrência e conciliação
+- [ ] Corrigir a entrega SMTP de confirmações do Supabase Auth e validar cadastro externo, confirmação e redirecionamento
+- [x] Avaliar Gmail API e SMTP do Gmail como alternativa segura para os e-mails de confirmação do Supabase Auth
+- [x] Orientar a configuração de webhooks, eventos, permissões e credenciais sandbox do Mercado Pago; a validação no painel depende da homologação do usuário
+- [x] Auditar todas as opções de eventos e permissões do Mercado Pago e implementar somente integrações internas necessárias e seguras
+- [x] Implementar roteamento defensivo de tópicos Mercado Pago, incluindo descarte auditável de eventos não suportados e preparo explícito para Point
+- [x] Validar o roteamento de tópicos Mercado Pago com testes unitários, tipagem e build de produção

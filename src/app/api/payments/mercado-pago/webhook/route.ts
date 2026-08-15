@@ -5,17 +5,25 @@ import { getCheckoutAvailability } from "@/lib/payments/checkout-availability";
 import { createServiceClient } from "@/lib/supabase/server";
 import { sendOrderStatusEmail, sendRegistrationEmail } from "@/lib/email/transactional";
 import { canMoveOrderStatus } from "@/lib/orders/workflow";
+import { getMercadoPagoSignatureDataId, isMercadoPagoPointTopic, resolveMercadoPagoWebhookTopic } from "@/lib/payments/mercado-pago-webhook-routing";
 
 export async function POST(request: Request) {
-  const url = new URL(request.url); const payload = await request.json().catch(() => ({})); const paymentId = String(payload?.data?.id ?? url.searchParams.get("data.id") ?? "");
+  const url = new URL(request.url); const payload = await request.json().catch(() => ({})); const notificationId = String(payload?.data?.id ?? url.searchParams.get("data.id") ?? "");
+  const topic = resolveMercadoPagoWebhookTopic({ payload, queryType: url.searchParams.get("type") });
+  if (topic === "unsupported") return NextResponse.json({ ok: true, ignored: "unsupported_topic" });
   const signature = request.headers.get("x-signature"); const requestId = request.headers.get("x-request-id"); const signatureTimestamp = getMercadoPagoWebhookTimestamp(signature);
   const availability = getCheckoutAvailability({ paymentsEnabled: env.paymentsEnabled, mercadoPagoAccessToken: env.mercadoPagoAccessToken });
+  if (isMercadoPagoPointTopic(topic)) {
+    if (!availability.available) return NextResponse.json({ error: "Conciliação Mercado Pago indisponível para lançamento comercial.", code: availability.code }, { status: 503 });
+    return NextResponse.json({ error: "A integração Mercado Pago Point ainda não foi homologada para esta operação.", code: "point_not_implemented" }, { status: 503 });
+  }
   if (!availability.available || !env.mercadoPagoWebhookSecret) return NextResponse.json({ error: "Conciliação Mercado Pago indisponível para lançamento comercial.", code: availability.available ? "webhook_not_configured" : availability.code }, { status: 503 });
-  const valid = verifyMercadoPagoWebhook({ signature, requestId, dataId: paymentId, secret: env.mercadoPagoWebhookSecret });
+  const signatureDataId = getMercadoPagoSignatureDataId(topic, notificationId);
+  const valid = verifyMercadoPagoWebhook({ signature, requestId, dataId: signatureDataId, secret: env.mercadoPagoWebhookSecret });
   if (!valid || !isMercadoPagoWebhookFresh(signature) || signatureTimestamp === null) return NextResponse.json({ error: "Assinatura inválida ou expirada." }, { status: 401 });
   const supabase = createServiceClient();
-  const eventKey = `payment:${paymentId}:${signatureTimestamp}`;
-  const { data: claimRows, error: claimError } = await supabase.rpc("claim_payment_webhook_event", { p_provider: "mercado_pago", p_event_key: eventKey, p_payment_reference: paymentId, p_request_id: requestId ?? "", p_signature_timestamp: Math.floor(signatureTimestamp / 1000), p_payload: payload });
+  const eventKey = `${topic}:${notificationId}:${signatureTimestamp}`;
+  const { data: claimRows, error: claimError } = await supabase.rpc("claim_payment_webhook_event", { p_provider: "mercado_pago", p_event_key: eventKey, p_payment_reference: notificationId, p_request_id: requestId ?? "", p_signature_timestamp: Math.floor(signatureTimestamp / 1000), p_payload: payload });
   const claim = Array.isArray(claimRows) ? claimRows[0] : claimRows;
   if (claimError || !claim?.event_id) return NextResponse.json({ error: "Não foi possível registrar o evento de pagamento para processamento." }, { status: 503 });
   if (!claim.claimed) return NextResponse.json({ ok: true, duplicate: true });
@@ -23,9 +31,14 @@ export async function POST(request: Request) {
     await supabase.from("payment_webhook_events").update({ status, error_code: errorCode ?? null, processed_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq("id", claim.event_id);
   };
 
+  if (topic === "merchant_order") {
+    await finishEvent("ignored", "merchant_order_not_enabled");
+    return NextResponse.json({ ok: true, ignored: "merchant_order_not_enabled" });
+  }
+
   let payment: { id: number; status: string; external_reference?: string; transaction_amount?: number };
   try {
-    const response = await fetchMercadoPagoPayment(paymentId, env.mercadoPagoAccessToken!);
+    const response = await fetchMercadoPagoPayment(notificationId, env.mercadoPagoAccessToken!);
     payment = await response.json() as typeof payment;
   } catch (error) {
     const status = error instanceof MercadoPagoApiError && error.status === 404 ? 404 : 503;
