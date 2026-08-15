@@ -169,3 +169,7 @@
 - [x] Documentar a inspeção de logs serverless e a investigação de falhas ocultas na Vercel
 - [x] Validar e documentar a cobertura Slack para falhas de cron e webhook em produção
 - [x] Documentar a matriz de testes de idempotência Mercado Pago para eventos duplicados e concorrentes
+- [x] Ampliar a verificação semanal para monitorar explicitamente os heartbeats de Sympla, lembretes e a própria rota de saúde
+- [ ] Validar alerta Slack de degradação e recuperação dos heartbeats semanais sem gerar ruído duplicado
+- [ ] Confirmar o isolamento de credenciais, banco e gate de pagamentos do ambiente Preview antes de testar pagamento sandbox
+- [ ] Executar e evidenciar a idempotência de Webhook Mercado Pago com requisições duplicadas no Preview isolado

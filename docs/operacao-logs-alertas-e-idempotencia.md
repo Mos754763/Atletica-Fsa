@@ -16,7 +16,7 @@ No painel Vercel, abra **ATLETICA FSA → Logs** e use a janela de tempo de 24 h
 | --- | --- | --- | --- |
 | Sincronização Sympla | Environment: `production`; Route: `/api/cron/sympla-sync`; Request type: `cron` | `200` e execução uma vez por dia. | `5xx`, timeout, ausência superior a 26 horas ou mensagens de token inválido. |
 | Lembretes de eventos | Route: `/api/cron/event-reminders`; Request type: `cron` | `200` diário. | `5xx` ou ausência superior a 26 horas. |
-| Saúde de integrações | Route: `/api/cron/integration-health`; Request type: `cron` | `200` semanal. | `503`, falha de banco ou ausência do relatório semanal. |
+| Saúde de integrações | Route: `/api/cron/integration-health`; Request type: `cron` | `200` semanal. | `503`, falha de banco ou ausência prolongada do relatório semanal. A própria rota também acompanha o heartbeat de sua execução anterior, sem alertar indevidamente quando executa no horário semanal previsto. |
 | Webhook Mercado Pago | Route: `/api/payments/mercado-pago/webhook`; Method: `POST`; Resource: `Vercel Functions` | `200` para eventos processados ou ignorados. | `5xx`, timeout ou crescimento de erros internos. |
 
 Após filtrar, selecione **Level: Error e Fatal** e **Status code: 5xx**. Abra cada linha para registrar o `RequestId`, o deployment, a rota, o horário UTC, o status e a exceção. Em seguida, compare com a tabela `scheduled_route_heartbeats` e com o log de atividade do CRM. A Vercel classifica respostas `5xx` como erro; respostas `4xx` aparecem como warning. [2]
