@@ -9,6 +9,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:point-resilience": "vitest run src/lib/payments/point-resilience.test.ts",
     "test:integration:qr-concurrency": "RUN_QR_CONCURRENCY_TESTS=true node scripts/test-qr-concurrency.mjs",
     "audit:catalog-media": "node scripts/audit-catalog-media.mjs",
     "seed:catalog-images": "node scripts/seed-catalog-images.mjs"

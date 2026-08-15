@@ -143,3 +143,6 @@
 - [x] Revisar e priorizar as pendências operacionais externas, com plano de pré-requisitos para a integração Mercado Pago POS
 - [ ] Restabelecer o acionamento automático da Vercel pela integração com GitHub para publicar o commit atual da `main`
 - [ ] Validar ou rotacionar a credencial `SYMPLA_API_TOKEN` e suas permissões, pois a verificação remota atual retorna HTTP 403
+- [x] Documentar plano de implementação, endpoints, segurança e homologação da integração Mercado Pago POS
+- [x] Especificar migration SQL, controles de idempotência e payloads da integração Mercado Pago Point
+- [x] Implementar suíte automatizada de resiliência Point para idempotência, assinatura de webhook, deduplicação, concorrência e conciliação
