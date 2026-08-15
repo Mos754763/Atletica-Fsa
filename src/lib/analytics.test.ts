@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { averageMinutesBetween, formatMinutes, resolveAnalyticsPeriod, revenueByDay } from "./analytics";
+import { averageMinutesBetween, formatMinutes, registrationMetrics, resolveAnalyticsPeriod, revenueByDay } from "./analytics";
 
 describe("indicadores operacionais", () => {
   it("aceita apenas as janelas disponíveis", () => {
@@ -21,5 +21,14 @@ describe("indicadores operacionais", () => {
     const result = revenueByDay([{ amount_cents: 4500, approved_at: "2026-08-13T12:00:00Z" }], 2, new Date("2026-08-13T18:00:00Z"));
     expect(result).toHaveLength(2);
     expect(result[1].cents).toBe(4500);
+  });
+
+  it("distingue inscrições gratuitas, pagas, pendentes e por origem", () => {
+    const metrics = registrationMetrics([
+      { source: "plataforma", amount_cents: 5000, payments: [{ status: "aprovado" }] },
+      { source: "sympla", amount_cents: 0, payments: null },
+      { source: "manual", amount_cents: 3000, payments: [{ status: "pendente" }] },
+    ]);
+    expect(metrics).toEqual({ platform: 1, sympla: 1, manual: 1, free: 1, paid: 1, pending: 1 });
   });
 });

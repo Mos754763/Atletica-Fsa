@@ -1,5 +1,6 @@
 export type AnalyticsOrder = { status: string; total_cents: number; created_at: string; paid_at: string | null; ready_at: string | null };
 export type AnalyticsPayment = { amount_cents: number; approved_at: string | null };
+export type AnalyticsRegistration = { amount_cents: number; source: "plataforma" | "sympla" | "manual"; payments: Array<{ status: string }> | null };
 
 export const ANALYTICS_PERIODS = [7, 30, 90] as const;
 
@@ -48,4 +49,17 @@ export function revenueByDay(payments: AnalyticsPayment[], days: number, referen
     if (bucket) bucket.cents += payment.amount_cents;
   }
   return [...buckets.values()];
+}
+
+export function registrationMetrics(registrations: AnalyticsRegistration[]) {
+  const paid = registrations.filter((registration) => registration.payments?.some((payment) => payment.status === "aprovado")).length;
+  const free = registrations.filter((registration) => registration.amount_cents === 0).length;
+  return {
+    platform: registrations.filter((registration) => registration.source === "plataforma").length,
+    sympla: registrations.filter((registration) => registration.source === "sympla").length,
+    manual: registrations.filter((registration) => registration.source === "manual").length,
+    free,
+    paid,
+    pending: registrations.filter((registration) => registration.amount_cents > 0 && !registration.payments?.some((payment) => payment.status === "aprovado")).length,
+  };
 }

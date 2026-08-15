@@ -17,7 +17,7 @@ const productSchema = z.object({
   isFeatured: z.boolean(),
 });
 const categorySchema = z.object({ name: z.string().trim().min(2).max(80) });
-const variantSchema = z.object({ productId: z.string().uuid(), name: z.string().trim().min(1).max(80), sku: z.string().trim().max(64).optional(), priceCents: z.coerce.number().int().min(0).optional(), stockQuantity: z.coerce.number().int().min(0), attributes: z.string().trim().max(400).optional() });
+const variantSchema = z.object({ productId: z.string().uuid(), name: z.string().trim().max(80).optional(), color: z.string().trim().max(50).optional(), size: z.string().trim().max(32).optional(), sku: z.string().trim().max(64).optional(), priceCents: z.coerce.number().int().min(0).optional(), stockQuantity: z.coerce.number().int().min(0), notes: z.string().trim().max(400).optional() });
 const salesBatchSchema = z.object({ productId: z.string().uuid(), variantId: z.string().uuid().optional(), name: z.string().trim().min(2).max(100), priceCents: z.coerce.number().int().min(0).optional(), minimumQuantity: z.coerce.number().int().positive().optional(), targetQuantity: z.coerce.number().int().positive().optional(), opensAt: z.string().optional(), closesAt: z.string().optional(), instructions: z.string().trim().max(1000).optional() });
 const productIdSchema = z.string().uuid();
 const productImageIdSchema = z.string().uuid();
@@ -174,12 +174,14 @@ export async function deleteProduct(formData: FormData) {
 export async function createVariant(formData: FormData) {
   const { supabase, userId } = await requireRole(["admin", "caixa"]);
   const rawPrice = formData.get("priceBrl");
-  const values = variantSchema.parse({ productId: formData.get("productId"), name: formData.get("name"), sku: formData.get("sku") || undefined, priceCents: rawPrice ? priceInCents(rawPrice) : undefined, stockQuantity: formData.get("stockQuantity"), attributes: formData.get("attributes") || undefined });
-  const attributes = values.attributes ? { descricao: values.attributes } : {};
-  const { data: variant, error } = await supabase.from("product_variants").insert({ product_id: values.productId, name: values.name, sku: values.sku || null, price_cents: values.priceCents ?? null, stock_quantity: values.stockQuantity, attributes }).select("id").single();
+  const values = variantSchema.parse({ productId: formData.get("productId"), name: formData.get("name") || undefined, color: formData.get("color") || undefined, size: formData.get("size") || undefined, sku: formData.get("sku") || undefined, priceCents: rawPrice ? priceInCents(rawPrice) : undefined, stockQuantity: formData.get("stockQuantity"), notes: formData.get("notes") || undefined });
+  const name = values.name || [values.color && `Cor ${values.color}`, values.size && `Tamanho ${values.size}`].filter(Boolean).join(" · ");
+  if (!name) throw new Error("Informe uma cor, um tamanho ou um nome para identificar a variação.");
+  const attributes = Object.fromEntries(Object.entries({ cor: values.color, tamanho: values.size, observacoes: values.notes }).filter(([, value]) => Boolean(value)));
+  const { data: variant, error } = await supabase.from("product_variants").insert({ product_id: values.productId, name, sku: values.sku || null, price_cents: values.priceCents ?? null, stock_quantity: values.stockQuantity, attributes }).select("id").single();
   if (error || !variant) throw new Error("Não foi possível cadastrar a variação.");
   await supabase.from("products").update({ has_variants: true }).eq("id", values.productId);
-  if (values.stockQuantity > 0) await supabase.from("inventory_movements").insert({ product_id: values.productId, quantity_delta: values.stockQuantity, reason: `Estoque inicial da variação ${values.name}`, reference_type: "product_variant", reference_id: variant.id, created_by: userId });
+  if (values.stockQuantity > 0) await supabase.from("inventory_movements").insert({ product_id: values.productId, quantity_delta: values.stockQuantity, reason: `Estoque inicial da variação ${name}`, reference_type: "product_variant", reference_id: variant.id, created_by: userId });
   revalidateCatalog();
 }
 

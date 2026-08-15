@@ -5,7 +5,7 @@ import { z } from "zod";
 import { requirePresident } from "@/lib/auth/require-president";
 import { createServiceClient } from "@/lib/supabase/server";
 
-const templateSchema = z.object({ id: z.string().uuid(), subject: z.string().trim().min(3).max(180), html: z.string().trim().min(3).max(15_000) });
+const templateSchema = z.object({ id: z.string().uuid(), subject: z.string().trim().min(3).max(180), headline: z.string().trim().min(2).max(160), message: z.string().trim().min(3).max(6_000), buttonLabel: z.string().trim().max(80).optional() });
 const ruleSchema = z.object({
   name: z.string().trim().min(3).max(120),
   sectorId: z.string().uuid().optional(),
@@ -17,11 +17,18 @@ const ruleSchema = z.object({
 });
 
 function refresh() { revalidatePath("/admin/automacoes"); revalidatePath("/admin"); }
+function escapeEmailHtml(value: string) { return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;"); }
+function buildEmailHtml(headline: string, message: string, buttonLabel?: string) {
+  const safeHeadline = escapeEmailHtml(headline);
+  const safeMessage = escapeEmailHtml(message).replace(/\r?\n/g, "<br />");
+  const action = buttonLabel ? `<p style="margin:28px 0 0"><span style="display:inline-block;background:#0B3D91;color:#ffffff;border-radius:8px;padding:12px 18px;font-weight:700">${escapeEmailHtml(buttonLabel)}</span></p>` : "";
+  return `<div style="font-family:Arial,sans-serif;color:#0B234C;line-height:1.55"><h1 style="margin:0 0 16px;font-size:24px">${safeHeadline}</h1><p style="margin:0">${safeMessage}</p>${action}</div>`;
+}
 
 export async function saveEmailTemplate(formData: FormData) {
   const { userId } = await requirePresident();
-  const values = templateSchema.parse({ id: formData.get("id"), subject: formData.get("subject"), html: formData.get("html") });
-  const { error } = await createServiceClient().from("email_templates").update({ subject_template: values.subject, html_template: values.html, updated_by: userId }).eq("id", values.id).is("deleted_at", null);
+  const values = templateSchema.parse({ id: formData.get("id"), subject: formData.get("subject"), headline: formData.get("headline"), message: formData.get("message"), buttonLabel: formData.get("buttonLabel") || undefined });
+  const { error } = await createServiceClient().from("email_templates").update({ subject_template: values.subject, html_template: buildEmailHtml(values.headline, values.message, values.buttonLabel), updated_by: userId }).eq("id", values.id).is("deleted_at", null);
   if (error) throw new Error("Não foi possível salvar o template de e-mail.");
   refresh();
 }

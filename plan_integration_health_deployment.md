@@ -100,3 +100,11 @@ O ponto bloqueador atual é a aceitação do deployment pela Vercel, não o cód
 | Hook criado | O hook temporário `health-monitoring-one-time` foi criado com escopo exclusivo em `main`. Sua URL secreta não foi registrada em código, documentação, console ou repositório e será revogada após o disparo único. |
 | Disparo do hook | A chamada única ao hook retornou `internal_server_error` da Vercel e não iniciou deployment observável. O próximo passo obrigatório é revogar imediatamente o hook temporário e manter a investigação pela configuração da plataforma. |
 | Revogação concluída | O hook temporário foi revogado com sucesso; a página confirma que o projeto não possui Deploy Hooks ativos. Nenhuma URL secreta permaneceu configurada. |
+
+## Registro de revisão visual posterior
+
+| Verificação | Resultado |
+|---|---|
+| Loja local em tema escuro | A semântica e os controles permanecem presentes no DOM, mas a captura visual exibiu fundo escuro sem texto ou mídia legíveis. |
+| Diagnóstico inicial | O CSS específico da loja usava `.dark`, enquanto o alternador global aplica `html[data-theme="dark"]`. O seletor foi alinhado e será revalidado com o bundle atualizado. |
+| Comparação de tema | A mesma página renderiza normalmente em tema claro, inclusive logo, textos, imagens e carrinho. Ao retornar ao escuro, os elementos continuam ocupando espaço e acessíveis no DOM, porém o conteúdo deixa de ser visível. |

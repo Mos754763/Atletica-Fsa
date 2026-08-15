@@ -11,17 +11,15 @@ export function ErpMotionWorkspace({ children }: { children: ReactNode }) {
   const reducedMotion = useReducedMotion();
 
   return (
-    <>
+    <motion.div
+      className="erp-workspace erp-motion-workspace"
+      key={pathname}
+      initial={false}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={reducedMotion ? { duration: 0 } : { ...MOTION_SPRING, duration: 0.42 }}
+    >
       <PointerAura />
-      <motion.div
-        className="erp-workspace erp-motion-workspace"
-        key={pathname}
-        initial={false}
-        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        transition={reducedMotion ? { duration: 0 } : { ...MOTION_SPRING, duration: 0.42 }}
-      >
-        {children}
-      </motion.div>
-    </>
+      {children}
+    </motion.div>
   );
 }

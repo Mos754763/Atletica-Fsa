@@ -5,6 +5,7 @@ import { z } from "zod";
 import { canMoveEventStatus } from "@/lib/events";
 import { requireRole } from "@/lib/auth/require-role";
 import { normalizeTicketCheckInCode } from "@/lib/events/tickets";
+import { brlInputToCents } from "@/lib/money";
 import type { EventState } from "@/types/domain";
 
 const eventSchema = z.object({
@@ -17,11 +18,14 @@ function slugify(value: string) { return value.normalize("NFD").replace(/[\u0300
 
 export async function createEvent(formData: FormData) {
   const { supabase, userId } = await requireRole(["admin"]);
-  const values = eventSchema.parse({ title: formData.get("title"), description: formData.get("description") || undefined, venue: formData.get("venue") || undefined, startsAt: formData.get("startsAt") || undefined, endsAt: formData.get("endsAt") || undefined, capacity: formData.get("capacity") || undefined, priceCents: formData.get("priceCents") });
+  const requiresRegistration = formData.get("requiresRegistration") === "on";
+  const priceCents = requiresRegistration ? brlInputToCents(formData.get("priceBrl")) : 0;
+  if (!Number.isSafeInteger(priceCents) || priceCents < 0) throw new Error("Informe um preço válido em reais, como 25,00.");
+  const values = eventSchema.parse({ title: formData.get("title"), description: formData.get("description") || undefined, venue: formData.get("venue") || undefined, startsAt: formData.get("startsAt") || undefined, endsAt: formData.get("endsAt") || undefined, capacity: formData.get("capacity") || undefined, priceCents });
   const start = values.startsAt ? new Date(values.startsAt) : null; const end = values.endsAt ? new Date(values.endsAt) : null;
   if (start && Number.isNaN(start.valueOf())) throw new Error("Data inicial inválida."); if (end && Number.isNaN(end.valueOf())) throw new Error("Data final inválida."); if (start && end && end <= start) throw new Error("O encerramento precisa ser posterior ao início.");
   const slug = `${slugify(values.title)}-${Math.random().toString(36).slice(2, 7)}`;
-  const { error } = await supabase.from("events").insert({ title: values.title, slug, description: values.description || null, venue: values.venue || null, starts_at: start?.toISOString() ?? null, ends_at: end?.toISOString() ?? null, capacity: values.capacity ?? null, registration_price_cents: values.priceCents, requires_registration: formData.get("requiresRegistration") === "on", created_by: userId });
+  const { error } = await supabase.from("events").insert({ title: values.title, slug, description: values.description || null, venue: values.venue || null, starts_at: start?.toISOString() ?? null, ends_at: end?.toISOString() ?? null, capacity: values.capacity ?? null, registration_price_cents: values.priceCents, requires_registration: requiresRegistration, created_by: userId });
   if (error) throw new Error("Não foi possível criar o evento."); revalidatePath("/admin/eventos"); revalidatePath("/eventos");
 }
 

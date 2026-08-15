@@ -15,7 +15,10 @@ export function ThemeToggle() {
   const [theme, setTheme] = useState<ThemeMode>("light");
 
   useEffect(() => {
-    setTheme(readTheme());
+    const resolvedTheme = readTheme();
+    document.documentElement.dataset.theme = resolvedTheme;
+    document.documentElement.style.colorScheme = resolvedTheme;
+    setTheme(resolvedTheme);
   }, []);
 
   function toggleTheme() {

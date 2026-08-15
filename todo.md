@@ -125,3 +125,16 @@
 - [x] Aplicar migração de tipos de alerta e cobrir a saúde das integrações com testes automatizados
 
 - [x] Versionar e integrar o monitoramento de saúde na branch principal sem acionar publicação manual na Vercel
+
+- [x] Corrigir o carregamento e o contraste do modo escuro da loja em todos os estados de navegação
+- [x] Implementar carrinho funcional, navegação para eventos, retorno de página e detalhe de produto na loja pública
+- [x] Criar navegação lateral retrátil ou retorno contextual para a experiência de vendas
+- [x] Diferenciar visualmente os temas claro e escuro do ODS e renomear a operação para gerenciamento de pedidos
+- [x] Permitir pedidos manuais pendentes de pagamento, inclusive encomendas para pagamento na retirada
+- [x] Corrigir a renderização do mascote do ERP e o deslocamento de conteúdo ao retrair a navegação em Atividades
+- [x] Evoluir produtos com atributos, cores, tamanhos e variantes comercializáveis sob o mesmo produto-base
+- [x] Ampliar os estados de inscrição e pagamento de eventos, distinguindo origem interna e Sympla
+- [x] Reconstruir automações com construtor visual sem código e modelos de comunicação amigáveis
+- [x] Ampliar relatórios com KPIs, gráficos configuráveis e exportações CSV, XLSX e PDF
+- [x] Adicionar exportações autorizadas para clientes, vendas de produtos, eventos e relatórios
+- [x] Validar migrações, permissões, acessibilidade, testes e build das melhorias operacionais

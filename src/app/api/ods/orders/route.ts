@@ -6,7 +6,7 @@ import { sendOrderStatusEmail } from "@/lib/email/transactional";
 import { createAuthenticatedServerClient } from "@/lib/supabase/server";
 import type { OrderState } from "@/types/domain";
 
-const visibleStates: OrderState[] = ["pago", "em_preparo", "pronto"];
+const visibleStates: OrderState[] = ["aguardando_pagamento", "pago", "em_preparo", "pronto"];
 
 export async function GET(request: Request) {
   const auth = await getApiProfile(request); if ("error" in auth) return auth.error;
@@ -29,6 +29,9 @@ export async function PATCH(request: Request) {
     const { data, error } = await operationalClient.rpc("confirm_order_pickup_by_qr", { p_order_id: order.id, p_pickup_qr_token: token });
     if (error) return NextResponse.json({ error: error.message }, { status: 409 });
     if (data?.[0]?.already_picked_up) return NextResponse.json({ error: "Este pedido já foi retirado." }, { status: 409 });
+  } else if (order.status === "aguardando_pagamento" && body.status === "pago") {
+    const { error } = await operationalClient.rpc("confirm_manual_order_payment", { p_order_id: order.id, p_payment_method: "pix_presencial" });
+    if (error) return NextResponse.json({ error: error.message }, { status: 409 });
   } else {
     const { error } = await operationalClient.rpc("advance_ods_order", { p_order_id: order.id, p_next_status: body.status });
     if (error) return NextResponse.json({ error: error.message }, { status: 409 });
@@ -44,6 +47,7 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => null) as {
     fulfillment?: string;
     paymentMethod?: string;
+    paymentStatus?: "aprovado" | "pendente";
     customerName?: string;
     notes?: string;
     items?: Array<{ productId?: string; variantId?: string | null; quantity?: number }>;
@@ -55,9 +59,10 @@ export async function POST(request: Request) {
 
   const items = body.items.map((item) => ({ product_id: item.productId, variant_id: item.variantId ?? null, quantity: item.quantity }));
   const operationalClient = createAuthenticatedServerClient(auth.accessToken);
-  const { data, error } = await operationalClient.rpc("create_manual_order", {
+  const { data, error } = await operationalClient.rpc("create_manual_order_with_payment_state", {
     p_fulfillment: body.fulfillment,
     p_payment_method: body.paymentMethod,
+    p_payment_status: body.paymentStatus ?? "aprovado",
     p_customer_name: body.customerName ?? "",
     p_items: items,
     p_notes: body.notes ?? "",

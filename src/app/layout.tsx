@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./auth.css";
+import "./theme.css";
 import "./store.css";
 import "./cms.css";
 import "./events-admin.css";
@@ -12,7 +13,6 @@ import "./analytics.css";
 import "./mobile-nav.css";
 import "./erp.css";
 import "./motion.css";
-import "./theme.css";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export const metadata: Metadata = {
