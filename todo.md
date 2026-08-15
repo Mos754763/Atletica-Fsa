@@ -156,3 +156,5 @@
 - [x] Corrigir, validar e sincronizar a causa identificada no check de deployment Vercel
 - [x] Documentar a cobertura de testes que impede regressões na configuração de cron da Vercel
 - [x] Verificar os logs e evidências de agendamento e execução dos cron jobs diários na Vercel; nenhuma execução automática havia ocorrido no recorte de logs consultado
+- [x] Auditar todos os webhooks e rotas de notificação configurados, incluindo Mercado Pago, Sympla, Slack e cron interno
+- [ ] Definir e implementar, após escolha do canal, monitoramento periódico e alertas externos para falhas de cron
