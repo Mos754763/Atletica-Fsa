@@ -25,7 +25,7 @@ Na documentação pública consultada não há um recurso de webhook ou callback
 | Migração `20260814220000_sympla_event_mirroring.sql` | Adiciona origem, identificador e URL externa ao evento espelhado. | Eventos de origem `sympla` são identificados e vinculados ao registro externo sem se tornarem eventos comerciais internos. |
 | Migração `20260814210000_sympla_homologation_integration.sql` | Cria integrações, vínculos futuros, registros externos, execuções e fila de falhas. | RLS permite leitura operacional apenas a administradores; payload externo fica separado das tabelas nativas. |
 | `/admin/integracoes/sympla` | Painel administrativo para executar e auditar a sincronização manual. | A página e a ação de servidor exigem o papel `admin`. |
-| `/api/cron/sympla-sync` | Sincronização incremental a cada 15 minutos após publicação na Vercel. | Requer `Authorization: Bearer CRON_SECRET`, processa somente leitura e devolve `503` em falha para observabilidade. |
+| `/api/cron/sympla-sync` | Sincronização incremental diária às 14:00 UTC no plano Vercel Hobby; o painel administrativo permite execução manual imediata. | Requer `Authorization: Bearer CRON_SECRET`, processa somente leitura e devolve `503` em falha para observabilidade. |
 | `/api/cron/integration-health` | Avalia semanalmente a volumetria de falhas, taxa de erro e batimentos das rotas de sincronização e lembretes. | Requer `Authorization: Bearer CRON_SECRET`, persiste somente métricas sanitizadas e não altera dados de eventos, pedidos ou ingressos. |
 | Migração `20260814240000_integration_health_and_recovery_alerts.sql` | Registra estado persistente de saúde e batimentos de cron; habilita alertas de pico e recuperação. | A chave única por integração, escopo, tipo e incidente impede alertas duplicados durante a mesma ocorrência. |
 | Migrações `20260814230000` e `20260814230500` | Criam a deduplicação persistente de alertas, o bloqueio de replay e o responsável pela resolução da falha. | A ocorrência não é resolvida até uma nova sincronização bem-sucedida; o administrador responsável é preservado. |
@@ -59,7 +59,7 @@ Os testes cobrem geração de chave por janela, conteúdo sanitizado, entrega HT
 
 ## Monitoramento semanal e recuperação
 
-A Vercel executa `/api/cron/integration-health` às segundas-feiras, 12:00 UTC. A rotina calcula as métricas da integração Sympla, grava o último estado em `integration_health_states` e consulta o último batimento de `/api/cron/sympla-sync` e `/api/cron/event-reminders` em `scheduled_route_heartbeats`. O batimento da sincronização deve ocorrer em até 20 minutos; o dos lembretes, em até 26 horas. Falha registrada, ausência de batimento ou atraso além desse limite é classificado como crítico.
+A Vercel executa `/api/cron/integration-health` às segundas-feiras, 18:00 UTC. A rotina calcula as métricas da integração Sympla, grava o último estado em `integration_health_states` e consulta o último batimento de `/api/cron/sympla-sync` e `/api/cron/event-reminders` em `scheduled_route_heartbeats`. Os dois batimentos diários devem ocorrer em até 26 horas; falha registrada, ausência de batimento ou atraso além desse limite é classificado como crítico.
 
 | Nível | Critério de dead letters e falhas | Ação no Slack |
 |---|---|---|

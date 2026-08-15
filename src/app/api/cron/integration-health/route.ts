@@ -11,7 +11,7 @@ type HealthRow = IntegrationHealthMetrics & { integration_id: string; provider: 
 type HeartbeatRow = { route_path: string; status: "succeeded" | "failed"; executed_at: string };
 
 const CRON_ROUTE_LIMITS = [
-  { path: "/api/cron/sympla-sync", maxAgeMinutes: 20 },
+  { path: "/api/cron/sympla-sync", maxAgeMinutes: 1_560 },
   { path: "/api/cron/event-reminders", maxAgeMinutes: 1_560 },
 ] as const;
 

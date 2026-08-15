@@ -19,16 +19,16 @@ describe("classifyIntegrationHealth", () => {
     expect(shouldSendRecovery("healthy", "healthy")).toBe(false);
   });
 
-  it("detecta cron ausente, falho ou atrasado", () => {
+  it("detecta cron diário ausente, falho ou atrasado", () => {
     const now = new Date("2026-08-17T12:00:00.000Z");
-    expect(classifyCronRouteHealth(null, 20, now)).toBe("critical");
-    expect(classifyCronRouteHealth({ routePath: "/api/cron/sympla-sync", status: "failed", executedAt: "2026-08-17T11:59:00.000Z" }, 20, now)).toBe("critical");
-    expect(classifyCronRouteHealth({ routePath: "/api/cron/sympla-sync", status: "succeeded", executedAt: "2026-08-17T11:35:00.000Z" }, 20, now)).toBe("critical");
+    expect(classifyCronRouteHealth(null, 1_560, now)).toBe("critical");
+    expect(classifyCronRouteHealth({ routePath: "/api/cron/sympla-sync", status: "failed", executedAt: "2026-08-17T11:59:00.000Z" }, 1_560, now)).toBe("critical");
+    expect(classifyCronRouteHealth({ routePath: "/api/cron/sympla-sync", status: "succeeded", executedAt: "2026-08-16T09:59:00.000Z" }, 1_560, now)).toBe("critical");
   });
 
-  it("aceita cron recente e alerta antes do atraso máximo", () => {
+  it("aceita cron diário recente e alerta antes do atraso máximo", () => {
     const now = new Date("2026-08-17T12:00:00.000Z");
-    expect(classifyCronRouteHealth({ routePath: "/api/cron/sympla-sync", status: "succeeded", executedAt: "2026-08-17T11:45:00.000Z" }, 20, now)).toBe("healthy");
-    expect(classifyCronRouteHealth({ routePath: "/api/cron/sympla-sync", status: "succeeded", executedAt: "2026-08-17T11:44:00.000Z" }, 20, now)).toBe("warning");
+    expect(classifyCronRouteHealth({ routePath: "/api/cron/sympla-sync", status: "succeeded", executedAt: "2026-08-17T00:00:00.000Z" }, 1_560, now)).toBe("healthy");
+    expect(classifyCronRouteHealth({ routePath: "/api/cron/sympla-sync", status: "succeeded", executedAt: "2026-08-16T15:00:00.000Z" }, 1_560, now)).toBe("warning");
   });
 });

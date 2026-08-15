@@ -152,3 +152,5 @@
 - [x] Auditar todas as opções de eventos e permissões do Mercado Pago e implementar somente integrações internas necessárias e seguras
 - [x] Implementar roteamento defensivo de tópicos Mercado Pago, incluindo descarte auditável de eventos não suportados e preparo explícito para Point
 - [x] Validar o roteamento de tópicos Mercado Pago com testes unitários, tipagem e build de produção
+- [x] Diagnosticar a execução com falha no GitHub e coletar seus logs de workflow
+- [x] Corrigir, validar e sincronizar a causa identificada no check de deployment Vercel
