@@ -138,3 +138,8 @@
 - [x] Ampliar relatórios com KPIs, gráficos configuráveis e exportações CSV, XLSX e PDF
 - [x] Adicionar exportações autorizadas para clientes, vendas de produtos, eventos e relatórios
 - [x] Validar migrações, permissões, acessibilidade, testes e build das melhorias operacionais
+
+- [x] Executar testes controlados da API administrativa de exportação, incluindo autorização, parâmetros, formatos e cabeçalhos de resposta
+- [x] Revisar e priorizar as pendências operacionais externas, com plano de pré-requisitos para a integração Mercado Pago POS
+- [ ] Restabelecer o acionamento automático da Vercel pela integração com GitHub para publicar o commit atual da `main`
+- [ ] Validar ou rotacionar a credencial `SYMPLA_API_TOKEN` e suas permissões, pois a verificação remota atual retorna HTTP 403
