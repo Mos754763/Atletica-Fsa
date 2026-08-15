@@ -154,3 +154,5 @@
 - [x] Validar o roteamento de tópicos Mercado Pago com testes unitários, tipagem e build de produção
 - [x] Diagnosticar a execução com falha no GitHub e coletar seus logs de workflow
 - [x] Corrigir, validar e sincronizar a causa identificada no check de deployment Vercel
+- [x] Documentar a cobertura de testes que impede regressões na configuração de cron da Vercel
+- [x] Verificar os logs e evidências de agendamento e execução dos cron jobs diários na Vercel; nenhuma execução automática havia ocorrido no recorte de logs consultado
