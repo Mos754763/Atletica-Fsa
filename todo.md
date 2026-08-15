@@ -157,8 +157,12 @@
 - [x] Documentar a cobertura de testes que impede regressões na configuração de cron da Vercel
 - [x] Verificar os logs e evidências de agendamento e execução dos cron jobs diários na Vercel; nenhuma execução automática havia ocorrido no recorte de logs consultado
 - [x] Auditar todos os webhooks e rotas de notificação configurados, incluindo Mercado Pago, Sympla, Slack e cron interno
-- [ ] Definir e implementar, após escolha do canal, monitoramento periódico e alertas externos para falhas de cron
-- [ ] Configurar o alerta Slack em Production e Preview e validar uma entrega controlada
-- [ ] Criar script manual de diagnóstico dos cron jobs e testes automatizados do seu contrato de saída
-- [ ] Simular com segurança uma notificação assinada do Mercado Pago sem gerar conciliação comercial
-- [ ] Documentar todas as variáveis de ambiente, escopo e procedimento de configuração na Vercel e Supabase
+- [x] Definir e implementar alertas Slack para falhas de cron, com deduplicação e alerta de recuperação
+- [x] Configurar o alerta Slack em Production e Preview e validar uma entrega controlada
+- [x] Criar script manual de diagnóstico dos cron jobs e testes automatizados do seu contrato de saída
+- [x] Simular com segurança uma notificação do Mercado Pago sem gerar conciliação comercial
+- [x] Documentar todas as variáveis de ambiente, escopo e procedimento de configuração na Vercel e Supabase
+- [x] Corrigir o erro de build do Next.js que importa `Html` fora de `pages/_document` durante o pré-render de `/404`
+- [x] Corrigir a tipagem de rota nula na barra lateral ERP revelada pelo build de produção
+- [x] Fixar `NODE_ENV=production` no build para impedir a regressão do erro de pré-render do Next.js
+- [x] Isolar o teste opcional de credencial Slack da suíte unitária para evitar timeout de rede externa

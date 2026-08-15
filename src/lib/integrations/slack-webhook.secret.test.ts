@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 const webhookUrl = process.env.SLACK_SYMPLA_ALERT_WEBHOOK_URL;
+const runLiveWebhookTest = process.env.RUN_LIVE_SLACK_WEBHOOK_TEST === "true";
 
 describe("Slack incoming webhook credential", () => {
-  it.skipIf(!webhookUrl)("aceita uma mensagem de validação do backend", async () => {
+  it.skipIf(!webhookUrl || !runLiveWebhookTest)("aceita uma mensagem de validação do backend", async () => {
     const response = await fetch(webhookUrl!, {
       method: "POST",
       headers: { "content-type": "application/json" },

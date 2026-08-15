@@ -30,7 +30,7 @@ const navigationItems: NavigationItem[] = [
 ];
 
 export function ErpSidebar({ displayName, role, isPresident, canAccessBuilder, collapsed, onCollapsedChange }: ErpSidebarProps) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
   const reducedMotion = useReducedMotion();
   const availableItems = role === "cliente" ? [] : role === "cozinha"
     ? navigationItems.filter((item) => item.href === "/admin")
