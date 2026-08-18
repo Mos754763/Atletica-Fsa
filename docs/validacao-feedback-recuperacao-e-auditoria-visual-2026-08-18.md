@@ -45,6 +45,22 @@ No deployment do commit `933c252`, a vitrine continua estruturalmente acessível
 
 Como medida de contenção focada em legibilidade, a próxima correção desativa no tema escuro as camadas exclusivamente decorativas `ambient-scene` e `frontend-fx`. A vitrine conserva o tema, os controles e os componentes funcionais, eliminando planos de fundo com composição independente até que uma implementação de efeitos escuros possa ser reintroduzida com isolamento visual validado.
 
+### Publicação da contenção
+
+O commit `63b22ba` — `fix: prevent dark storefront visual overlay` — foi enviado para `main`. Ele preserva a regra de empilhamento da aplicação e, no tema escuro, remove apenas as duas camadas decorativas que não participam da navegação ou da compra. A alteração foi coberta pelo teste de regressão de tema; a suíte retornou **118 testes aprovados**, com **3 testes intencionalmente ignorados**, e o build de produção terminou com sucesso. Os avisos existentes do Autoprefixer sobre `start`/`end` em CSS não interromperam a compilação.
+
+No painel da Vercel, o deployment de Production de `63b22ba` foi iniciado normalmente e encontrava-se em **Building** aos 60 segundos. O deployment anterior (`933c252`) permanecia **Ready**; a aceitação visual será repetida exclusivamente quando `63b22ba` estiver em **Ready**.
+
+Após cerca de três minutos, o status de `63b22ba` ainda era **Building**, acima do tempo observado nos deploys imediatamente anteriores. A publicação não indicava falha; a verificação continua pendente de seu estado final, sem qualquer alteração de configuração, dados ou pagamentos de Production.
+
+### Resultado da tentativa de contenção
+
+A URL do deployment `63b22ba` já respondeu com a vitrine completa em modo claro. Porém, ao alternar para o modo escuro, os elementos continuaram presentes e navegáveis na árvore de acessibilidade, enquanto os textos, imagens e superfícies de interface não eram desenhados sobre o fundo. Portanto, a remoção das camadas decorativas não resolve a causa raiz; a investigação passa a medir estilos computados e a identificar qual regra ou comportamento de renderização suprime a pintura dos descendentes em modo escuro.
+
+### Causa raiz identificada
+
+O contêiner `.store-cart` é um painel fixo que ocupa toda a viewport mesmo quando fechado. No modo escuro, uma regra genérica de superfícies atribuiu `background-color:#121e32` ao contêiner — em vez de somente ao painel interno — criando uma lâmina opaca acima da vitrine. A correção mantém o invólucro transparente em modo escuro; o fundo permanece aplicado apenas em `.store-cart__panel` quando o carrinho é aberto. Foi incluído um teste de regressão estático para a regra específica.
+
 ## Limite da validação humana
 
 O único trecho que exige intervenção do administrador é a confirmação real de um novo e-mail de recuperação, seguida da escolha privada de senha. Nenhuma senha será solicitada, armazenada ou informada no registro técnico.

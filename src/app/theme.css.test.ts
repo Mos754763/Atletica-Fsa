@@ -24,4 +24,8 @@ describe("proteção visual da loja no tema escuro", () => {
     expect(themeStyles).toContain('html[data-theme="dark"] .ambient-scene,html[data-theme="dark"] .frontend-fx');
     expect(themeStyles).toContain("display:none!important");
   });
+
+  it("mantém transparente o invólucro do carrinho quando ele está fechado", () => {
+    expect(themeStyles).toContain('html[data-theme="dark"] .store-cart { background-color:transparent!important; }');
+  });
 });
