@@ -29,6 +29,10 @@ Durante a inspeção do Preview de Production em `https://atletica-53q85iyxs-moi
 
 Na inspeção do deployment posterior em modo claro, a vitrine renderizou as imagens de produto, filtros, títulos, preços e CTA normalmente após a estabilização da página. Assim, a disponibilidade das imagens não é bloqueio geral; a correção deve preservar esse comportamento no claro e resolver especificamente o contraste/revelação no escuro.
 
+### Revalidação do modo escuro — commit `ee9dd56`
+
+No deployment `https://atletica-3uz32a542-moises-faustino-rodrigues-s-projects.vercel.app/loja`, os produtos e controles responderam corretamente em modo claro. Após a alternância para modo escuro, o fundo azul-marinho foi aplicado, mas marca, textos, filtros e cartões permaneceram visualmente invisíveis enquanto seguiam interativos. A regra de contraste adicionada anteriormente não eliminou a causa raiz; a investigação deve focar a camada de revelação/empilhamento aplicada após a transição de tema.
+
 ## Limite da validação humana
 
 O único trecho que exige intervenção do administrador é a confirmação real de um novo e-mail de recuperação, seguida da escolha privada de senha. Nenhuma senha será solicitada, armazenada ou informada no registro técnico.
