@@ -58,7 +58,7 @@ Nenhuma cobrança de Production foi realizada. A liquidação ponta a ponta cont
 
 Após o encerramento desta rodada, o painel da Vercel confirmou a mensagem `Automation Bypass removed` e voltou a exibir somente a ação `Add Secret`. Portanto, nenhum bypass temporário permanece ativo. A confirmação do usuário de que a transação foi considerada concluída para fins de navegação foi preservada como decisão operacional, mas não altera a evidência técnica de banco: até uma nova aprovação sandbox verificável, esta rodada deve ser classificada como **checkout criado, não liquidado**.
 
-Com confirmação explícita, a configuração de **Modo de teste** do Mercado Pago foi restaurada para `https://atletica-fsa.vercel.app/api/payments/mercado-pago/webhook`. O painel exibiu a confirmação `Pronto! Salvamos os dados da sua configuração com sucesso.`; nenhuma configuração do **Modo de produção** foi aberta ou modificada nessa restauração.
+Com confirmação explícita, a configuração de **Modo de teste** do Mercado Pago foi restaurada para o domínio público canônico `https://atleticafsa.site/api/payments/mercado-pago/webhook`. O painel confirmou que o modo de teste reconhece essa origem sem sufixos adicionais e exibiu `Pronto! Salvamos os dados da sua configuração com sucesso.` após o salvamento. Nenhuma configuração do **Modo de produção** foi aberta ou modificada nessa restauração.
 
 ## Próxima sequência operacional
 
