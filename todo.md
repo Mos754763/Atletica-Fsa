@@ -209,3 +209,7 @@
 - [x] Criar e revogar um bypass temporário de proteção da Vercel para o Preview de homologação, sem expor Production
 
 - [x] Permitir que pedido aguardando pagamento retome a preferência Mercado Pago já criada, sem duplicar pedido ou reserva de estoque
+
+- [x] Diagnosticar o HTTP 403 da API Sympla, validar escopo e titularidade do token e corrigir a autenticação sem expor a credencial
+
+- [x] Corrigir o escopo de Production das variáveis públicas do Supabase na Vercel para restabelecer as rotas administrativas e permitir a validação da Sympla
