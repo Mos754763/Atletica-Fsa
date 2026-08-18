@@ -199,3 +199,5 @@
 - [ ] Validar a origem atleticafsa.site em callbacks, links de e-mail e ambientes Preview e Production sem cruzar dados de homologação
 
 - [x] Garantir atualização do catálogo de homologação nas vitrines públicas após alterações administrativas ou de estoque
+
+- [ ] Corrigir a configuração pública do Supabase ausente no Preview de homologação e revalidar o início do Checkout Pro sandbox

@@ -5,7 +5,7 @@ import { ArrowLeft, Eye, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-reac
 import { useMemo, useState } from "react";
 import { formatBRL } from "@/lib/format";
 import type { CatalogProduct, CatalogSalesBatch, CatalogVariant } from "@/lib/catalog";
-import { createClient } from "@/lib/supabase/client";
+import { getBrowserClient } from "@/lib/supabase/client";
 import { resolveFsaProductImage } from "@/lib/store-product-assets";
 
 type StorefrontProps = { products: CatalogProduct[] };
@@ -61,7 +61,7 @@ export function Storefront({ products }: StorefrontProps) {
   async function startCheckout() {
     setCheckingOut(true); setPaymentNotice(null);
     try {
-      const supabase = createClient(); const { data } = await supabase.auth.getSession();
+      const supabase = await getBrowserClient(); const { data } = await supabase.auth.getSession();
       if (!data.session?.access_token) { window.location.assign("/login?next=/loja"); return; }
       const response = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${data.session.access_token}` }, body: JSON.stringify({ fulfillment, items: cart.map((item) => ({ productId: item.productId, variantId: item.variantId ?? undefined, salesBatchId: item.salesBatchId ?? undefined, quantity: item.quantity })) }) });
       const body = await response.json() as { checkoutUrl?: string; error?: string };
