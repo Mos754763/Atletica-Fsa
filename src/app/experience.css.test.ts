@@ -9,6 +9,7 @@ const homePage = readFileSync(resolve(process.cwd(), "src/app/page.tsx"), "utf8"
 const loginPage = readFileSync(resolve(process.cwd(), "src/app/login/page.tsx"), "utf8");
 const resetPasswordPage = readFileSync(resolve(process.cwd(), "src/app/redefinir-senha/page.tsx"), "utf8");
 const eventsPage = readFileSync(resolve(process.cwd(), "src/app/eventos/page.tsx"), "utf8");
+const landingMotion = readFileSync(resolve(process.cwd(), "src/components/landing/LandingMotion.tsx"), "utf8");
 
 describe("experiência pública interativa", () => {
   it("desativa o cursor visual para toque e preferência de movimento reduzido", () => {
@@ -58,6 +59,9 @@ describe("experiência pública interativa", () => {
     expect(homePage).toContain('const heroArtwork = "/manus-storage/fsa-mascot-hero-transparent_508641e3.png"');
     expect(homePage).toContain('const heroArtworkFallback = institutionalAsset("fsa-hero-gestao-2026.png")');
     expect(experienceStyles).toContain(".hero__official-art { width:min(470px,100%)");
+    expect(experienceStyles).toContain("mix-blend-mode:screen");
     expect(experienceStyles).toContain("filter:drop-shadow(0 30px 35px rgba(0,0,0,.28))");
+    expect(landingMotion).toContain("const [artworkSource, setArtworkSource] = useState(artwork)");
+    expect(landingMotion).toContain("setArtworkSource(fallbackArtwork)");
   });
 });
