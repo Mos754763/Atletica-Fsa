@@ -176,7 +176,7 @@
 - [x] Confirmar o isolamento de credenciais, banco e gate de pagamentos do ambiente Preview antes de testar pagamento sandbox
 - [x] Executar e evidenciar a idempotência de Webhook Mercado Pago com requisições duplicadas no Preview isolado
 - [x] Aplicar as migrations estruturais no Supabase `atletica-fsa-homolog` e validar a conexão, mantendo o banco sem dados de produção
-- [ ] Provisionar um usuário proprietário exclusivamente na homologação e então aplicar a migration de dados `20260814121000_bootstrap_president.sql`
+- [x] Provisionar um usuário proprietário exclusivamente na homologação e então aplicar a migration de dados `20260814121000_bootstrap_president.sql`
 - [x] Configurar as variáveis exclusivas de Preview apontando para Supabase e Mercado Pago sandbox
 - [x] Verificar o deployment Preview resultante na Vercel e seu estado de runtime
 - [x] Executar o teste de idempotência Mercado Pago com evento sandbox duplicado no Preview isolado
@@ -204,8 +204,8 @@
 
 - [ ] Repetir a aprovação sandbox em uma sessão isolada da conta compradora de teste, sem cartão salvo ou conta de Production
 
-- [ ] Direcionar temporariamente o webhook de teste do Mercado Pago ao Preview isolado e restaurar a URL pública após a evidência
+- [x] Direcionar temporariamente o webhook de teste do Mercado Pago ao Preview isolado e restaurar a URL pública após a evidência
 
-- [ ] Criar e revogar um bypass temporário de proteção da Vercel para o Preview de homologação, sem expor Production
+- [x] Criar e revogar um bypass temporário de proteção da Vercel para o Preview de homologação, sem expor Production
 
 - [x] Permitir que pedido aguardando pagamento retome a preferência Mercado Pago já criada, sem duplicar pedido ou reserva de estoque

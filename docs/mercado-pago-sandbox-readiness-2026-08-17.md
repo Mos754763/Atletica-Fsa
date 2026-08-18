@@ -50,12 +50,20 @@ Com autorização explícita, foi criado um bypass de automação temporário id
 
 O Preview isolado foi acessado com sucesso após a criação do bypass e exibiu a vitrine de homologação, incluindo o produto rastreável de R$ 10,00. A tela de login da aplicação também ficou acessível nessa mesma origem. Nenhuma URL de Production, sessão de Production ou credencial real foi usada nessa validação.
 
+## Consulta pós-Checkout — 18 de agosto de 2026
+
+Uma consulta somente-leitura ao projeto `gfnbdjdqumewspvfxicl`, feita após a navegação ao Checkout Pro sandbox, mostrou que as duas ordens de R$ 10,00 permaneciam com status `aguardando_pagamento` e sem `paid_at`. A tabela `payments` não continha registros e `payment_webhook_events` não possuía novo evento de pagamento. Portanto, o ensaio comprovou a criação da preferência e a chegada ao Checkout Pro, mas **não comprovou liquidação aprovada**.
+
+Nenhuma cobrança de Production foi realizada. A liquidação ponta a ponta continuará pendente até que a conta compradora de teste confirme a forma de pagamento sandbox e, depois disso, sejam observados `orders.paid_at`, uma linha de `payments` e o evento correspondente em `payment_webhook_events`.
+
+Após o encerramento desta rodada, o painel da Vercel confirmou a mensagem `Automation Bypass removed` e voltou a exibir somente a ação `Add Secret`. Portanto, nenhum bypass temporário permanece ativo. A confirmação do usuário de que a transação foi considerada concluída para fins de navegação foi preservada como decisão operacional, mas não altera a evidência técnica de banco: até uma nova aprovação sandbox verificável, esta rodada deve ser classificada como **checkout criado, não liquidado**.
+
+Com confirmação explícita, a configuração de **Modo de teste** do Mercado Pago foi restaurada para `https://atletica-fsa.vercel.app/api/payments/mercado-pago/webhook`. O painel exibiu a confirmação `Pronto! Salvamos os dados da sua configuração com sucesso.`; nenhuma configuração do **Modo de produção** foi aberta ou modificada nessa restauração.
+
 ## Próxima sequência operacional
 
-1. Criar um perfil proprietário exclusivo em homologação e aplicar somente a migration de bootstrap ainda pendente.
-2. Criar um produto de baixo valor, estoque unitário e pedido identificável exclusivamente no catálogo de homologação.
-3. Abrir o Checkout Pro a partir do Preview autenticado como comprador de teste e concluir uma compra aprovada.
-4. Aguardar ou reenviar de forma controlada a notificação `payment` assinada à URL Preview; nunca à Production.
-5. Consultar no banco de homologação o pedido, pagamento, evento de webhook e único movimento de estoque.
-6. Repetir a mesma notificação para comprovar que não surgem pagamento, baixa ou e-mail duplicados.
-7. Revogar qualquer bypass temporário do deployment e registrar os resultados sem dados pessoais ou segredos.
+1. Em uma nova sessão isolada da conta compradora de teste, apontar temporariamente a URL de teste ao Preview de homologação e criar somente o bypass estritamente necessário.
+2. Abrir o Checkout Pro a partir do Preview autenticado, concluir uma compra sandbox aprovada e registrar o identificador sem expor dados sensíveis.
+3. Consultar no banco de homologação o pedido, pagamento, evento de webhook e único movimento de estoque.
+4. Repetir a mesma notificação para comprovar que não surgem pagamento, baixa ou e-mail duplicados.
+5. Restaurar a URL de teste pública e revogar o bypass temporário; registrar os resultados sem dados pessoais ou segredos.
