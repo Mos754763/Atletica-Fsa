@@ -81,7 +81,15 @@ Em modo escuro, o painel de acesso preservou a hierarquia dos campos, o botão G
 
 Uma medição de layout com viewport CSS de **390 × 844 px**, em tema escuro, identificou dois estouros horizontais que não eram aparentes na auditoria desktop: a rota `/redefinir-senha` mantinha uma segunda coluna mínima de 470 px, e a transformação do drawer fechado da loja ampliava a largura rolável do documento.
 
-As correções ajustam a grade da recuperação para uma única coluna abaixo de 780 px e aplicam contenção horizontal apenas quando a vitrine está presente. A medição local posterior confirmou `scrollWidth = clientWidth = 375 px` em `/loja` e `/redefinir-senha`; o drawer permanece fechado sem deslocar o documento e o grid da recuperação passa a uma coluna de 375 px. A suíte Vitest concluiu com **120 testes aprovados** e **3 skips intencionais**. A publicação desta melhoria móvel permanece pendente da criação do commit e da confirmação na Vercel.
+As correções ajustam a grade da recuperação para uma única coluna abaixo de 780 px e aplicam contenção horizontal apenas quando a vitrine está presente. A medição local posterior confirmou `scrollWidth = clientWidth = 375 px` em `/loja` e `/redefinir-senha`; o drawer permanece fechado sem deslocar o documento e o grid da recuperação passa a uma coluna de 375 px. A suíte Vitest concluiu com **120 testes aprovados** e **3 skips intencionais**, e o build de Production terminou sem erro bloqueante. O commit `006057c` (`fix: prevent mobile overflow in store and password reset`) foi enviado para `main`; sua publicação de Production estava em **Building** aos 59 segundos e aguardava a validação no deployment final.
+
+Na checagem subsequente, a publicação `006057c` permaneceu em **Building** por aproximadamente 2 minutos e 55 segundos, embora as publicações anteriores do mesmo projeto tenham concluído em cerca de 45–50 segundos. O build local havia sido concluído, portanto o atraso foi registrado como condição da infraestrutura de publicação a monitorar, sem qualquer alteração em dados de produção ou no bloqueio `PAYMENTS_ENABLED=false`.
+
+Apesar do status ainda em sincronização no painel, a URL direta associada ao deployment `atletica-dopvpva2v-moises-faustino-rodrigues-s-projects.vercel.app` respondeu com a vitrine completa. A validação manual no navegador confirmou o catálogo, cabeçalho, filtros, navegação de eventos e controle de carrinho em modo claro; depois da alternância para escuro, o hero, os filtros, as imagens de produto e o controle do carrinho continuaram legíveis e visíveis. Essa evidência confirma a remoção da sobreposição opaca; permanece apenas a confirmação de estado **Ready** no painel.
+
+Na nova consulta ao painel, a página de deployments abriu sem a lista renderizada no primeiro carregamento. Como a URL direta continuava servindo o deployment com a correção, a confirmação visual da interface foi preservada e a consulta ao status seria repetida após o carregamento do painel.
+
+Na consulta final ao painel da Vercel, o deployment de Production do commit `006057c` foi confirmado como **Ready** (47 s). Assim, a correção responsiva da vitrine e da redefinição de senha está publicada em Production, com validação local de largura móvel, build concluído, testes automatizados aprovados e validação manual da vitrine nos modos claro e escuro.
 
 ## Limite da validação humana
 
