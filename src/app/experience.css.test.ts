@@ -54,10 +54,10 @@ describe("experiência pública interativa", () => {
     expect(eventsPage).toContain('className="events-page events-page--experience"');
   });
 
-  it("usa um asset público institucional confiável no hero editorial", () => {
-    expect(homePage).toContain('const heroArtwork = institutionalAsset("fsa-hero-gestao-2026.png")');
-    expect(homePage).not.toContain('const heroArtwork = "/manus-storage/');
+  it("usa um recorte transparente persistente com fallback institucional confiável no hero editorial", () => {
+    expect(homePage).toContain('const heroArtwork = "/manus-storage/fsa-mascot-hero-transparent_508641e3.png"');
+    expect(homePage).toContain('const heroArtworkFallback = institutionalAsset("fsa-hero-gestao-2026.png")');
     expect(experienceStyles).toContain(".hero__official-art { width:min(470px,100%)");
-    expect(experienceStyles).toContain("mix-blend-mode:screen");
+    expect(experienceStyles).toContain("filter:drop-shadow(0 30px 35px rgba(0,0,0,.28))");
   });
 });

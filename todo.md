@@ -263,3 +263,4 @@
 - [x] Impedir que o drawer fechado e os filtros extensos da loja ampliem horizontalmente o documento em telas móveis
 - [x] Corrigir a sobreposição entre categoria e título nos cartões da vitrine, preservando a leitura de preço e disponibilidade
 - [x] Refinar a composição do mascote institucional no hero para preservar o fundo editorial sem moldura escura visível
+- [x] Publicar um recorte transparente persistente do mascote para o hero, mantendo fallback institucional em caso de indisponibilidade
