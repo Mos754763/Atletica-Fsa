@@ -61,6 +61,12 @@ A URL do deployment `63b22ba` já respondeu com a vitrine completa em modo claro
 
 O contêiner `.store-cart` é um painel fixo que ocupa toda a viewport mesmo quando fechado. No modo escuro, uma regra genérica de superfícies atribuiu `background-color:#121e32` ao contêiner — em vez de somente ao painel interno — criando uma lâmina opaca acima da vitrine. A correção mantém o invólucro transparente em modo escuro; o fundo permanece aplicado apenas em `.store-cart__panel` quando o carrinho é aberto. Foi incluído um teste de regressão estático para a regra específica.
 
+O commit `40c8157` (`fix: prevent closed cart overlay in dark storefront`) foi enviado à branch `main`. A suíte foi aprovada com **119 testes** e **3 skips intencionais**, e o build de Production concluiu com sucesso. Às 20:55, a Vercel registrava o deployment de Production correspondente em **Building** (24 segundos); a validação visual definitiva deve usar a URL associada a esse commit após o status **Ready**.
+
+### Validação de aceitação — aprovada
+
+O deployment `40c8157` ficou disponível na URL `https://atletica-1pcwulj28-moises-faustino-rodrigues-s-projects.vercel.app`. Na rota `/loja`, a alternância para o modo escuro preservou a renderização do cabeçalho, da navegação, do hero, dos filtros, das seis vitrines de produto e de suas imagens. O botão **Ver carrinho** também abriu corretamente o drawer em modo escuro: o backdrop escureceu somente a área externa e o painel lateral apresentou título, estado vazio, instrução e ação de retorno visíveis. A falha de cobertura total da vitrine está, portanto, corrigida na publicação do commit `40c8157`.
+
 ## Limite da validação humana
 
 O único trecho que exige intervenção do administrador é a confirmação real de um novo e-mail de recuperação, seguida da escolha privada de senha. Nenhuma senha será solicitada, armazenada ou informada no registro técnico.

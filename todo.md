@@ -251,5 +251,5 @@
 - [ ] Adicionar confirmação visual detalhada, orientações e rotas de continuidade após a redefinição bem-sucedida da senha
 - [ ] Validar tecnicamente o fluxo completo de recuperação em Production, incluindo callback, sessão, atualização de senha e login subsequente
 - [ ] Revisar as telas prioritárias de Production em desktop e mobile e corrigir problemas visuais evidentes
-- [ ] Investigar e corrigir a visibilidade do conteúdo da loja no modo escuro, que permanece presente no HTML mas não aparece no viewport auditado
-- [ ] Tornar o modo claro o padrão em novas sessões, preservando a preferência explícita do usuário e o acesso ao modo escuro
+- [x] Investigar e corrigir a visibilidade do conteúdo da loja no modo escuro, que permanece presente no HTML mas não aparece no viewport auditado
+- [x] Tornar o modo claro o padrão em novas sessões, preservando a preferência explícita do usuário e o acesso ao modo escuro
