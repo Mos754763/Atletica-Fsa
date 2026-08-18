@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 const experienceStyles = readFileSync(resolve(process.cwd(), "src/app/experience.css"), "utf8");
 const experienceChrome = readFileSync(resolve(process.cwd(), "src/components/fx/ExperienceChrome.tsx"), "utf8");
 const managementCarousel = readFileSync(resolve(process.cwd(), "src/components/landing/ManagementCarousel.tsx"), "utf8");
+const homePage = readFileSync(resolve(process.cwd(), "src/app/page.tsx"), "utf8");
 const loginPage = readFileSync(resolve(process.cwd(), "src/app/login/page.tsx"), "utf8");
 const resetPasswordPage = readFileSync(resolve(process.cwd(), "src/app/redefinir-senha/page.tsx"), "utf8");
 const eventsPage = readFileSync(resolve(process.cwd(), "src/app/eventos/page.tsx"), "utf8");
@@ -51,5 +52,10 @@ describe("experiência pública interativa", () => {
     expect(loginPage).toContain('className="auth-page auth-page--experience"');
     expect(resetPasswordPage).toContain("auth-page--experience auth-page--reset");
     expect(eventsPage).toContain('className="events-page events-page--experience"');
+  });
+
+  it("usa um asset público institucional confiável no hero editorial", () => {
+    expect(homePage).toContain('const heroArtwork = institutionalAsset("fsa-hero-gestao-2026.png")');
+    expect(homePage).not.toContain('const heroArtwork = "/manus-storage/');
   });
 });

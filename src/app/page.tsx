@@ -22,7 +22,7 @@ import { getCatalog } from "@/lib/catalog";
 import { formatBRL } from "@/lib/format";
 
 const instagramUrl = "https://www.instagram.com/atleticafsa/";
-const heroArtwork = "/manus-storage/atletica-fsa-hero-rabbit-editorial_0ef669d1.png";
+const heroArtwork = institutionalAsset("fsa-hero-gestao-2026.png");
 const heroArtworkFallback = institutionalAsset("fsa-hero-gestao-2026.png");
 const storeArtwork = institutionalAsset("fsa-store-pattern.png");
 const eventArtwork = institutionalAsset("fsa-events-pattern.png");

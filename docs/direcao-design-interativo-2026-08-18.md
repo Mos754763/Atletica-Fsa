@@ -40,3 +40,7 @@ Foi construída uma primeira versão da landing com hierarquia tipográfica edit
 ## Validação da vitrine interativa
 
 A prévia local da rota `/loja`, em desktop, confirmou a integração dos cartões com profundidade controlada, imagem consistente, indicação de categoria, título, descrição, preço e disponibilidade. A correção posterior tornou a categoria e o título elementos de bloco independentes, eliminando a sobreposição tipográfica observada durante a revisão. Os atalhos de navegação, filtros, acesso ao carrinho e estados indisponíveis permaneceram visíveis e operáveis.
+
+## Evidência de publicação e correção pendente
+
+Em 18 de agosto de 2026, a implantação de Production do commit `a88c8af` respondeu na URL temporária `https://atletica-4qakklwtj-moises-faustino-rodrigues-s-projects.vercel.app/`. A composição, a barra de progresso e as órbitas do hero foram carregadas, mas a ilustração em `/manus-storage/atletica-fsa-hero-rabbit-editorial_0ef669d1.png` respondeu como imagem quebrada, exibindo o respectivo texto alternativo. O hero foi corrigido para usar como fonte primária o mascote institucional já público em `catalog-assets/institutional/fsa-hero-gestao-2026.png`, cuja disponibilidade foi confirmada diretamente. O asset editorial original permanece fora da rota de produção até receber uma URL pública compatível com a aplicação Vercel.
