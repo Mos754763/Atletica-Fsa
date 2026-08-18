@@ -200,4 +200,12 @@
 
 - [x] Garantir atualização do catálogo de homologação nas vitrines públicas após alterações administrativas ou de estoque
 
-- [ ] Corrigir a configuração pública do Supabase ausente no Preview de homologação e revalidar o início do Checkout Pro sandbox
+- [x] Corrigir a configuração pública do Supabase ausente no Preview de homologação e revalidar o início do Checkout Pro sandbox
+
+- [ ] Repetir a aprovação sandbox em uma sessão isolada da conta compradora de teste, sem cartão salvo ou conta de Production
+
+- [ ] Direcionar temporariamente o webhook de teste do Mercado Pago ao Preview isolado e restaurar a URL pública após a evidência
+
+- [ ] Criar e revogar um bypass temporário de proteção da Vercel para o Preview de homologação, sem expor Production
+
+- [x] Permitir que pedido aguardando pagamento retome a preferência Mercado Pago já criada, sem duplicar pedido ou reserva de estoque
