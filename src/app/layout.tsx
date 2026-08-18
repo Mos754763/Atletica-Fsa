@@ -13,6 +13,7 @@ import "./analytics.css";
 import "./mobile-nav.css";
 import "./erp.css";
 import "./motion.css";
+import "./mobile-overflow.css";
 import { FrontendFx } from "@/components/fx/FrontendFx";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { DEFAULT_THEME } from "@/lib/theme";

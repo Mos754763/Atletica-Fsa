@@ -67,6 +67,22 @@ O commit `40c8157` (`fix: prevent closed cart overlay in dark storefront`) foi e
 
 O deployment `40c8157` ficou disponível na URL `https://atletica-1pcwulj28-moises-faustino-rodrigues-s-projects.vercel.app`. Na rota `/loja`, a alternância para o modo escuro preservou a renderização do cabeçalho, da navegação, do hero, dos filtros, das seis vitrines de produto e de suas imagens. O botão **Ver carrinho** também abriu corretamente o drawer em modo escuro: o backdrop escureceu somente a área externa e o painel lateral apresentou título, estado vazio, instrução e ação de retorno visíveis. A falha de cobertura total da vitrine está, portanto, corrigida na publicação do commit `40c8157`.
 
+### Auditoria pública — landing
+
+Na landing de Production (`atleticafsa.site`), o cabeçalho, os CTAs de loja e eventos, o hero institucional, o mascote, a navegação por seções, a vitrine resumida, a agenda e o rodapé permaneceram navegáveis e legíveis no viewport desktop. A alternância de tema também atualizou a interface sem conteúdo invisível. A continuidade da auditoria cobre eventos, login e a versão mobile destas rotas.
+
+Na rota pública de eventos, a apresentação em modo escuro manteve logo, ação de retorno, título, descrição, ilustração, estado vazio e CTA de criação de conta com contraste suficiente. No momento da auditoria, a lista informa corretamente que não há evento publicado; a cobertura dos estados com ingressos exige a publicação de ao menos um evento de homologação.
+
+No modo claro, a página de eventos preservou suas ações e mensagem de estado vazio. A tela de login em Production também apresentou composição equilibrada: painel institucional, formulário de e-mail e senha, entrada Google, CTA de acesso, criação de conta, recuperação de senha e seletor de tema visíveis, com campos devidamente rotulados.
+
+Em modo escuro, o painel de acesso preservou a hierarquia dos campos, o botão Google, a chamada principal, os links secundários e o botão de entrada sem perda de interatividade ou corte visual. A próxima validação de recuperação exige um novo token de e-mail, pois ele é de uso único e expira.
+
+## Auditoria responsiva complementar
+
+Uma medição de layout com viewport CSS de **390 × 844 px**, em tema escuro, identificou dois estouros horizontais que não eram aparentes na auditoria desktop: a rota `/redefinir-senha` mantinha uma segunda coluna mínima de 470 px, e a transformação do drawer fechado da loja ampliava a largura rolável do documento.
+
+As correções ajustam a grade da recuperação para uma única coluna abaixo de 780 px e aplicam contenção horizontal apenas quando a vitrine está presente. A medição local posterior confirmou `scrollWidth = clientWidth = 375 px` em `/loja` e `/redefinir-senha`; o drawer permanece fechado sem deslocar o documento e o grid da recuperação passa a uma coluna de 375 px. A suíte Vitest concluiu com **120 testes aprovados** e **3 skips intencionais**. A publicação desta melhoria móvel permanece pendente da criação do commit e da confirmação na Vercel.
+
 ## Limite da validação humana
 
 O único trecho que exige intervenção do administrador é a confirmação real de um novo e-mail de recuperação, seguida da escolha privada de senha. Nenhuma senha será solicitada, armazenada ou informada no registro técnico.

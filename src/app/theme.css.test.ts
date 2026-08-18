@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 
 const themeStyles = readFileSync(resolve(process.cwd(), "src/app/theme.css"), "utf8");
 const globalStyles = readFileSync(resolve(process.cwd(), "src/app/globals.css"), "utf8");
+const mobileOverflowStyles = readFileSync(resolve(process.cwd(), "src/app/mobile-overflow.css"), "utf8");
 
 describe("proteção visual da loja no tema escuro", () => {
   it("mantém a raiz e os blocos essenciais da vitrine explicitamente visíveis", () => {
@@ -27,5 +28,15 @@ describe("proteção visual da loja no tema escuro", () => {
 
   it("mantém transparente o invólucro do carrinho quando ele está fechado", () => {
     expect(themeStyles).toContain('html[data-theme="dark"] .store-cart { background-color:transparent!important; }');
+  });
+
+  it("não permite que o drawer fechado ou o layout de recuperação ampliem a página em telas móveis", () => {
+    expect(mobileOverflowStyles).toContain(".store-cart {");
+    expect(mobileOverflowStyles).toContain("overflow: hidden;");
+    expect(mobileOverflowStyles).toContain(".store-page {");
+    expect(mobileOverflowStyles).toContain("overflow-x: clip;");
+    expect(mobileOverflowStyles).toContain("html:has(.store-page)");
+    expect(mobileOverflowStyles).toContain(".auth-page--reset");
+    expect(mobileOverflowStyles).toContain("grid-template-columns: minmax(0, 1fr);");
   });
 });

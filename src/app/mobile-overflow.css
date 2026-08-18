@@ -1,0 +1,19 @@
+.store-cart {
+  overflow: hidden;
+}
+
+.store-page {
+  overflow-x: clip;
+}
+
+html:has(.store-page),
+body:has(.store-page) {
+  overflow-x: clip;
+}
+
+@media (max-width: 780px) {
+  .auth-page--reset {
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+  }
+}

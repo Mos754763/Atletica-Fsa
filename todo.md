@@ -253,3 +253,5 @@
 - [ ] Revisar as telas prioritárias de Production em desktop e mobile e corrigir problemas visuais evidentes
 - [x] Investigar e corrigir a visibilidade do conteúdo da loja no modo escuro, que permanece presente no HTML mas não aparece no viewport auditado
 - [x] Tornar o modo claro o padrão em novas sessões, preservando a preferência explícita do usuário e o acesso ao modo escuro
+- [x] Corrigir o estouro horizontal móvel da tela de redefinição de senha sem comprometer a composição desktop
+- [x] Impedir que o drawer fechado e os filtros extensos da loja ampliem horizontalmente o documento em telas móveis
