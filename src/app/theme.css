@@ -25,5 +25,7 @@ html[data-theme="dark"] .store-page :is(.store-detail__content>p:not(.eyebrow),.
 html[data-theme="dark"] main.store-page { position:relative!important; z-index:10!important; isolation:auto!important; overflow:visible!important; visibility:visible!important; opacity:1!important; filter:none!important; transform:none!important; clip-path:none!important; content-visibility:visible!important; }
 html[data-theme="dark"] main.store-page>:not(.store-cart,.store-detail,.store-rail) { position:relative!important; z-index:1!important; visibility:visible!important; opacity:1!important; filter:none!important; mix-blend-mode:normal!important; }
 html[data-theme="dark"] .store-page :is(.store-nav,.store-hero,.store-filters,.store-grid,.store-product,.store-product__visual,.store-product__body,.store-product footer) { visibility:visible!important; opacity:1!important; filter:none!important; mix-blend-mode:normal!important; }
+/* A vitrine prioriza legibilidade: os canvases decorativos ficam fora da composição escura. */
+html[data-theme="dark"] .ambient-scene,html[data-theme="dark"] .frontend-fx { display:none!important; }
 
 @media(max-width:640px){.theme-toggle{right:13px;bottom:14px;min-height:40px;padding:0 12px}.theme-toggle__label{display:none}}

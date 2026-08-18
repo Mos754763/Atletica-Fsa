@@ -41,6 +41,10 @@ Uma navegação direta à URL gerada e uma alternância para o modo escuro ocorr
 
 Após o deployment ficar **Ready**, a validação no domínio canônico ainda exibiu a árvore interativa da vitrine sem a camada gráfica dos seus conteúdos no modo escuro. A investigação identificou uma causa específica: o seletor global que eleva filhos diretos de `body` a `z-index: 1` também atingia `.frontend-fx`. Isso anulava o `z-index: -1` definido para a camada de efeitos e podia colocá-la sobre uma rota da aplicação. A correção subsequente exclui explicitamente `.frontend-fx` desse seletor e fixa sua posição no plano de fundo.
 
+No deployment do commit `933c252`, a vitrine continua estruturalmente acessível após ativar o modo escuro — os controles, os produtos e as ações permanecem presentes na árvore de acessibilidade —, mas sua apresentação visual ainda está coberta por um plano uniforme. Como a camada de efeitos já foi rebaixada, esta evidência indica que há uma segunda causa de composição ou de cascata a ser isolada antes de considerar a correção concluída.
+
+Como medida de contenção focada em legibilidade, a próxima correção desativa no tema escuro as camadas exclusivamente decorativas `ambient-scene` e `frontend-fx`. A vitrine conserva o tema, os controles e os componentes funcionais, eliminando planos de fundo com composição independente até que uma implementação de efeitos escuros possa ser reintroduzida com isolamento visual validado.
+
 ## Limite da validação humana
 
 O único trecho que exige intervenção do administrador é a confirmação real de um novo e-mail de recuperação, seguida da escolha privada de senha. Nenhuma senha será solicitada, armazenada ou informada no registro técnico.

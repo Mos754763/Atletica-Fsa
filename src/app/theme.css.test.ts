@@ -19,4 +19,9 @@ describe("proteção visual da loja no tema escuro", () => {
     expect(globalStyles).toContain("body>.frontend-fx { z-index:-1; }");
     expect(globalStyles).toContain("body>main.store-page { z-index:10; }");
   });
+
+  it("remove camadas decorativas que possam encobrir o conteúdo no tema escuro", () => {
+    expect(themeStyles).toContain('html[data-theme="dark"] .ambient-scene,html[data-theme="dark"] .frontend-fx');
+    expect(themeStyles).toContain("display:none!important");
+  });
 });
