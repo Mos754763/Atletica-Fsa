@@ -4,6 +4,12 @@
 
 O commit `31e44fb` (`feat: add password reset success confirmation`) foi enviado para a branch `main` e acionou um deployment de Production na Vercel. Em verificações sucessivas até aproximadamente quatro minutos após o push, o deployment ainda constava como **Building**. A URL direta observada para inspeção é `https://atletica-53q85iyxs-moises-faustino-rodrigues-s-projects.vercel.app/`. A validação pública do novo estado de sucesso deve começar somente após a transição para **Ready**.
 
+Posteriormente, o commit `8eaec9e` (`fix: improve store theme defaults and dark contrast`) foi promovido para `main`. O build local concluiu sem erro bloqueante; no painel da Vercel, o deployment de Production correspondente permaneceu em `Building` durante a primeira inspeção, acima do tempo habitual observado para este projeto. A investigação seguirá pelo detalhe do deployment, sem alterar configurações nem reimplantar manualmente.
+
+O deployment `8eaec9e` concluiu como **Ready** em 47 segundos. No domínio canônico `https://atleticafsa.site/loja`, uma nova sessão apresentou o modo claro como padrão e mostrou a navegação, filtros, vitrine e carrinho; as imagens começaram a renderizar conforme a página estabilizou.
+
+Ao alternar manualmente o domínio canônico para o modo escuro, a vitrine permaneceu invisível mesmo após a estabilização da transição. Os elementos continuam disponíveis no DOM e acessíveis por teclado/leitor de tela, portanto a falha é visual (cores, sobreposição ou opacidade), não de carregamento de catálogo. O item continua bloqueado no checklist para uma correção específica antes da conclusão da auditoria visual.
+
 ## Garantias já verificadas localmente
 
 - A suíte Vitest concluiu com **115 testes aprovados** e **3 testes intencionalmente ignorados**.
@@ -20,6 +26,8 @@ O commit `31e44fb` (`feat: add password reset success confirmation`) foi enviado
 ## Auditoria visual da loja
 
 Durante a inspeção do Preview de Production em `https://atletica-53q85iyxs-moises-faustino-rodrigues-s-projects.vercel.app/loja`, o conteúdo semântico e os controles interativos da vitrine foram encontrados no HTML — navegação, filtros, seis produtos, carrinho e seletor de tema. Entretanto, no tema escuro o viewport exibiu apenas o fundo, sem a camada visual da loja. A ocorrência foi mantida no checklist como falha de visibilidade, e não como estado transitório de animação.
+
+Na inspeção do deployment posterior em modo claro, a vitrine renderizou as imagens de produto, filtros, títulos, preços e CTA normalmente após a estabilização da página. Assim, a disponibilidade das imagens não é bloqueio geral; a correção deve preservar esse comportamento no claro e resolver especificamente o contraste/revelação no escuro.
 
 ## Limite da validação humana
 
