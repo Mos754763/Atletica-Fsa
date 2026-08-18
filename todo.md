@@ -142,12 +142,17 @@
 - [x] Executar testes controlados da API administrativa de exportação, incluindo autorização, parâmetros, formatos e cabeçalhos de resposta
 - [x] Revisar e priorizar as pendências operacionais externas, com plano de pré-requisitos para a integração Mercado Pago POS
 - [ ] Restabelecer o acionamento automático da Vercel pela integração com GitHub para publicar o commit atual da `main`
-- [ ] Validar ou rotacionar a credencial `SYMPLA_API_TOKEN` e suas permissões, pois a verificação remota atual retorna HTTP 403
+- [x] Validar ou rotacionar a credencial `SYMPLA_API_TOKEN` e suas permissões, pois a verificação remota atual retorna HTTP 403
 - [x] Tornar a verificação remota da Sympla opt-in para impedir que uma credencial inválida bloqueie a suíte unitária e o CI
 - [x] Documentar plano de implementação, endpoints, segurança e homologação da integração Mercado Pago POS
 - [x] Especificar migration SQL, controles de idempotência e payloads da integração Mercado Pago Point
 - [x] Implementar suíte automatizada de resiliência Point para idempotência, assinatura de webhook, deduplicação, concorrência e conciliação
-- [ ] Corrigir a entrega SMTP de confirmações do Supabase Auth e validar cadastro externo, confirmação e redirecionamento
+- [x] Corrigir a entrega SMTP de confirmações do Supabase Auth e validar cadastro externo, confirmação e redirecionamento
+
+- [x] Documentar a configuração segura das variáveis Slack na Vercel e os comandos locais de simulação da integração Sympla
+
+- [x] Adicionar plano de contingência para indisponibilidade da Sympla em picos de venda e guia de observabilidade em tempo real na Vercel
+- [ ] Executar o roteiro operacional de validações, registrando evidências, bloqueios e confirmações por ambiente
 - [x] Avaliar Gmail API e SMTP do Gmail como alternativa segura para os e-mails de confirmação do Supabase Auth
 - [x] Orientar a configuração de webhooks, eventos, permissões e credenciais sandbox do Mercado Pago; a validação no painel depende da homologação do usuário
 - [x] Auditar todas as opções de eventos e permissões do Mercado Pago e implementar somente integrações internas necessárias e seguras
@@ -196,7 +201,7 @@
 - [ ] Executar e evidenciar a liquidação aprovada e o replay idempotente no Mercado Pago sandbox
 - [ ] Validar testes, build, acessibilidade e publicar a documentação final da reestruturação
 
-- [ ] Validar a origem atleticafsa.site em callbacks, links de e-mail e ambientes Preview e Production sem cruzar dados de homologação
+- [x] Validar a origem atleticafsa.site em callbacks, links de e-mail e ambientes Preview e Production sem cruzar dados de homologação
 
 - [x] Garantir atualização do catálogo de homologação nas vitrines públicas após alterações administrativas ou de estoque
 
@@ -213,3 +218,9 @@
 - [x] Diagnosticar o HTTP 403 da API Sympla, validar escopo e titularidade do token e corrigir a autenticação sem expor a credencial
 
 - [x] Corrigir o escopo de Production das variáveis públicas do Supabase na Vercel para restabelecer as rotas administrativas e permitir a validação da Sympla
+
+- [ ] Validar entrega real de e-mails de autenticação e transacionais com caixa externa, domínio remetente e rastreabilidade ponta a ponta
+- [ ] Executar ensaio isolado de venda, pagamento sandbox, emissão, sincronização e check-in de ingresso sem habilitar pagamentos em Production
+- [ ] Validar alertas automáticos de falha e recuperação da Sympla no Slack, incluindo deduplicação e reprocessamento auditável de dead letters
+- [ ] Diagnosticar e corrigir o retorno genérico da RPC de inscrição gratuita no preview de homologação, preservando dados de Production
+- [ ] Concluir o ensaio de ingresso gratuito com confirmação de inscrição e check-in idempotente no ambiente de homologação
