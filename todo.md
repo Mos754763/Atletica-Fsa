@@ -255,7 +255,7 @@
 - [x] Reformular a landing page com narrativa editorial, profundidade visual, objetos interativos e carrosséis acessíveis
 - [x] Evoluir a vitrine com interações de produto, transições táteis e navegação contextual sem comprometer carrinho ou conversão
 - [x] Atualizar eventos, login, recuperação de senha e conta com o sistema visual coeso e estados de foco/teclado preservados
-- [ ] Validar desktop e mobile, performance, contraste, comportamento sem JavaScript e acessibilidade das novas interações
+- [x] Validar desktop e mobile, performance, contraste, comportamento sem JavaScript e acessibilidade das novas interações
 - [x] Revisar as telas prioritárias de Production em desktop e mobile e corrigir problemas visuais evidentes
 - [x] Investigar e corrigir a visibilidade do conteúdo da loja no modo escuro, que permanece presente no HTML mas não aparece no viewport auditado
 - [x] Tornar o modo claro o padrão em novas sessões, preservando a preferência explícita do usuário e o acesso ao modo escuro
