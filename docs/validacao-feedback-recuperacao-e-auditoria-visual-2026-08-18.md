@@ -91,6 +91,10 @@ Na nova consulta ao painel, a página de deployments abriu sem a lista renderiza
 
 Na consulta final ao painel da Vercel, o deployment de Production do commit `006057c` foi confirmado como **Ready** (47 s). Assim, a correção responsiva da vitrine e da redefinição de senha está publicada em Production, com validação local de largura móvel, build concluído, testes automatizados aprovados e validação manual da vitrine nos modos claro e escuro.
 
+## Validação humana de recuperação de senha — concluída
+
+Em 18 de agosto de 2026, o administrador confirmou o fluxo completo diretamente no domínio canônico `atleticafsa.site`. As evidências enviadas mostram: a tela de sucesso **“Tudo certo. Sua senha foi atualizada.”**, com o aviso de segurança e as ações **“Ir para minha conta”** e **“Explorar a loja”**; em seguida, a rota `/conta` aberta em sessão autenticada, exibindo a área administrativa e os acessos ao ERP e ao ODS. Dessa forma, foram confirmados o callback de recuperação, a atualização de senha, a criação/preservação da sessão e o acesso subsequente à conta.
+
 ## Limite da validação humana
 
 O único trecho que exige intervenção do administrador é a confirmação real de um novo e-mail de recuperação, seguida da escolha privada de senha. Nenhuma senha será solicitada, armazenada ou informada no registro técnico.

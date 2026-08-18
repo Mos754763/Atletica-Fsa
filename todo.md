@@ -248,8 +248,8 @@
 - [x] Aplicar somente alterações de Production explicitamente aprovadas, mantendo PAYMENTS_ENABLED=false e validando por consultas não destrutivas
 - [x] Ajustar a composição responsiva da tela de redefinição de senha, equilibrando painel institucional, formulário e escala tipográfica
 - [x] Corrigir o contraste do cartão de recuperação em modo escuro, evitando títulos claros sobre superfícies claras
-- [ ] Adicionar confirmação visual detalhada, orientações e rotas de continuidade após a redefinição bem-sucedida da senha
-- [ ] Validar tecnicamente o fluxo completo de recuperação em Production, incluindo callback, sessão, atualização de senha e login subsequente
+- [x] Adicionar confirmação visual detalhada, orientações e rotas de continuidade após a redefinição bem-sucedida da senha
+- [x] Validar tecnicamente o fluxo completo de recuperação em Production, incluindo callback, sessão, atualização de senha e login subsequente
 - [x] Revisar as telas prioritárias de Production em desktop e mobile e corrigir problemas visuais evidentes
 - [x] Investigar e corrigir a visibilidade do conteúdo da loja no modo escuro, que permanece presente no HTML mas não aparece no viewport auditado
 - [x] Tornar o modo claro o padrão em novas sessões, preservando a preferência explícita do usuário e o acesso ao modo escuro
