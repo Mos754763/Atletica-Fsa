@@ -266,3 +266,4 @@
 - [x] Publicar um recorte transparente persistente do mascote para o hero, mantendo fallback institucional em caso de indisponibilidade
 - [x] Substituir o caminho de armazenamento não servido no hero por composição recortada do asset institucional público já confirmado
 - [x] Recortar a composição do asset institucional público para ocultar a borda retangular sem reduzir a leitura do mascote
+- [x] Restaurar o contraste do mascote no recorte do hero, preservando a remoção da moldura retangular
