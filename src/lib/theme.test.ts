@@ -7,12 +7,12 @@ describe("resolveThemePreference", () => {
     expect(resolveThemePreference("light", true)).toBe("light");
   });
 
-  it("prioriza o sistema escuro e usa escuro como padrão seguro quando não há escolha", () => {
-    expect(resolveThemePreference(null, true)).toBe("dark");
-    expect(resolveThemePreference(undefined, false)).toBe("dark");
+  it("usa o modo claro como padrão quando não há escolha persistida", () => {
+    expect(resolveThemePreference(null, true)).toBe("light");
+    expect(resolveThemePreference(undefined, false)).toBe("light");
   });
 
   it("ignora valores persistidos inválidos", () => {
-    expect(resolveThemePreference("solarized", true)).toBe("dark");
+    expect(resolveThemePreference("solarized", true)).toBe("light");
   });
 });
