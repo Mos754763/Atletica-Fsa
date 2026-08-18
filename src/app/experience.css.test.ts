@@ -57,5 +57,7 @@ describe("experiência pública interativa", () => {
   it("usa um asset público institucional confiável no hero editorial", () => {
     expect(homePage).toContain('const heroArtwork = institutionalAsset("fsa-hero-gestao-2026.png")');
     expect(homePage).not.toContain('const heroArtwork = "/manus-storage/');
+    expect(experienceStyles).toContain(".hero__official-art { width:min(470px,100%)");
+    expect(experienceStyles).toContain("mix-blend-mode:screen");
   });
 });
