@@ -136,3 +136,5 @@ No GitHub não existia workflow nem execução de GitHub Actions. Foi adicionado
 | Proteção da branch `main` | Indisponível no plano atual para este repositório privado (HTTP 403 informado pelo GitHub) |
 
 A credencial atualmente configurada no GitHub é uma credencial de integração e não expõe escopos de token pessoal. O envio do novo workflow será tentado no commit final; se o GitHub rejeitar a modificação de `.github/workflows/`, será necessário usar uma credencial com permissão `workflow` ou equivalente no GitHub App.
+
+O commit `2d800fd` foi aceito em `main` pelo GitHub, incluindo `.github/workflows/ci.yml`. A primeira execução do workflow **Continuous Integration** foi criada automaticamente por evento `push` na branch `main` (run `3208605…`) e estava em andamento na primeira consulta. Esse resultado será acompanhado antes do encerramento da validação.

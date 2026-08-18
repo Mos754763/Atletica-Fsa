@@ -83,7 +83,7 @@
 - [x] Corrigir o fallback visual de imagens de produto identificado na inspeção local da loja
 
 - [ ] Publicar a versão controlada na Vercel após cadastrar `PAYMENTS_ENABLED=false` em Production e Preview
-- [ ] Adicionar o workflow de CI ao GitHub com uma credencial que possua o escopo `workflow`
+- [x] Adicionar o workflow de CI ao GitHub com uma credencial autorizada para atualizar `.github/workflows/ci.yml`
 
 - [x] Implementar token opaco, expirável e de uso único para retirada de pedidos por QR no ODS
 - [x] Corrigir o escopo de grants `table:*` e a auditoria do Construtor de Tabelas por migração versionada
@@ -181,4 +181,5 @@
 - [x] Verificar o deployment Preview resultante na Vercel e seu estado de runtime
 - [x] Executar o teste de idempotência Mercado Pago com evento sandbox duplicado no Preview isolado
 - [ ] Executar liquidação end-to-end com pagamento sandbox aprovado após criar produto, pedido e pagador exclusivos de homologação
-- [ ] Auditar workflows, checks, gatilhos e integração de deploy do CI/CD GitHub-Vercel
+- [x] Auditar workflows, checks, gatilhos e integração de deploy do CI/CD GitHub-Vercel
+- [ ] Preparar o executável do pnpm no workflow de CI e validar uma execução verde no GitHub Actions
