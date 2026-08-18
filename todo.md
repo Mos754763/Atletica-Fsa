@@ -183,3 +183,4 @@
 - [ ] Executar liquidação end-to-end com pagamento sandbox aprovado após criar produto, pedido e pagador exclusivos de homologação
 - [x] Auditar workflows, checks, gatilhos e integração de deploy do CI/CD GitHub-Vercel
 - [ ] Preparar o executável do pnpm no workflow de CI e validar uma execução verde no GitHub Actions
+- [x] Tornar o teste unitário de resposta definitiva da Sympla independente de um token de ambiente do runner

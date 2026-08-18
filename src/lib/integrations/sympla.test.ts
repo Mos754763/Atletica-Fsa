@@ -1,8 +1,20 @@
-import { describe, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { env } from "@/lib/env";
 import { listSymplaEvents, SymplaApiError, verifySymplaConnection } from "@/lib/integrations/sympla";
 import { normalizeSymplaEvent, syncSymplaEventCatalog } from "@/lib/integrations/sympla-sync";
 
 describe("cliente Sympla", () => {
+  let originalToken: string | undefined;
+
+  beforeEach(() => {
+    originalToken = env.symplaApiToken;
+    env.symplaApiToken ??= "sympla-unit-test-token";
+  });
+
+  afterEach(() => {
+    env.symplaApiToken = originalToken;
+  });
+
   test("normaliza apenas o catálogo externo permitido na homologação", () => {
     expect(normalizeSymplaEvent({ id: "evt-1", name: "Festa FSA", start_date: "2026-10-10T20:00:00Z", end_date: null, url: "https://sympla.com.br/e/evt-1", published: 1, cancelled: 0, image: null })).toEqual({
       externalId: "evt-1", title: "Festa FSA", startsAt: "2026-10-10T20:00:00Z", endsAt: null, url: "https://sympla.com.br/e/evt-1", isPublished: true, isCancelled: false, imageUrl: null,
