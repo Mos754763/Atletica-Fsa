@@ -141,7 +141,7 @@
 
 - [x] Executar testes controlados da API administrativa de exportação, incluindo autorização, parâmetros, formatos e cabeçalhos de resposta
 - [x] Revisar e priorizar as pendências operacionais externas, com plano de pré-requisitos para a integração Mercado Pago POS
-- [ ] Restabelecer o acionamento automático da Vercel pela integração com GitHub para publicar o commit atual da `main`
+- [x] Restabelecer o acionamento automático da Vercel pela integração com GitHub para publicar o commit atual da `main`
 - [x] Validar ou rotacionar a credencial `SYMPLA_API_TOKEN` e suas permissões, pois a verificação remota atual retorna HTTP 403
 - [x] Tornar a verificação remota da Sympla opt-in para impedir que uma credencial inválida bloqueie a suíte unitária e o CI
 - [x] Documentar plano de implementação, endpoints, segurança e homologação da integração Mercado Pago POS
@@ -152,7 +152,7 @@
 - [x] Documentar a configuração segura das variáveis Slack na Vercel e os comandos locais de simulação da integração Sympla
 
 - [x] Adicionar plano de contingência para indisponibilidade da Sympla em picos de venda e guia de observabilidade em tempo real na Vercel
-- [ ] Executar o roteiro operacional de validações, registrando evidências, bloqueios e confirmações por ambiente
+- [x] Executar o roteiro operacional de validações, registrando evidências, bloqueios e confirmações por ambiente
 - [x] Avaliar Gmail API e SMTP do Gmail como alternativa segura para os e-mails de confirmação do Supabase Auth
 - [x] Orientar a configuração de webhooks, eventos, permissões e credenciais sandbox do Mercado Pago; a validação no painel depende da homologação do usuário
 - [x] Auditar todas as opções de eventos e permissões do Mercado Pago e implementar somente integrações internas necessárias e seguras

@@ -18,4 +18,6 @@ O conector Vercel foi habilitado e o vínculo GitHub do projeto `atletica-fsa` f
 
 ## Limpeza concluída
 
-A sobreposição temporária e inválida de `SYMPLA_API_TOKEN`, limitada ao Preview da branch `sincronizacao-sem-ci`, foi removida da Vercel com confirmação explícita. A credencial base, configurada em **Production and Preview**, permanece preservada. O redeploy manual oferecido pelo painel tinha como padrão o ambiente Production e foi cancelado; a aplicação da limpeza será feita pelo próximo Preview automático disparado pelo commit de documentação desta validação.
+A sobreposição temporária e inválida de `SYMPLA_API_TOKEN`, limitada ao Preview da branch `sincronizacao-sem-ci`, foi removida da Vercel com confirmação explícita. A credencial base, configurada em **Production and Preview**, permanece preservada. O redeploy manual oferecido pelo painel tinha como padrão o ambiente Production e foi cancelado.
+
+O commit de documentação `79139e65e07f860f2155e1300246b0e36d1d5150` confirmou a restauração completa do gatilho: a Vercel criou automaticamente um Preview (`dpl_4J2fpxq7pgmGpadeSYBgkrQaCaue`) e um deploy de Production (`dpl_8bNmNFoJDr5fpLntUK1gCH68va7M`), ambos com `source=git`, `githubDeployment=1` e estado final **READY**. O Preview já incorpora a remoção da sobreposição temporária; o Production recebeu apenas documentação e checklist, sem mudanças de dados ou de variáveis.
