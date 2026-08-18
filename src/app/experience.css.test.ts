@@ -59,6 +59,7 @@ describe("experiência pública interativa", () => {
     expect(homePage).toContain('const heroArtwork = institutionalAsset("fsa-hero-gestao-2026.png")');
     expect(homePage).not.toContain('const heroArtwork = "/manus-storage/');
     expect(experienceStyles).toContain(".hero__official-art { width:min(470px,100%)");
+    expect(experienceStyles).toContain("clip-path:ellipse(42% 50% at 72% 50%)");
     expect(experienceStyles).toContain("mix-blend-mode:screen");
     expect(experienceStyles).toContain("filter:drop-shadow(0 30px 35px rgba(0,0,0,.28))");
     expect(landingMotion).toContain("const [artworkSource, setArtworkSource] = useState(artwork)");

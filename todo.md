@@ -264,4 +264,5 @@
 - [x] Corrigir a sobreposição entre categoria e título nos cartões da vitrine, preservando a leitura de preço e disponibilidade
 - [x] Refinar a composição do mascote institucional no hero para preservar o fundo editorial sem moldura escura visível
 - [x] Publicar um recorte transparente persistente do mascote para o hero, mantendo fallback institucional em caso de indisponibilidade
-- [ ] Substituir o caminho de armazenamento não servido no hero por composição recortada do asset institucional público já confirmado
+- [x] Substituir o caminho de armazenamento não servido no hero por composição recortada do asset institucional público já confirmado
+- [x] Recortar a composição do asset institucional público para ocultar a borda retangular sem reduzir a leitura do mascote
