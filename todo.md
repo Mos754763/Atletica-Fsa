@@ -180,6 +180,8 @@
 - [x] Configurar as variáveis exclusivas de Preview apontando para Supabase e Mercado Pago sandbox
 - [x] Verificar o deployment Preview resultante na Vercel e seu estado de runtime
 - [x] Executar o teste de idempotência Mercado Pago com evento sandbox duplicado no Preview isolado
+- [x] Executar nova matriz de webhooks Mercado Pago no Preview: assinatura inválida, tópico ignorado, tópico Point bloqueado e duplicação válida
+- [x] Validar no Supabase de homologação os registros e efeitos de cada cenário de webhook testado
 - [ ] Executar liquidação end-to-end com pagamento sandbox aprovado após criar produto, pedido e pagador exclusivos de homologação
 - [x] Auditar workflows, checks, gatilhos e integração de deploy do CI/CD GitHub-Vercel
 - [x] Preparar o executável do pnpm no workflow de CI e validar uma execução verde no GitHub Actions

@@ -144,3 +144,21 @@ As duas primeiras execuções revelaram problemas de configuração, que foram c
 A terceira execução encontrou uma dependência indevida do teste unitário da Sympla em `SYMPLA_API_TOKEN`, que não existe no runner do GitHub. O teste agora injeta um token fictício somente durante seus casos unitários e mantém as verificações de API externas como opt-in. A porta local completa — typecheck, testes e build — passou após essa correção. A próxima execução GitHub no commit de correção é a confirmação remota pendente.
 
 A execução final do workflow, vinculada ao commit `4f19e45`, concluiu com sucesso: **run 32086315545**, em aproximadamente 1 minuto e 13 segundos. As etapas de instalação, typecheck, testes e build foram aprovadas. O GitHub CLI ainda informa que a credencial de consulta não possui `checks:read` para baixar anotações, mas isso não afetou a execução nem o status verde do workflow.
+
+## Reteste solicitado de webhooks
+
+Em 18 de agosto de 2026, foi iniciada uma nova matriz de testes no mesmo Preview isolado. Antes da execução, o painel de proteção da Vercel confirmou que não havia segredo de bypass ativo e exibia somente a ação de criação de um novo segredo. Um bypass temporário e exclusivo para automação foi autorizado para viabilizar as chamadas diretas e será revogado após os testes.
+
+### Resultado da matriz ampliada
+
+As chamadas foram enviadas apenas ao Preview de homologação. Após a execução, o bypass temporário foi removido e o painel retornou ao estado sem segredos ativos de automação.
+
+| Cenário | Resposta observada | Efeito persistido validado |
+|---|---|---|
+| Assinatura HMAC inválida | HTTP 401 | Nenhum evento persistido. |
+| Tópico sem suporte | HTTP 200; `unsupported_topic` | Nenhum evento persistido. |
+| `point_integration` | HTTP 503; `point_not_implemented` | Nenhuma liquidação; integração Point continua bloqueada. |
+| `merchant_order` válido | HTTP 200; `merchant_order_not_enabled` | Um único evento registrado como `ignored`. |
+| Repetição idêntica de `merchant_order` | HTTP 200; `duplicate: true` | Nenhuma segunda linha criada. |
+
+Para o identificador técnico `homolog-matrix-merchant-1787015133`, a consulta no banco `gfnbdjdqumewspvfxicl` confirmou uma linha em `payment_webhook_events`, uma linha com status `ignored` e código `merchant_order_not_enabled`, além de zero pagamentos e zero movimentos de estoque. O script reproduzível `scripts/test-preview-webhook-matrix.sh` recebe todos os segredos apenas por variáveis de processo e não os persiste no repositório.
