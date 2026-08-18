@@ -237,3 +237,6 @@
 - [x] Consolidar checklist técnico de homologação Mercado Pago para liquidação sandbox, webhook, estoque, idempotência e rollback
 - [x] Executar somente validações não financeiras e reversíveis do checklist Mercado Pago em homologação
 - [x] Preparar conta administrativa exclusiva de homologação para os testes autenticados de alertas e operações
+
+- [ ] Corrigir o fluxo de recuperação de senha do Preview de homologação, incluindo a tela de definição de nova senha após o callback
+- [ ] Validar autenticação por e-mail e senha em homologação antes de retomar o checkout sandbox Mercado Pago

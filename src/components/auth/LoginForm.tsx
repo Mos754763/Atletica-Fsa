@@ -3,8 +3,9 @@
 import { FormEvent, useState } from "react";
 import { ArrowRight, Chrome, Mail, ShieldCheck } from "lucide-react";
 import { getBrowserClient } from "@/lib/supabase/client";
+import { buildPasswordRecoveryRedirect } from "@/lib/auth/password-recovery";
 
-type AuthMode = "login" | "signup";
+type AuthMode = "login" | "signup" | "recovery";
 
 export function LoginForm() {
   const [mode, setMode] = useState<AuthMode>("login");
@@ -45,6 +46,15 @@ export function LoginForm() {
         return;
       }
 
+      if (mode === "recovery") {
+        const { error: recoveryError } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: buildPasswordRecoveryRedirect(window.location.origin),
+        });
+        if (recoveryError) throw recoveryError;
+        setMessage("Se o e-mail estiver cadastrado, você receberá um link seguro para definir uma nova senha.");
+        return;
+      }
+
       const { data, error: signupError } = await supabase.auth.signUp({
         email,
         password,
@@ -67,30 +77,32 @@ export function LoginForm() {
     <div className="auth-card">
       <div className="auth-card__heading">
         <span className="auth-card__eyebrow">ACESSO FSA</span>
-        <h1>{mode === "login" ? "Chegue junto." : "Entre para a torcida."}</h1>
-        <p>Use sua conta para pedir, se inscrever e acompanhar tudo o que acontece na FSA.</p>
+        <h1>{mode === "login" ? "Chegue junto." : mode === "signup" ? "Entre para a torcida." : "Recupere seu acesso."}</h1>
+        <p>{mode === "recovery" ? "Informe seu e-mail para receber um link seguro de definição de nova senha." : "Use sua conta para pedir, se inscrever e acompanhar tudo o que acontece na FSA."}</p>
       </div>
 
-      <button className="auth-google" type="button" onClick={loginWithGoogle} disabled={busy}>
-        <Chrome size={18} /> Continuar com Google
-      </button>
-      <div className="auth-divider"><span>ou use seu e-mail</span></div>
+      {mode !== "recovery" && <>
+        <button className="auth-google" type="button" onClick={loginWithGoogle} disabled={busy}>
+          <Chrome size={18} /> Continuar com Google
+        </button>
+        <div className="auth-divider"><span>ou use seu e-mail</span></div>
+      </>}
 
       <form className="auth-form" onSubmit={handleSubmit}>
         <label>
           <span>E-mail</span>
           <div className="auth-field"><Mail size={17} /><input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="voce@exemplo.com" /></div>
         </label>
-        <label>
+        {mode !== "recovery" && <label>
           <span>Senha</span>
           <div className="auth-field"><ShieldCheck size={17} /><input required minLength={6} type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Mínimo de 6 caracteres" /></div>
-        </label>
+        </label>}
         {error && <p className="auth-feedback auth-feedback--error" role="alert">{error}</p>}
         {message && <p className="auth-feedback" role="status">{message}</p>}
-        <button className="auth-submit" type="submit" disabled={busy}>{busy ? "Aguarde..." : mode === "login" ? "Entrar na FSA" : "Criar minha conta"}<ArrowRight size={18} /></button>
+        <button className="auth-submit" type="submit" disabled={busy}>{busy ? "Aguarde..." : mode === "login" ? "Entrar na FSA" : mode === "signup" ? "Criar minha conta" : "Enviar link de recuperação"}<ArrowRight size={18} /></button>
       </form>
 
-      <p className="auth-switch">{mode === "login" ? "Ainda não tem conta?" : "Já faz parte da FSA?"} <button type="button" onClick={() => { setMode(mode === "login" ? "signup" : "login"); setError(null); setMessage(null); }}>{mode === "login" ? "Criar conta" : "Entrar"}</button></p>
+      {mode === "login" ? <p className="auth-switch">Ainda não tem conta? <button type="button" onClick={() => { setMode("signup"); setError(null); setMessage(null); }}>Criar conta</button> · <button type="button" onClick={() => { setMode("recovery"); setError(null); setMessage(null); }}>Esqueci minha senha</button></p> : <p className="auth-switch">{mode === "signup" ? "Já faz parte da FSA?" : "Lembrou sua senha?"} <button type="button" onClick={() => { setMode("login"); setError(null); setMessage(null); }}>Entrar</button></p>}
     </div>
   );
 }

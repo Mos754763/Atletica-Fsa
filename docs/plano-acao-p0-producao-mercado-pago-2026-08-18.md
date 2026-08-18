@@ -119,3 +119,11 @@ O snapshot da definição atual confirmou que Production ainda contém as duas c
 ## 8. Identidade de homologação confirmada
 
 Foi executada uma verificação somente leitura no Supabase de homologação. A conta administrativa exclusiva `moises.754763@graduacao.fsa.br` possui perfil ativo com papel `admin` e vínculo válido com `auth.users`. Não foi criada, editada, promovida ou teve credencial redefinida nesta etapa. Ela está apta para os ensaios autenticados previstos, desde que a sessão seja iniciada em Preview e não em Production.
+
+## 9. Versionamento e validação contínua
+
+O plano, as referências oficiais, o pré-flight e o checklist foram sincronizados no commit `41525c90f32e2d87f6569c688fd4b281a3273372` (`docs: add P0 production and Mercado Pago action plan`) para `main` e `sincronizacao-sem-ci`. A execução de CI `32167669104` foi concluída com sucesso em 1 minuto e 29 segundos, cobrindo typecheck, testes e build de produção. A consulta de anotações do GitHub retornou 403 por limitação do escopo do token, mas não afetou a execução nem o resultado do workflow.
+
+## 10. Preparação da liquidação sandbox
+
+O pré-flight somente leitura identificou no banco de homologação o produto ativo `Produto de teste — liquidação Mercado Pago`, com preço de **R$ 10,00** e estoque de 5 unidades. A loja do Preview isolado apresenta o item na categoria `Homologação Mercado Pago` como único produto disponível para o ensaio. Nenhum pedido, preferência, pagamento ou estoque foi alterado nesta confirmação inicial.
