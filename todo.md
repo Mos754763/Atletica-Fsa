@@ -250,8 +250,15 @@
 - [x] Corrigir o contraste do cartão de recuperação em modo escuro, evitando títulos claros sobre superfícies claras
 - [x] Adicionar confirmação visual detalhada, orientações e rotas de continuidade após a redefinição bem-sucedida da senha
 - [x] Validar tecnicamente o fluxo completo de recuperação em Production, incluindo callback, sessão, atualização de senha e login subsequente
+- [x] Mapear as referências visuais autorizadas e documentar princípios originais para a experiência pública da ATLETICA FSA
+- [x] Criar uma base compartilhada de motion com cursor responsivo, parallax e revelações por rolagem compatíveis com preferências de movimento reduzido
+- [x] Reformular a landing page com narrativa editorial, profundidade visual, objetos interativos e carrosséis acessíveis
+- [x] Evoluir a vitrine com interações de produto, transições táteis e navegação contextual sem comprometer carrinho ou conversão
+- [x] Atualizar eventos, login, recuperação de senha e conta com o sistema visual coeso e estados de foco/teclado preservados
+- [ ] Validar desktop e mobile, performance, contraste, comportamento sem JavaScript e acessibilidade das novas interações
 - [x] Revisar as telas prioritárias de Production em desktop e mobile e corrigir problemas visuais evidentes
 - [x] Investigar e corrigir a visibilidade do conteúdo da loja no modo escuro, que permanece presente no HTML mas não aparece no viewport auditado
 - [x] Tornar o modo claro o padrão em novas sessões, preservando a preferência explícita do usuário e o acesso ao modo escuro
 - [x] Corrigir o estouro horizontal móvel da tela de redefinição de senha sem comprometer a composição desktop
 - [x] Impedir que o drawer fechado e os filtros extensos da loja ampliem horizontalmente o documento em telas móveis
+- [x] Corrigir a sobreposição entre categoria e título nos cartões da vitrine, preservando a leitura de preço e disponibilidade

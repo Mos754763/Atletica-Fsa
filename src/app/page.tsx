@@ -14,14 +14,16 @@ import {
 } from "lucide-react";
 import { FsaWordmark } from "@/components/brand/FsaWordmark";
 import { SectionTitle } from "@/components/landing/SectionTitle";
-import { FloatingParticles, HeroMotion, HighlightParallax, MagneticLink, MotionButton, MotionCard, MotionReveal, ParallaxArtwork, PointerAura } from "@/components/landing/LandingMotion";
+import { FloatingParticles, HeroMotion, HighlightParallax, MagneticLink, MotionButton, MotionCard, MotionReveal, ParallaxArtwork } from "@/components/landing/LandingMotion";
+import { ManagementCarousel } from "@/components/landing/ManagementCarousel";
 import { MobileNav } from "@/components/landing/MobileNav";
 import { institutionalAsset } from "@/lib/institutional-assets";
 import { getCatalog } from "@/lib/catalog";
 import { formatBRL } from "@/lib/format";
 
 const instagramUrl = "https://www.instagram.com/atleticafsa/";
-const heroArtwork = institutionalAsset("fsa-hero-gestao-2026.png");
+const heroArtwork = "/manus-storage/atletica-fsa-hero-rabbit-editorial_0ef669d1.png";
+const heroArtworkFallback = institutionalAsset("fsa-hero-gestao-2026.png");
 const storeArtwork = institutionalAsset("fsa-store-pattern.png");
 const eventArtwork = institutionalAsset("fsa-events-pattern.png");
 
@@ -57,7 +59,6 @@ export default async function HomePage() {
   const products = catalog.filter((product) => product.isFeatured).slice(0, 4);
   return (
     <main>
-      <PointerAura />
       <section className="hero-shell" id="inicio">
         <nav className="site-nav page-width" aria-label="Navegação principal">
           <Link href="/" aria-label="ATLETICA FSA - Página inicial"><FsaWordmark /></Link>
@@ -82,7 +83,7 @@ export default async function HomePage() {
             </div>
             <div className="hero__signal"><span className="pulse-dot" /> Plataforma integrada <ArrowDownRight size={17} /></div>
           </div>
-          <HeroMotion artwork={heroArtwork} />
+              <HeroMotion artwork={heroArtwork} fallbackArtwork={heroArtworkFallback} />
         </div>
         <div className="hero-ticker" aria-label="Destaques da ATLETICA FSA">
           <span>JOGOS</span><i /> <span>FESTAS</span><i /> <span>CAMPEONATOS</span><i /> <span>TORCIDA</span><i /> <span>LOJA OFICIAL</span><i /> <span>JOGOS</span><i /> <span>FESTAS</span>
@@ -117,14 +118,7 @@ export default async function HomePage() {
             <SectionTitle eyebrow="GESTÃO 2026" title="Quem move a FSA." copy="Conheça os rostos da gestão que transforma organização, torcida e experiências em movimento." />
             <div className="management-heading__actions"><img className="management-section__seal" src={institutionalAsset("gestao-2026/selo-e-mascote.webp")} alt="Selo oficial da ATLETICA FSA" /><a href={instagramUrl} target="_blank" rel="noreferrer" className="text-link management-heading__link"><Instagram size={18} /> Ver no Instagram <ArrowRight size={18} /></a></div>
           </MotionReveal>
-          <div className="management-grid">
-            {management.map((member, index) => (
-              <MotionCard className="management-card motion-card" delay={(index % 4) * 0.06} key={member.name}>
-                <div className="management-card__photo"><img src={member.image} alt={`${member.name}, ${member.role}, na gestão 2026 da ATLETICA FSA`} /></div>
-                <div><span>GESTÃO 2026</span><h3>{member.name}</h3><p>{member.role}</p></div>
-              </MotionCard>
-            ))}
-          </div>
+          <ManagementCarousel people={management} />
         </div>
       </section>
 

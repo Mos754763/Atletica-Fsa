@@ -5,7 +5,7 @@ import styles from "./reset-password.module.css";
 
 export default function PasswordResetPage() {
   return (
-    <main className={`auth-page auth-page--reset ${styles.page}`}>
+    <main className={`auth-page auth-page--experience auth-page--reset ${styles.page}`}>
       <Link href="/" className="auth-logo"><FsaWordmark /></Link>
       <section className={`auth-page__intro ${styles.intro}`}>
         <p className="eyebrow">ACESSO PROTEGIDO</p>

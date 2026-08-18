@@ -4,7 +4,7 @@ import { LoginForm } from "@/components/auth/LoginForm";
 
 export default function LoginPage() {
   return (
-    <main className="auth-page">
+    <main className="auth-page auth-page--experience">
       <Link href="/" className="auth-logo"><FsaWordmark /></Link>
       <section className="auth-page__intro">
         <p className="eyebrow">UMA SÓ TORCIDA</p>
