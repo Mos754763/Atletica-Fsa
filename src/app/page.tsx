@@ -22,8 +22,7 @@ import { getCatalog } from "@/lib/catalog";
 import { formatBRL } from "@/lib/format";
 
 const instagramUrl = "https://www.instagram.com/atleticafsa/";
-const heroArtwork = "/manus-storage/fsa-mascot-hero-transparent_508641e3.png";
-const heroArtworkFallback = institutionalAsset("fsa-hero-gestao-2026.png");
+const heroArtwork = institutionalAsset("fsa-hero-gestao-2026.png");
 const storeArtwork = institutionalAsset("fsa-store-pattern.png");
 const eventArtwork = institutionalAsset("fsa-events-pattern.png");
 
@@ -83,7 +82,7 @@ export default async function HomePage() {
             </div>
             <div className="hero__signal"><span className="pulse-dot" /> Plataforma integrada <ArrowDownRight size={17} /></div>
           </div>
-              <HeroMotion artwork={heroArtwork} fallbackArtwork={heroArtworkFallback} />
+              <HeroMotion artwork={heroArtwork} />
         </div>
         <div className="hero-ticker" aria-label="Destaques da ATLETICA FSA">
           <span>JOGOS</span><i /> <span>FESTAS</span><i /> <span>CAMPEONATOS</span><i /> <span>TORCIDA</span><i /> <span>LOJA OFICIAL</span><i /> <span>JOGOS</span><i /> <span>FESTAS</span>
