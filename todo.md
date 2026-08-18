@@ -246,4 +246,5 @@
 - [x] Inventariar diferenças de código, schema, autenticação, variáveis e integrações entre homologação e Production sem alterar dados
 - [x] Classificar e submeter para aprovação as mudanças seguras de configuração ou migração para Production
 - [x] Aplicar somente alterações de Production explicitamente aprovadas, mantendo PAYMENTS_ENABLED=false e validando por consultas não destrutivas
-- [ ] Ajustar a composição responsiva da tela de redefinição de senha, equilibrando painel institucional, formulário e escala tipográfica
+- [x] Ajustar a composição responsiva da tela de redefinição de senha, equilibrando painel institucional, formulário e escala tipográfica
+- [x] Corrigir o contraste do cartão de recuperação em modo escuro, evitando títulos claros sobre superfícies claras
