@@ -62,6 +62,8 @@ Uma segunda ação de salvamento foi enviada. O botão entrou novamente em proce
 
 Após a recarga da página, o Supabase carregou `noreply@atleticafsa.site` como valor do remetente, sem alterações pendentes no formulário. Isso confirma a persistência da configuração SMTP de Production. Um teste de entrega real permanece separado desta evidência e deve usar uma caixa de e-mail externa com autorização explícita, sem criar dados de teste em Production.
 
+Uma inspeção posterior no painel de **URL Configuration** confirmou o estado final: o **Site URL** é `https://atleticafsa.site` e as três URLs autorizadas são `https://atletica-fsa.vercel.app/auth/callback`, `https://atletica-*-moises-faustino-rodrigues-s-projects.vercel.app/auth/callback` e `https://atleticafsa.site/auth/callback`. Assim, o domínio próprio passou a coexistir com as origens de contingência da Vercel e de Preview.
+
 ## Validação técnica local
 
 Em 18 de agosto de 2026, após as alterações de configuração externas, o repositório passou por `pnpm typecheck`, `pnpm test` e `pnpm build`. O typecheck e o build de produção concluíram com êxito. A suíte Vitest concluiu com **32 arquivos aprovados**, **1 arquivo ignorado**, **108 testes aprovados** e **3 testes ignorados**. O build emitiu apenas avisos existentes do Autoprefixer sobre `start`/`end` em regras de flexbox, sem impedir a compilação.
