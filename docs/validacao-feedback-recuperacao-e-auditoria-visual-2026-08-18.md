@@ -33,6 +33,14 @@ Na inspeção do deployment posterior em modo claro, a vitrine renderizou as ima
 
 No deployment `https://atletica-3uz32a542-moises-faustino-rodrigues-s-projects.vercel.app/loja`, os produtos e controles responderam corretamente em modo claro. Após a alternância para modo escuro, o fundo azul-marinho foi aplicado, mas marca, textos, filtros e cartões permaneceram visualmente invisíveis enquanto seguiam interativos. A regra de contraste adicionada anteriormente não eliminou a causa raiz; a investigação deve focar a camada de revelação/empilhamento aplicada após a transição de tema.
 
+### Correção reforçada — commit `5e6bbe0`
+
+O commit `5e6bbe0` reforça a composição do `main.store-page` em modo escuro, removendo propriedades que poderiam manter uma camada invisível (opacidade, filtro, recorte, transformação, isolamento e `content-visibility`) e fixa a visibilidade explícita dos blocos da vitrine. A suíte local concluiu com **116 testes aprovados** e **3 ignorados intencionalmente**; o build de produção terminou com sucesso, apenas com avisos preexistentes do Autoprefixer. O deployment de Production foi iniciado na Vercel e estava em **Building** aos 27 segundos da primeira inspeção.
+
+Uma navegação direta à URL gerada e uma alternância para o modo escuro ocorreram enquanto a Vercel ainda indicava **Building**. Como esse estado pode apresentar artefatos de versão/cache do deployment anterior, o resultado visual dessa tentativa não é conclusivo e a confirmação só será registrada após a transição para **Ready**.
+
+Após o deployment ficar **Ready**, a validação no domínio canônico ainda exibiu a árvore interativa da vitrine sem a camada gráfica dos seus conteúdos no modo escuro. A investigação identificou uma causa específica: o seletor global que eleva filhos diretos de `body` a `z-index: 1` também atingia `.frontend-fx`. Isso anulava o `z-index: -1` definido para a camada de efeitos e podia colocá-la sobre uma rota da aplicação. A correção subsequente exclui explicitamente `.frontend-fx` desse seletor e fixa sua posição no plano de fundo.
+
 ## Limite da validação humana
 
 O único trecho que exige intervenção do administrador é a confirmação real de um novo e-mail de recuperação, seguida da escolha privada de senha. Nenhuma senha será solicitada, armazenada ou informada no registro técnico.
