@@ -228,3 +228,12 @@
 - [x] Executar um alerta controlado no Slack e confirmar a entrega no canal autorizado
 - [x] Confirmar a entrega externa do e-mail de recuperação e o remetente sem consumir o token
 - [x] Restaurar e comprovar o acionamento automático de deploy entre GitHub e Vercel
+
+- [x] Consolidar relatório PDF auditável de testes, commits, integrações e deploys validados
+- [x] Documentar próximos passos priorizados após a conclusão das integrações externas
+
+- [x] Elaborar plano de ação P0 com responsáveis, aprovações, critérios de aceite e reversão para a mudança de eventos em Production
+- [x] Preparar pacote de migração e validação prévia das correções de inscrição e check-in antes de qualquer alteração em Production
+- [x] Consolidar checklist técnico de homologação Mercado Pago para liquidação sandbox, webhook, estoque, idempotência e rollback
+- [x] Executar somente validações não financeiras e reversíveis do checklist Mercado Pago em homologação
+- [x] Preparar conta administrativa exclusiva de homologação para os testes autenticados de alertas e operações
