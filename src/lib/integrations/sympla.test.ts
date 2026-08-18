@@ -23,7 +23,9 @@ describe("cliente Sympla", () => {
   });
 });
 
-describe.runIf(Boolean(process.env.SYMPLA_API_TOKEN))("credencial Sympla fornecida", () => {
+describe.runIf(
+  process.env.RUN_LIVE_SYMPLA_CONNECTION_TEST === "true" && Boolean(process.env.SYMPLA_API_TOKEN),
+)("credencial Sympla fornecida", () => {
   test("consulta a listagem leve de eventos com o token de servidor", async () => {
     await expect(verifySymplaConnection()).resolves.toMatchObject({ connected: true });
   }, 20_000);

@@ -143,6 +143,7 @@
 - [x] Revisar e priorizar as pendências operacionais externas, com plano de pré-requisitos para a integração Mercado Pago POS
 - [ ] Restabelecer o acionamento automático da Vercel pela integração com GitHub para publicar o commit atual da `main`
 - [ ] Validar ou rotacionar a credencial `SYMPLA_API_TOKEN` e suas permissões, pois a verificação remota atual retorna HTTP 403
+- [x] Tornar a verificação remota da Sympla opt-in para impedir que uma credencial inválida bloqueie a suíte unitária e o CI
 - [x] Documentar plano de implementação, endpoints, segurança e homologação da integração Mercado Pago POS
 - [x] Especificar migration SQL, controles de idempotência e payloads da integração Mercado Pago Point
 - [x] Implementar suíte automatizada de resiliência Point para idempotência, assinatura de webhook, deduplicação, concorrência e conciliação
@@ -162,6 +163,7 @@
 - [x] Criar script manual de diagnóstico dos cron jobs e testes automatizados do seu contrato de saída
 - [x] Simular com segurança uma notificação do Mercado Pago sem gerar conciliação comercial
 - [x] Documentar todas as variáveis de ambiente, escopo e procedimento de configuração na Vercel e Supabase
+- [x] Preservar as credenciais sandbox do Mercado Pago em Preview e confirmar `PAYMENTS_ENABLED=false` em Production antes de habilitar o teste isolado
 - [x] Corrigir o erro de build do Next.js que importa `Html` fora de `pages/_document` durante o pré-render de `/404`
 - [x] Corrigir a tipagem de rota nula na barra lateral ERP revelada pelo build de produção
 - [x] Fixar `NODE_ENV=production` no build para impedir a regressão do erro de pré-render do Next.js
@@ -171,5 +173,12 @@
 - [x] Documentar a matriz de testes de idempotência Mercado Pago para eventos duplicados e concorrentes
 - [x] Ampliar a verificação semanal para monitorar explicitamente os heartbeats de Sympla, lembretes e a própria rota de saúde
 - [ ] Validar alerta Slack de degradação e recuperação dos heartbeats semanais sem gerar ruído duplicado
-- [ ] Confirmar o isolamento de credenciais, banco e gate de pagamentos do ambiente Preview antes de testar pagamento sandbox
-- [ ] Executar e evidenciar a idempotência de Webhook Mercado Pago com requisições duplicadas no Preview isolado
+- [x] Confirmar o isolamento de credenciais, banco e gate de pagamentos do ambiente Preview antes de testar pagamento sandbox
+- [x] Executar e evidenciar a idempotência de Webhook Mercado Pago com requisições duplicadas no Preview isolado
+- [x] Aplicar as migrations estruturais no Supabase `atletica-fsa-homolog` e validar a conexão, mantendo o banco sem dados de produção
+- [ ] Provisionar um usuário proprietário exclusivamente na homologação e então aplicar a migration de dados `20260814121000_bootstrap_president.sql`
+- [x] Configurar as variáveis exclusivas de Preview apontando para Supabase e Mercado Pago sandbox
+- [x] Verificar o deployment Preview resultante na Vercel e seu estado de runtime
+- [x] Executar o teste de idempotência Mercado Pago com evento sandbox duplicado no Preview isolado
+- [ ] Executar liquidação end-to-end com pagamento sandbox aprovado após criar produto, pedido e pagador exclusivos de homologação
+- [ ] Auditar workflows, checks, gatilhos e integração de deploy do CI/CD GitHub-Vercel
