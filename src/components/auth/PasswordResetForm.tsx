@@ -33,7 +33,7 @@ export function PasswordResetForm() {
   }
 
   return (
-    <div className="auth-card">
+    <div className="auth-card auth-card--reset">
       <div className="auth-card__heading">
         <span className="auth-card__eyebrow">RECUPERAÇÃO DE ACESSO</span>
         <h1>Defina uma nova senha.</h1>

@@ -238,5 +238,12 @@
 - [x] Executar somente validações não financeiras e reversíveis do checklist Mercado Pago em homologação
 - [x] Preparar conta administrativa exclusiva de homologação para os testes autenticados de alertas e operações
 
-- [ ] Corrigir o fluxo de recuperação de senha do Preview de homologação, incluindo a tela de definição de nova senha após o callback
+- [x] Corrigir o fluxo de recuperação de senha do Preview de homologação, incluindo a tela de definição de nova senha após o callback
 - [ ] Validar autenticação por e-mail e senha em homologação antes de retomar o checkout sandbox Mercado Pago
+- [x] Corrigir a URL de redirecionamento de recuperação de senha do Supabase de homologação, removendo o fallback para localhost e validando o Preview
+- [ ] Validar a conclusão do reset de senha em homologação, da mensagem nova até a atualização efetiva da credencial
+- [x] Documentar e decidir a ativação do Google OAuth na homologação, que atualmente retorna provider is not enabled
+- [x] Inventariar diferenças de código, schema, autenticação, variáveis e integrações entre homologação e Production sem alterar dados
+- [x] Classificar e submeter para aprovação as mudanças seguras de configuração ou migração para Production
+- [x] Aplicar somente alterações de Production explicitamente aprovadas, mantendo PAYMENTS_ENABLED=false e validando por consultas não destrutivas
+- [ ] Ajustar a composição responsiva da tela de redefinição de senha, equilibrando painel institucional, formulário e escala tipográfica

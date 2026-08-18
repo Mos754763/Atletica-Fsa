@@ -7,4 +7,10 @@ describe("buildPasswordRecoveryRedirect", () => {
       "https://atletica-preview.vercel.app/auth/callback?next=/redefinir-senha",
     );
   });
+
+  it("mantém a origem canônica de Production no callback de recuperação", () => {
+    expect(buildPasswordRecoveryRedirect("https://atleticafsa.site")).toBe(
+      "https://atleticafsa.site/auth/callback?next=/redefinir-senha",
+    );
+  });
 });
