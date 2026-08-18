@@ -60,8 +60,8 @@ describe("experiência pública interativa", () => {
     expect(homePage).not.toContain('const heroArtwork = "/manus-storage/');
     expect(experienceStyles).toContain(".hero__official-art { width:min(470px,100%)");
     expect(experienceStyles).toContain("clip-path:ellipse(42% 50% at 72% 50%)");
-    expect(experienceStyles).toContain("mix-blend-mode:screen");
-    expect(experienceStyles).toContain("filter:contrast(1.35) saturate(1.14) drop-shadow(0 30px 35px rgba(0,0,0,.28))");
+    expect(experienceStyles).toContain("mix-blend-mode:normal");
+    expect(experienceStyles).toContain("filter:contrast(1.18) saturate(1.08) drop-shadow(0 30px 35px rgba(0,0,0,.32))");
     expect(landingMotion).toContain("const [artworkSource, setArtworkSource] = useState(artwork)");
   });
 });
