@@ -224,3 +224,7 @@
 - [ ] Validar alertas automáticos de falha e recuperação da Sympla no Slack, incluindo deduplicação e reprocessamento auditável de dead letters
 - [x] Diagnosticar e corrigir o retorno genérico da RPC de inscrição gratuita no preview de homologação, preservando dados de Production
 - [x] Concluir o ensaio de ingresso gratuito com confirmação de inscrição e check-in idempotente no ambiente de homologação
+
+- [ ] Executar um alerta controlado no Slack e confirmar a entrega no canal autorizado
+- [ ] Confirmar a entrega externa do e-mail de recuperação, remetente e destino do link sem consumir o token
+- [ ] Restaurar e comprovar o acionamento automático de deploy entre GitHub e Vercel
