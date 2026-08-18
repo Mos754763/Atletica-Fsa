@@ -222,5 +222,5 @@
 - [ ] Validar entrega real de e-mails de autenticação e transacionais com caixa externa, domínio remetente e rastreabilidade ponta a ponta
 - [ ] Executar ensaio isolado de venda, pagamento sandbox, emissão, sincronização e check-in de ingresso sem habilitar pagamentos em Production
 - [ ] Validar alertas automáticos de falha e recuperação da Sympla no Slack, incluindo deduplicação e reprocessamento auditável de dead letters
-- [ ] Diagnosticar e corrigir o retorno genérico da RPC de inscrição gratuita no preview de homologação, preservando dados de Production
-- [ ] Concluir o ensaio de ingresso gratuito com confirmação de inscrição e check-in idempotente no ambiente de homologação
+- [x] Diagnosticar e corrigir o retorno genérico da RPC de inscrição gratuita no preview de homologação, preservando dados de Production
+- [x] Concluir o ensaio de ingresso gratuito com confirmação de inscrição e check-in idempotente no ambiente de homologação
