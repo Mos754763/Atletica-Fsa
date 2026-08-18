@@ -7,9 +7,9 @@ describe("resolveThemePreference", () => {
     expect(resolveThemePreference("light", true)).toBe("light");
   });
 
-  it("usa a preferência do sistema quando não existe escolha persistida", () => {
+  it("prioriza o sistema escuro e usa escuro como padrão seguro quando não há escolha", () => {
     expect(resolveThemePreference(null, true)).toBe("dark");
-    expect(resolveThemePreference(undefined, false)).toBe("light");
+    expect(resolveThemePreference(undefined, false)).toBe("dark");
   });
 
   it("ignora valores persistidos inválidos", () => {

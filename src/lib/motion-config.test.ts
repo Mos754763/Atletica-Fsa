@@ -11,7 +11,8 @@ describe("motion configuration", () => {
   it("keeps animation transforms within lightweight properties", () => {
     expect(CARD_HOVER).toEqual({ y: -5, scale: 1.01 });
     expect(CARD_TAP).toEqual({ scale: 0.985 });
-    expect(REVEAL_VARIANTS.hidden).toMatchObject({ opacity: 0, y: 26 });
+    expect(REVEAL_VARIANTS.hidden).toMatchObject({ opacity: 0, y: 22 });
+    expect(REVEAL_VARIANTS.hidden).not.toHaveProperty("filter");
   });
 
   it("limits decorative particles to a lightweight fixed set", () => {

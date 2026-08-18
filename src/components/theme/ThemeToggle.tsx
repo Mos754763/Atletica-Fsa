@@ -11,20 +11,24 @@ function readTheme(): ThemeMode {
   );
 }
 
+function applyTheme(nextTheme: ThemeMode) {
+  document.documentElement.dataset.theme = nextTheme;
+  document.documentElement.style.colorScheme = nextTheme;
+  window.dispatchEvent(new CustomEvent("themechange", { detail: { theme: nextTheme } }));
+}
+
 export function ThemeToggle() {
   const [theme, setTheme] = useState<ThemeMode>("light");
 
   useEffect(() => {
     const resolvedTheme = readTheme();
-    document.documentElement.dataset.theme = resolvedTheme;
-    document.documentElement.style.colorScheme = resolvedTheme;
+    applyTheme(resolvedTheme);
     setTheme(resolvedTheme);
   }, []);
 
   function toggleTheme() {
     const nextTheme: ThemeMode = theme === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = nextTheme;
-    document.documentElement.style.colorScheme = nextTheme;
+    applyTheme(nextTheme);
     window.localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
     setTheme(nextTheme);
   }

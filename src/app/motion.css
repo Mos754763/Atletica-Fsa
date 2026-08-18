@@ -1,7 +1,10 @@
-.motion-pointer-aura { position:fixed; z-index:20; width:340px; height:340px; margin:-1px 0 0 -1px; pointer-events:none; border-radius:50%; background:radial-gradient(circle,rgba(255,210,63,.14) 0%,rgba(255,210,63,.065) 28%,rgba(11,61,145,0) 70%); filter:blur(2px); mix-blend-mode:multiply; }
+.frontend-fx { position:fixed; z-index:-1; inset:0; overflow:hidden; pointer-events:none; background:var(--fx-background,#080d18); }
+.frontend-fx canvas { position:absolute; inset:0; display:block; width:100%; height:100%; }
+.frontend-fx__aurora { opacity:.92; }.frontend-fx__particles { opacity:.84; }
+.motion-pointer-aura { position:fixed; z-index:20; width:340px; height:340px; margin:-1px 0 0 -1px; pointer-events:none; border-radius:50%; background:radial-gradient(circle,rgba(255,210,63,.14) 0%,rgba(255,210,63,.065) 28%,rgba(11,61,145,0) 70%); mix-blend-mode:multiply; }
 .motion-magnetic { display:inline-flex; will-change:transform; }
-.motion-hero-art .hero__official-art,.motion-hero-art .hero__badge { will-change:transform,opacity,filter; }
-.motion-reveal,.motion-card { will-change:transform,opacity,filter; }
+.motion-hero-art .hero__official-art,.motion-hero-art .hero__badge { will-change:transform,opacity; }
+.motion-reveal,.motion-card { will-change:transform,opacity; }
 .product-card .product-art__image,.management-card__photo img { transition:transform .65s cubic-bezier(.23,1,.32,1),filter .45s ease; }
 .product-card:hover .product-art__image { transform:scale(1.065) rotate(-1deg); filter:saturate(1.08) contrast(1.03); }
 .management-card:hover .management-card__photo img { transform:scale(1.045); }
@@ -12,4 +15,4 @@
 .motion-particle { position:absolute; display:block; border:1px solid rgba(11,61,145,.2); border-radius:999px; background:rgba(255,210,63,.68); box-shadow:0 0 0 5px rgba(255,210,63,.05); will-change:transform,opacity; }
 .erp-motion-workspace { will-change:transform,opacity,filter; }
 @media (max-width:760px),(pointer:coarse) { .motion-pointer-aura { display:none; }.motion-magnetic { transform:none !important; }.motion-highlight-particles { opacity:.58; } }
-@media (prefers-reduced-motion:reduce) { .motion-pointer-aura,.motion-highlight-particles { display:none; }.motion-magnetic,.motion-hero-art .hero__official-art,.motion-hero-art .hero__badge,.motion-reveal,.motion-card,.product-card .product-art__image,.management-card__photo img,.erp-motion-workspace { transition:none !important; animation:none !important; } }
+@media (prefers-reduced-motion:reduce) { .frontend-fx { display:none; }.motion-pointer-aura,.motion-highlight-particles { display:none; }.motion-magnetic,.motion-hero-art .hero__official-art,.motion-hero-art .hero__badge,.motion-reveal,.motion-card,.product-card .product-art__image,.management-card__photo img,.erp-motion-workspace { transition:none !important; animation:none !important; } }

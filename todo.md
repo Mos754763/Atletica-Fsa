@@ -186,3 +186,16 @@
 - [x] Auditar workflows, checks, gatilhos e integração de deploy do CI/CD GitHub-Vercel
 - [x] Preparar o executável do pnpm no workflow de CI e validar uma execução verde no GitHub Actions
 - [x] Tornar o teste unitário de resposta definitiva da Sympla independente de um token de ambiente do runner
+
+- [ ] Mapear e medir a linha de base visual, de acessibilidade e desempenho das rotas públicas e operacionais
+- [x] Consolidar tokens de tema, preferências de movimento e infraestrutura de efeitos frontend-fx sem bibliotecas concorrentes
+- [x] Reestruturar landing, loja, detalhe de produto, carrinho e eventos com navegação e estados reais
+- [x] Refinar a experiência operacional de ERP, Admin e ODS com clareza de tema, layout e permissões preservadas
+- [ ] Criar identidades e massa de dados exclusivas de homologação para o ensaio de pagamento aprovado
+- [ ] Configurar URL de Preview, recepção externa temporária e evento Mercado Pago sandbox para liquidação completa
+- [ ] Executar e evidenciar a liquidação aprovada e o replay idempotente no Mercado Pago sandbox
+- [ ] Validar testes, build, acessibilidade e publicar a documentação final da reestruturação
+
+- [ ] Validar a origem atleticafsa.site em callbacks, links de e-mail e ambientes Preview e Production sem cruzar dados de homologação
+
+- [x] Garantir atualização do catálogo de homologação nas vitrines públicas após alterações administrativas ou de estoque

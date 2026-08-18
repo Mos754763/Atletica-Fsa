@@ -13,6 +13,7 @@ import "./analytics.css";
 import "./mobile-nav.css";
 import "./erp.css";
 import "./motion.css";
+import { FrontendFx } from "@/components/fx/FrontendFx";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export const metadata: Metadata = {
@@ -23,8 +24,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <head><script dangerouslySetInnerHTML={{ __html: "try{var t=localStorage.getItem('fsa-theme');var d=t==='dark'||t==='light'?t:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=d;document.documentElement.style.colorScheme=d}catch(e){}" }} /></head>
-      <body><div className="ambient-scene" aria-hidden="true"><span /><span /><span /></div>{children}<ThemeToggle /></body>
+      <head><script dangerouslySetInnerHTML={{ __html: "try{var t=localStorage.getItem('fsa-theme');var d=t==='dark'||t==='light'?t:'dark';document.documentElement.dataset.theme=d;document.documentElement.style.colorScheme=d}catch(e){}" }} /></head>
+      <body><div className="ambient-scene" aria-hidden="true"><span /><span /><span /></div><FrontendFx />{children}<ThemeToggle /></body>
     </html>
   );
 }

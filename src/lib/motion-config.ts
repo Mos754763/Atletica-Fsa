@@ -17,11 +17,10 @@ export const MAGNETIC_SPRING: Transition = {
 export const HIGHLIGHT_PARTICLE_COUNT = 12;
 
 export const REVEAL_VARIANTS: Variants = {
-  hidden: { opacity: 0, y: 26, filter: "blur(12px)" },
+  hidden: { opacity: 0, y: 22 },
   visible: (delay = 0) => ({
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
     transition: { duration: 0.62, delay, ease: [0.23, 1, 0.32, 1] },
   }),
 };
