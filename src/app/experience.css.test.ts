@@ -7,6 +7,8 @@ const experienceChrome = readFileSync(resolve(process.cwd(), "src/components/fx/
 const managementCarousel = readFileSync(resolve(process.cwd(), "src/components/landing/ManagementCarousel.tsx"), "utf8");
 const homePage = readFileSync(resolve(process.cwd(), "src/app/page.tsx"), "utf8");
 const landingMotion = readFileSync(resolve(process.cwd(), "src/components/landing/LandingMotion.tsx"), "utf8");
+const globalStyles = readFileSync(resolve(process.cwd(), "src/app/globals.css"), "utf8");
+const storefront = readFileSync(resolve(process.cwd(), "src/components/store/Storefront.tsx"), "utf8");
 const loginPage = readFileSync(resolve(process.cwd(), "src/app/login/page.tsx"), "utf8");
 const resetPasswordPage = readFileSync(resolve(process.cwd(), "src/app/redefinir-senha/page.tsx"), "utf8");
 const eventsPage = readFileSync(resolve(process.cwd(), "src/app/eventos/page.tsx"), "utf8");
@@ -37,10 +39,15 @@ describe("experiência pública interativa", () => {
     expect(managementCarousel).toContain('aria-current={isActive ? "true" : undefined}');
     expect(managementCarousel).toContain('style={isActive ? { opacity: 1, visibility: "visible" } : undefined}');
     expect(managementCarousel).toContain('aria-live="polite"');
+    expect(managementCarousel).toContain('people-carousel__arrow people-carousel__arrow--previous');
+    expect(managementCarousel).toContain('people-carousel__arrow people-carousel__arrow--next');
+    expect(managementCarousel).toContain('people-carousel__brand-mark');
     expect(experienceStyles).toContain("perspective:1600px");
     expect(experienceStyles).toContain(".people-carousel__slide--active { z-index:4; display:grid; visibility:visible; opacity:1");
     expect(experienceStyles).toContain(".people-carousel__slide--previous { transform:translate3d(-34%,0,-180px) rotateY(31deg) scale(.79); }");
     expect(experienceStyles).toContain(".people-carousel__slide--next { transform:translate3d(34%,0,-180px) rotateY(-31deg) scale(.79); }");
+    expect(experienceStyles).toContain(".people-carousel__brand-mark");
+    expect(experienceStyles).toContain(".people-carousel__arrow--previous");
   });
 
   it("mantém a interação de produto baseada em transformações e a desativa em toque ou movimento reduzido", () => {
@@ -72,13 +79,22 @@ describe("experiência pública interativa", () => {
     expect(experienceStyles).toContain("border-radius:48% 52% 51% 49%");
     expect(landingMotion).toContain('className="hero__mascot-viewport"');
     expect(landingMotion).toContain('initial={false} animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}');
-    expect(experienceStyles).toContain("width:190%");
-    expect(experienceStyles).toContain("object-position:62% 10%");
-    expect(experienceStyles).toContain("transform:translate(-24%,-11%)");
+    expect(experienceStyles).toContain("width:138%");
+    expect(experienceStyles).toContain("object-position:57% 8%");
+    expect(experienceStyles).toContain("transform:translate(-14%,-5%)");
     expect(experienceStyles).toContain("mix-blend-mode:normal");
     expect(landingMotion).toContain('className="hero__mascot-viewport"');
     expect(landingMotion).toContain("const [artworkSource, setArtworkSource] = useState(artwork)");
     expect(homePage).toContain('<h1>VESTE.<br />VIVE.<br /><em>VENCE.</em></h1>');
     expect(homePage).not.toContain('MotionReveal delay={0.1}><h1>VESTE.');
+  });
+
+  it("mantém a faixa de destaque em esteira contínua e estende o mascote ao hero da loja", () => {
+    expect(homePage).not.toContain("Plataforma integrada");
+    expect(homePage).toContain('className="hero-ticker__track"');
+    expect(globalStyles).toContain("animation:hero-ticker-loop 19s linear infinite");
+    expect(globalStyles).toContain("translate3d(-50%,0,0)");
+    expect(storefront).toContain('const storeMascotArtwork = institutionalAsset("fsa-hero-gestao-2026.png")');
+    expect(storefront).toContain('<HeroMotion artwork={storeMascotArtwork} />');
   });
 });

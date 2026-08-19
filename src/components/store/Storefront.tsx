@@ -4,6 +4,8 @@ import Link from "next/link";
 import { ArrowLeft, Eye, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { formatBRL } from "@/lib/format";
+import { HeroMotion } from "@/components/landing/LandingMotion";
+import { institutionalAsset } from "@/lib/institutional-assets";
 import type { CatalogProduct, CatalogSalesBatch, CatalogVariant } from "@/lib/catalog";
 import { getBrowserClient } from "@/lib/supabase/client";
 import { resolveFsaProductImage } from "@/lib/store-product-assets";
@@ -12,6 +14,7 @@ type StorefrontProps = { products: CatalogProduct[] };
 type CartLine = { cartKey: string; productId: string; productName: string; imageUrl: string | null; variantId: string | null; variantName: string | null; salesBatchId: string | null; salesBatchName: string | null; unitPriceCents: number; maxQuantity: number; quantity: number };
 
 const PREORDER_CART_LIMIT = 20;
+const storeMascotArtwork = institutionalAsset("fsa-hero-gestao-2026.png");
 
 export function Storefront({ products }: StorefrontProps) {
   const [selectedCategory, setSelectedCategory] = useState("todos");
@@ -84,7 +87,7 @@ export function Storefront({ products }: StorefrontProps) {
       <nav aria-label="Navegação da loja"><Link className="store-nav__events" href="/eventos">Eventos</Link><button type="button" className="store-cart-trigger" onClick={() => setCartOpen(true)}><ShoppingBag size={17} /> Carrinho {totalQuantity > 0 && <b>{totalQuantity}</b>}</button></nav>
     </header>
     <aside className="store-rail" aria-label="Atalhos de navegação"><Link href="/"><ArrowLeft size={16} /> Início</Link><Link href="/eventos">Eventos</Link><button type="button" onClick={() => setCartOpen(true)}><ShoppingBag size={16} /> Ver carrinho</button></aside>
-    <section className="store-hero"><p className="eyebrow eyebrow--blue"><span /> LOJA OFICIAL</p><h1>Vista a <em>torcida.</em></h1><p>Produtos, copos e aquele toque FSA para representar dentro e fora dos eventos.</p></section>
+    <section className="store-hero"><div className="store-hero__copy"><p className="eyebrow eyebrow--blue"><span /> LOJA OFICIAL</p><h1>Vista a <em>torcida.</em></h1><p>Produtos, copos e aquele toque FSA para representar dentro e fora dos eventos.</p></div><div className="store-hero__mascot"><HeroMotion artwork={storeMascotArtwork} /></div></section>
     <nav className="store-filters" aria-label="Filtrar produtos por categoria"><button aria-pressed={selectedCategory === "todos"} className={selectedCategory === "todos" ? "is-active" : ""} type="button" onClick={() => setSelectedCategory("todos")}>Todos</button>{categories.map((category) => <button aria-pressed={selectedCategory === category.slug} className={selectedCategory === category.slug ? "is-active" : ""} type="button" key={category.id} onClick={() => setSelectedCategory(category.slug)}>{category.name}</button>)}</nav>
     <section className="store-grid" aria-live="polite">
       {visibleProducts.map((product, index) => {

@@ -80,12 +80,14 @@ export default async function HomePage() {
               <MagneticLink href="/loja" className="button button--yellow"><ShoppingBag size={18} /> Ir para a loja <ArrowRight size={17} /></MagneticLink>
               <a href="#eventos" className="button button--ghost"><CalendarDays size={18} /> Próximos eventos</a>
             </div>
-            <div className="hero__signal"><span className="pulse-dot" /> Plataforma integrada <ArrowDownRight size={17} /></div>
           </div>
               <HeroMotion artwork={heroArtwork} />
         </div>
         <div className="hero-ticker" aria-label="Destaques da ATLETICA FSA">
-          <span>JOGOS</span><i /> <span>FESTAS</span><i /> <span>CAMPEONATOS</span><i /> <span>TORCIDA</span><i /> <span>LOJA OFICIAL</span><i /> <span>JOGOS</span><i /> <span>FESTAS</span>
+          <div className="hero-ticker__track" aria-hidden="true">
+            <div className="hero-ticker__group"><span>JOGOS</span><i /><span>FESTAS</span><i /><span>CAMPEONATOS</span><i /><span>TORCIDA</span><i /><span>LOJA OFICIAL</span><i /></div>
+            <div className="hero-ticker__group"><span>JOGOS</span><i /><span>FESTAS</span><i /><span>CAMPEONATOS</span><i /><span>TORCIDA</span><i /><span>LOJA OFICIAL</span><i /></div>
+          </div>
         </div>
       </section>
 

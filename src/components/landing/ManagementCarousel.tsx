@@ -35,7 +35,8 @@ export function ManagementCarousel({ people }: ManagementCarouselProps) {
 
   return (
     <section className="people-carousel" aria-roledescription="carrossel" aria-label="Gestão 2026 da ATLETICA FSA" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
-      <div className={`people-carousel__viewport${reducedMotion ? " people-carousel__viewport--reduced" : ""}`} tabIndex={0} onKeyDown={(event) => { if (event.key === "ArrowLeft") move(-1); if (event.key === "ArrowRight") move(1); }}>
+      <button type="button" className="people-carousel__arrow people-carousel__arrow--previous" onClick={() => move(-1)} aria-controls="gestao-carousel-viewport" aria-label="Ver integrante anterior"><ChevronLeft size={23} /></button>
+      <div id="gestao-carousel-viewport" className={`people-carousel__viewport${reducedMotion ? " people-carousel__viewport--reduced" : ""}`} tabIndex={0} onKeyDown={(event) => { if (event.key === "ArrowLeft") move(-1); if (event.key === "ArrowRight") move(1); }}>
         <p className="people-carousel__status" aria-live="polite">Exibindo {active.name}, {active.role}. Integrante {activeIndex + 1} de {people.length}.</p>
         <div className="people-carousel__track">
           {people.map((person, index) => {
@@ -46,12 +47,14 @@ export function ManagementCarousel({ people }: ManagementCarouselProps) {
               <article key={person.name} className={`people-carousel__slide people-carousel__slide--${position}`} aria-hidden={!isActive} aria-current={isActive ? "true" : undefined} data-position={position} style={isActive ? { opacity: 1, visibility: "visible" } : undefined}>
                 <div className="people-carousel__photo"><img src={person.image} alt={isActive ? `${person.name}, ${person.role}, na gestão 2026 da ATLETICA FSA` : ""} /></div>
                 <div className="people-carousel__copy"><p>GESTÃO 2026 · {String(index + 1).padStart(2, "0")}/{String(people.length).padStart(2, "0")}</p><h3>{person.name}</h3><span>{person.role}</span></div>
+                <span className="people-carousel__brand-mark" aria-hidden="true">FSA</span>
               </article>
             );
           })}
         </div>
       </div>
-      <div className="people-carousel__controls"><button type="button" onClick={() => move(-1)} aria-label="Ver integrante anterior"><ChevronLeft size={20} /></button><div role="tablist" aria-label="Selecionar integrante">{people.map((person, index) => <button key={person.name} type="button" role="tab" aria-label={`Ver ${person.name}`} aria-selected={index === activeIndex} className={index === activeIndex ? "is-active" : ""} onClick={() => select(index)} />)}</div><button type="button" onClick={() => move(1)} aria-label="Ver próximo integrante"><ChevronRight size={20} /></button></div>
+      <button type="button" className="people-carousel__arrow people-carousel__arrow--next" onClick={() => move(1)} aria-controls="gestao-carousel-viewport" aria-label="Ver próximo integrante"><ChevronRight size={23} /></button>
+      <div className="people-carousel__controls"><div role="tablist" aria-label="Selecionar integrante">{people.map((person, index) => <button key={person.name} type="button" role="tab" aria-label={`Ver ${person.name}`} aria-selected={index === activeIndex} className={index === activeIndex ? "is-active" : ""} onClick={() => select(index)} />)}</div></div>
     </section>
   );
 }

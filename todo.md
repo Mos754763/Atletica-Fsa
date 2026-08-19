@@ -272,3 +272,10 @@
 - [x] Reenquadrar o mascote do hero em um viewport dedicado, preservando silhueta, contraste e CTAs
 - [x] Corrigir o recorte do asset institucional no hero para remover a faixa inferior escura e preservar apenas a ilustração do mascote
 - [x] Corrigir a visibilidade inicial da cena 3D de diretores em produção, preservando interação, enquadramento e acessibilidade
+- [x] Remover a moldura amarela externa do palco do carrossel da Gestão, preservando profundidade e responsividade
+- [x] Destacar setas laterais esquerda/direita no carrossel da Gestão para avançar ou retornar um integrante por clique
+- [x] Inserir o favicon institucional da ATLETICA FSA como assinatura visual nos cartões de diretores
+- [x] Reenquadrar o mascote do hero inicial para exibir integralmente a silhueta dentro do viewport circular
+- [x] Adicionar o mascote institucional ao hero da página da loja, com composição equivalente à landing
+- [x] Transformar a faixa amarela de JOGOS, FESTAS, CAMPEONATOS, TORCIDA e LOJA OFICIAL em uma esteira contínua automática
+- [x] Remover o selo textual "PLATAFORMA INTEGRADA" do hero inicial
