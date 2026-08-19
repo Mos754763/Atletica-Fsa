@@ -35,7 +35,15 @@ export async function submitMemberInterest(_previousState: MemberInterestActionS
   });
 
   if (error?.code === "23505") return { status: "success", message: "Seu interesse já está registrado. A gestão vai entrar em contato em breve." };
-  if (error) return { status: "error", message: "Não foi possível registrar seu interesse agora. Tente novamente em alguns instantes." };
+  if (error) {
+    console.error("[member-interest] persistence-failure", {
+      code: error.code ?? null,
+      details: error.details ?? null,
+      hint: error.hint ?? null,
+      message: error.message,
+    });
+    return { status: "error", message: "Não foi possível registrar seu interesse agora. Tente novamente em alguns instantes." };
+  }
 
   revalidatePath("/admin/membros");
   return { status: "success", message: "Cadastro recebido. A gestão da FSA vai analisar seu interesse e entrar em contato." };
