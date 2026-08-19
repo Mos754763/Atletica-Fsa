@@ -73,9 +73,9 @@ export default async function HomePage() {
 
         <div className="hero page-width">
           <div className="hero__copy">
-            <MotionReveal delay={0.04}><p className="eyebrow"><span /> UMA SÓ TORCIDA. UM SÓ GRITO.</p></MotionReveal>
-            <MotionReveal delay={0.1}><h1>VESTE.<br />VIVE.<br /><em>VENCE.</em></h1></MotionReveal>
-            <MotionReveal delay={0.17}><p className="hero__lede">A ATLETICA FSA transforma a energia da faculdade em esporte, conexão e experiências para levar com você.</p></MotionReveal>
+            <p className="eyebrow"><span /> UMA SÓ TORCIDA. UM SÓ GRITO.</p>
+            <h1>VESTE.<br />VIVE.<br /><em>VENCE.</em></h1>
+            <p className="hero__lede">A ATLETICA FSA transforma a energia da faculdade em esporte, conexão e experiências para levar com você.</p>
             <div className="hero__actions">
               <MagneticLink href="/loja" className="button button--yellow"><ShoppingBag size={18} /> Ir para a loja <ArrowRight size={17} /></MagneticLink>
               <a href="#eventos" className="button button--ghost"><CalendarDays size={18} /> Próximos eventos</a>

@@ -268,3 +268,5 @@
 - [x] Recortar a composição do asset institucional público para ocultar a borda retangular sem reduzir a leitura do mascote
 - [x] Restaurar o contraste do mascote no recorte do hero, preservando a remoção da moldura retangular
 - [x] Tornar o mascote legível no hero sem reintroduzir a moldura retangular do asset institucional
+- [x] Transformar a seção de diretores em um carrossel 3D acessível, responsivo e navegável por teclado
+- [x] Reenquadrar o mascote do hero em um viewport dedicado, preservando silhueta, contraste e CTAs

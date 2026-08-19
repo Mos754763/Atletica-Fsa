@@ -107,7 +107,9 @@ export function HeroMotion({ artwork, fallbackArtwork }: { artwork: string; fall
       <span className="hero__orbit hero__orbit--two" />
       <span className="hero__outline hero__outline--one">FSA</span>
       <span className="hero__outline hero__outline--two">FSA</span>
-      <motion.img className="hero__official-art" style={reducedMotion ? undefined : { y: artworkY, rotateX: smoothTiltX, rotateY: smoothTiltY, transformPerspective: 1100 }} initial={reducedMotion ? false : { opacity: 0, scale: 0.96, filter: "blur(12px)" }} animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }} transition={{ ...MOTION_SPRING, delay: 0.18 }} src={artworkSource} alt="Mascote institucional da ATLETICA FSA para a gestão 2026" onError={() => { if (fallbackArtwork && artworkSource !== fallbackArtwork) setArtworkSource(fallbackArtwork); }} />
+      <motion.div className="hero__mascot-viewport" style={reducedMotion ? undefined : { y: artworkY, rotateX: smoothTiltX, rotateY: smoothTiltY, transformPerspective: 1100 }} initial={false} animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }} transition={{ ...MOTION_SPRING, delay: 0.18 }}>
+        <img className="hero__official-art" src={artworkSource} alt="Mascote institucional da ATLETICA FSA para a gestão 2026" onError={() => { if (fallbackArtwork && artworkSource !== fallbackArtwork) setArtworkSource(fallbackArtwork); }} />
+      </motion.div>
       <motion.div className="hero__badge" style={reducedMotion ? undefined : { y: badgeY }} initial={reducedMotion ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ ...MOTION_SPRING, delay: 0.34 }}><strong>2026</strong><span>GESTÃO<br />FSA</span></motion.div>
     </div>
   );
