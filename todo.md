@@ -302,3 +302,4 @@
 
 - [x] Cobrir por teste de regressão a saída antirobô do cadastro de interesse antes de qualquer acesso ao Supabase
 - [x] Criar termos de aceite e matriz de tratamento LGPD por perfil de usuário, com indicação de itens dependentes de revisão jurídica
+- [x] Promover a estrutura validada de cadastro de interesse da homologação para produção, sem alterar registros, estoque, preços ou o gate de pagamentos
