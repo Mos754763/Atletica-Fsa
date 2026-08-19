@@ -29,6 +29,8 @@ Ao abrir o provedor Google, os campos **Client IDs** e **Client Secret** estavam
 
 O primeiro acesso direto ao preview, sem uma sessão válida no navegador, renderizou a estrutura do Centro de Segurança e exibiu a mensagem `Auth session missing!`. A rota foi corrigida para validar o usuário no servidor com `auth.getUser()` e redirecionar a `/login?next=/conta/seguranca` quando não houver sessão. O cliente também possui uma guarda redundante para o caso de expiração após a renderização. A correção passou por `pnpm typecheck`, `pnpm test` (**149 testes aprovados, 3 ignorados**) e `pnpm build`; a confirmação no preview atualizado ainda está pendente.
 
+O preview reconstruído confirmou o redirecionamento para `/login?next=/conta/seguranca`. O formulário de login também foi ajustado para preservar esse destino durante a etapa MFA, em vez de devolver o usuário sempre à página principal da conta.
+
 ## Limitações conhecidas nesta rodada
 
 Não foi possível concluir o cadastro de TOTP contra a instância de homologação porque a sessão autenticada da aplicação publicada não está disponível no servidor local temporariamente exposto. A validação funcional será executada após o deploy de preview/homologação e a habilitação do MFA no painel Supabase.

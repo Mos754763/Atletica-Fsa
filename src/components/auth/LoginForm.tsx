@@ -4,6 +4,8 @@ import { FormEvent, useState } from "react";
 import { ArrowRight, Chrome, Mail, ShieldCheck } from "lucide-react";
 import { getBrowserClient } from "@/lib/supabase/client";
 import { buildPasswordRecoveryRedirect } from "@/lib/auth/password-recovery";
+import { buildMfaRedirectPath } from "@/lib/auth/mfa-assurance";
+import { resolveSafeRedirectPath } from "@/lib/auth/redirect-path";
 
 type AuthMode = "login" | "signup" | "recovery";
 
@@ -14,7 +16,10 @@ export function LoginForm() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const mfaRedirectPath = "/auth/mfa?next=%2Fconta";
+  function mfaRedirectPath() {
+    const nextPath = resolveSafeRedirectPath(new URLSearchParams(window.location.search).get("next"), "/conta");
+    return buildMfaRedirectPath(nextPath);
+  }
 
   async function loginWithGoogle() {
     setBusy(true);
@@ -23,7 +28,7 @@ export function LoginForm() {
       const supabase = await getBrowserClient();
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(mfaRedirectPath)}` },
+        options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(mfaRedirectPath())}` },
       });
       if (oauthError) throw oauthError;
     } catch (authError) {
@@ -43,7 +48,7 @@ export function LoginForm() {
       if (mode === "login") {
         const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
         if (loginError) throw loginError;
-        window.location.assign(mfaRedirectPath);
+        window.location.assign(mfaRedirectPath());
         return;
       }
 
@@ -63,7 +68,7 @@ export function LoginForm() {
       });
       if (signupError) throw signupError;
       if (data.session) {
-        window.location.assign(mfaRedirectPath);
+        window.location.assign(mfaRedirectPath());
         return;
       }
       setMessage("Conta criada. Confira seu e-mail para confirmar o acesso.");

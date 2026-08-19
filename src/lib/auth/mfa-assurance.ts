@@ -10,3 +10,7 @@ export function formatMfaFactorType(factorType: string) {
   if (factorType === "webauthn") return "Chave de segurança";
   return "Segundo fator";
 }
+
+export function buildMfaRedirectPath(nextPath: string) {
+  return `/auth/mfa?next=${encodeURIComponent(nextPath)}`;
+}

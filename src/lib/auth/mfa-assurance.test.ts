@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatMfaFactorType, requiresMfaChallenge } from "./mfa-assurance";
+import { buildMfaRedirectPath, formatMfaFactorType, requiresMfaChallenge } from "./mfa-assurance";
 
 describe("assurance de MFA", () => {
   it("exige desafio quando uma sessão AAL1 possui um fator verificado", () => {
@@ -19,5 +19,9 @@ describe("assurance de MFA", () => {
     expect(formatMfaFactorType("totp")).toBe("Aplicativo autenticador");
     expect(formatMfaFactorType("phone")).toBe("Telefone");
     expect(formatMfaFactorType("unknown")).toBe("Segundo fator");
+  });
+
+  it("preserva uma rota interna como destino depois do desafio", () => {
+    expect(buildMfaRedirectPath("/conta/seguranca")).toBe("/auth/mfa?next=%2Fconta%2Fseguranca");
   });
 });
