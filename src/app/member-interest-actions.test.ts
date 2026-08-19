@@ -22,4 +22,14 @@ describe("member-interest server action contract", () => {
     expect(source).not.toContain("email,\n      code:");
     expect(source).not.toContain("fullName,\n      code:");
   });
+
+  it("encerra o honeypot antes de criar o cliente de persistência", () => {
+    const source = readFileSync(resolve(process.cwd(), "src/app/member-interest-actions.ts"), "utf8");
+    const honeypotGuard = source.indexOf('if (String(formData.get("company") ?? "").trim())');
+    const serviceClient = source.indexOf("const service = createServiceClient()");
+
+    expect(honeypotGuard).toBeGreaterThan(-1);
+    expect(serviceClient).toBeGreaterThan(honeypotGuard);
+    expect(source).toContain('return { status: "success", message: "Recebemos seu interesse. Em breve entraremos em contato." }');
+  });
 });

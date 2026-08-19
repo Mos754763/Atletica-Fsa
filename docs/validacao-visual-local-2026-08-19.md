@@ -41,3 +41,14 @@ Uma revisão completa da lista de variáveis confirmou entradas independentes de
 - O preenchimento de nome e e-mail de QA foi iniciado no Preview. O navegador reposicionou a área visível após o foco do campo, mas a página permaneceu no mesmo formulário e nenhuma submissão ocorreu.
 - O cenário de QA foi preenchido exclusivamente com dados sintéticos: nome `QA Interesse FSA 2026`, e-mail não entregável no domínio `.test`, telefone zerado, curso `Administração de Teste` e período `3º período`. Nenhum dado pessoal real foi usado e nenhuma submissão ocorreu até este ponto.
 - No Preview de homologação, foi selecionado o setor Esportes e registrado o consentimento antes da submissão única autorizada. A interface exibiu: `Não foi possível registrar seu interesse agora. Tente novamente em alguns instantes.` Os campos foram limpos após a tentativa. O teste não deve ser repetido antes de identificar a causa nos logs; não há evidência de um registro criado.
+
+## Preview instrumentado para diagnóstico
+
+- O commit `1c8ffb4` foi publicado exclusivamente na branch `homolog/member-interest-qa-20260819`.
+- O deployment `dpl_21MEBEAs5U2bDGmKsux3SCgevQSb` atingiu o estado `READY`, mantendo a mesma URL de branch do Preview isolado.
+- A landing e a seção `#participar` voltaram a carregar com todos os controles esperados. Uma única repetição do cenário QA é permitida para coletar, se necessário, apenas os metadados sanitizados de persistência (`code`, `details`, `hint` e `message`) inseridos na server action.
+- A navegação por teclado confirmou que o botão de envio, o consentimento obrigatório e o campo opcional de relato estão presentes no Preview instrumentado. Os campos obrigatórios superiores seguem disponíveis na mesma seção e serão preenchidos apenas com o cenário QA já documentado antes da repetição única.
+- No Preview instrumentado, o campo opcional de período foi preenchido com `3º período`. Os campos obrigatórios de nome e e-mail e os campos opcionais de contato e curso foram exibidos e permanecem vazios antes do preenchimento sintético controlado.
+- O cenário de QA foi retomado com `QA Interesse FSA 2026` e o endereço não entregável `qa.member-interest.20260819@atleticafsa.test`. Ambos são dados sintéticos exclusivos de homologação e não devem ser usados em produção.
+- Para cobrir os campos opcionais, o cenário usa o telefone não operacional `(00) 00000-0000`, o curso `Administração de Teste` e o período `3º período`. Nenhum dado pessoal real foi usado.
+- Antes do envio, foi selecionado apenas o setor `Esportes` e marcado o consentimento explícito. O botão de submissão permaneceu disponível no Preview isolado.
