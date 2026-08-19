@@ -60,3 +60,31 @@ Na publicação do commit `9a24388`, a landing exibiu o bloco **Vem pra FSA**, o
 ## Inventário observado para revisão operacional
 
 Em `https://atleticafsa.site/admin/catalogo`, com sessão administrativa, foram observados seis produtos ativos e quatro categorias: Vestuário, Acessórios, Colecionáveis e Bebidas. Os preços cadastrados são Camiseta Oficial FSA (R$ 69,90), Moletom Titular FSA (R$ 149,90), Copo FSA (R$ 24,90), Chaveiro Coelho FSA (R$ 14,90), Figurinhas FSA (R$ 8,00) e Bebida em lata (R$ 7,00). Todos os itens exibiam **0 em estoque**, portanto não há base operacional para aumentar ou reduzir estoque de forma responsável sem contagem física ou confirmação da diretoria. Nenhum valor foi alterado nesta inspeção.
+
+## Auditoria funcional complementar
+
+| Módulo | Controle de acesso confirmado | Evidência de implementação | Resultado da auditoria sem mutação |
+|---|---|---|---|
+| Visão geral do ERP | `admin`, `caixa` e papel interno `cozinha` (exibido como Backoffice) | Contadores de produtos, pedidos, eventos e pessoas; atalhos filtrados para `caixa`. | Estrutura e build válidos. Recomenda-se alinhar futuramente o identificador técnico `cozinha` ao vocabulário Backoffice por meio de migração compatível, sem alterar papéis existentes em produção. |
+| Pedidos e catálogo | `admin` e `caixa` | Listas filtráveis, produtos, categorias e variantes; ODS recebe o catálogo. | Coberto por testes de fluxo de pedidos, disponibilidade de checkout, imagens de catálogo e exportação. Sem ajuste de preço ou estoque. |
+| Eventos | `admin` | Eventos, lotes, inscrições, check-in e origem de inscrição/pagamento são carregados no módulo. | Coberto por testes de tickets, RPCs de inscrição e check-in. A validação real de um novo ingresso permanece dependente de um evento/lote de homologação. |
+| Pessoas | Presidente | Convites, perfis, papéis e fila `member_interest_applications`. | Migração aplicada; fluxo de triagem está implementado. Não foi submetido cadastro público para não criar dados de produção. |
+| Governança, automações e atividades | Presidente para governança/automações; `admin` para atividades | Permissões granulares, regras de automação e trilha CRM protegidas no servidor. | Coberto por testes de permissões, grants, automações e atividades. |
+| Relatórios | `admin` | Métricas de pedidos, pagamentos, inscrições e eventos. | Coberto por testes de analytics e exportação; dados permanecem somente de leitura nesta auditoria. |
+| Construtor de tabelas | Presidente, diretor ativo do setor ou grant `table:*` de leitura | Shell administrativo verifica associação setorial ou permissão granular. | Correção de slug continua coberta por testes; criação em produção não foi repetida. |
+| ODS | `admin`, `caixa` e papel interno `cozinha` | Fila de pedidos, venda presencial/manual e atualização operacional. | Coberto por testes de pedido, retirada por token e resiliência Point; validação com venda real exige homologação de pagamento e estoque físico. |
+
+### Resultado técnico consolidado
+
+A suíte executada após a correção da landing aprovou **136 testes**, com **3 cenários explicitamente ignorados**, e o build do Next.js concluiu compilação, tipos, páginas estáticas e rastros de produção. A rota pública raiz foi lida externamente após o deployment `dpl_8pjTMTD1ff1AcXU8GpdyGVxSZ8MN`, retornando a landing completa; a consulta de logs vinculada ao deployment não encontrou respostas HTTP 500 no período verificado.
+
+O controle de acesso é centralizado por funções de servidor: ausência de sessão redireciona para login, papéis não autorizados seguem para a conta com acesso negado e a tentativa é registrada na trilha de CRM. A trava de pagamentos é configurável por `PAYMENTS_ENABLED`; esta auditoria não a ativou nem realizou cobrança, e a configuração de produção deve permanecer desabilitada até a homologação autorizada.
+
+### Pendências que exigem insumo ou autorização da diretoria
+
+| Prioridade | Pendência | Ação necessária antes da execução |
+|---|---|---|
+| P0 operacional | Ajustar os seis saldos de estoque em zero. | Contagem física por SKU/variante e confirmação explícita dos valores. |
+| P1 | Validar ponta a ponta a entrada de interesse de novo membro. | Aprovação para criar e, depois, arquivar um registro de teste ou uso de homologação isolada. |
+| P1 | Validar emissão, pagamento e retirada de pedido/ingresso. | Estoque de homologação e credenciais/teste do Mercado Pago em ambiente de homologação. |
+| P1 | Validar evento sincronizado via Sympla. | Evento/lote de homologação ou autorização de uma sincronização controlada. |
