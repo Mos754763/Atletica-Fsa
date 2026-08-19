@@ -270,3 +270,4 @@
 - [x] Tornar o mascote legível no hero sem reintroduzir a moldura retangular do asset institucional
 - [x] Transformar a seção de diretores em um carrossel 3D acessível, responsivo e navegável por teclado
 - [x] Reenquadrar o mascote do hero em um viewport dedicado, preservando silhueta, contraste e CTAs
+- [x] Corrigir o recorte do asset institucional no hero para remover a faixa inferior escura e preservar apenas a ilustração do mascote

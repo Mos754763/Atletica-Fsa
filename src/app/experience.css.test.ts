@@ -69,7 +69,9 @@ describe("experiência pública interativa", () => {
     expect(experienceStyles).toContain("border-radius:48% 52% 51% 49%");
     expect(landingMotion).toContain('className="hero__mascot-viewport"');
     expect(landingMotion).toContain('initial={false} animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}');
-    expect(experienceStyles).toContain("object-position:63% 48%");
+    expect(experienceStyles).toContain("width:190%");
+    expect(experienceStyles).toContain("object-position:62% 10%");
+    expect(experienceStyles).toContain("transform:translate(-24%,-11%)");
     expect(experienceStyles).toContain("mix-blend-mode:normal");
     expect(landingMotion).toContain('className="hero__mascot-viewport"');
     expect(landingMotion).toContain("const [artworkSource, setArtworkSource] = useState(artwork)");

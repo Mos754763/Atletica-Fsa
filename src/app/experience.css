@@ -8,9 +8,9 @@
 .hero__orbit { position:absolute; z-index:-1; display:block; border:1px solid rgba(255,255,255,.26); border-radius:50%; pointer-events:none; }
 .hero__orbit--one { width:490px; height:490px; top:48px; right:-37px; transform:rotateX(62deg) rotateZ(-20deg); }
 .hero__orbit--two { width:346px; height:346px; right:41px; bottom:51px; border-color:rgba(255,210,63,.48); transform:rotateX(62deg) rotateZ(33deg); }
-.hero__mascot-viewport { position:relative; z-index:5; display:grid; width:min(430px,95%); aspect-ratio:1; place-items:center; overflow:hidden; border-radius:48% 52% 51% 49% / 47% 50% 50% 53%; background:#061c48; box-shadow:0 30px 35px rgba(0,0,0,.32),inset 0 0 0 1px rgba(255,255,255,.1); transform-style:preserve-3d; }
+.hero__mascot-viewport { position:relative; z-index:5; display:grid; width:min(430px,95%); aspect-ratio:1; place-items:center; overflow:hidden; border-radius:48% 52% 51% 49% / 47% 50% 50% 53%; background:radial-gradient(circle at 58% 38%,#163f85 0,#061c48 66%); box-shadow:0 30px 35px rgba(0,0,0,.32),inset 0 0 0 1px rgba(255,255,255,.1); transform-style:preserve-3d; }
 .hero__mascot-viewport::after { position:absolute; z-index:2; inset:0; content:""; border:1px solid rgba(255,255,255,.2); border-radius:inherit; pointer-events:none; }
-.hero__official-art { position:relative; z-index:1; display:block; width:118%; max-width:none; height:118%; max-height:none; object-fit:cover; object-position:63% 48%; mix-blend-mode:normal; filter:contrast(1.08) saturate(1.06); transform:translateX(-3%); }
+.hero__official-art { position:relative; z-index:1; display:block; width:190%; max-width:none; height:190%; max-height:none; object-fit:cover; object-position:62% 10%; mix-blend-mode:normal; filter:contrast(1.1) saturate(1.08); transform:translate(-24%,-11%); }
 .people-carousel { position:relative; display:grid; grid-template-columns:minmax(0,1fr) 58px; gap:22px; margin-top:42px; }
 .people-carousel__viewport { position:relative; min-width:0; min-height:420px; overflow:hidden; outline:none; perspective:1600px; isolation:isolate; }
 .people-carousel__viewport:focus-visible { outline:2px solid var(--yellow); outline-offset:8px; }

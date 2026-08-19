@@ -97,3 +97,9 @@ A seção de setores foi verificada na prévia local sem regressão visual: as c
 O cabeçalho de gestão preserva margem de respiro após a grade de setores, com título, descrição e link institucional legíveis. A próxima posição de rolagem contém a cena tridimensional propriamente dita, que será validada quanto à centralização e aos cartões laterais.
 
 Na prévia local desktop, a cena mostra um cartão central de alto contraste, um cartão vizinho parcial à esquerda e uma pilha lateral à direita, todos dentro de um mesmo palco visual. Os controles anterior/próximo e os oito indicadores continuam presentes no DOM, com rótulos descritivos e `role="tab"`, enquanto o texto alternativo anuncia a integrante ativa e sua posição no conjunto.
+
+Na implantação Ready `d4dd7c6` (`https://atletica-ar17wiera-moises-faustino-rodrigues-s-projects.vercel.app/`), o carrossel permanece disponível e o hero preserva os CTAs. A composição atual do mascote, porém, ainda mostra uma faixa inferior escura do asset institucional dentro do orbe. O próximo ajuste deve reutilizar apenas a região superior ilustrada sem alterar a estrutura semântica, os links ou a navegação do hero.
+
+Na prévia local posterior, o enquadramento foi ampliado e deslocado para a região superior do asset. O mascote, suas orelhas, rosto, camiseta FSA e braços aparecem integralmente no viewport circular, sem a faixa inferior vazia; os CTAs continuam legíveis e não foram deslocados.
+
+Na revisão final da cena 3D, os retratos ativos de Raposo e Belote ficaram integralmente enquadrados no cartão central. Os cartões adjacentes permaneceram parcialmente visíveis em profundidade, sem competir com a leitura do nome e do cargo. O botão “Ver próximo integrante” avançou a cena de forma previsível, enquanto controles anteriores, indicadores e texto anunciável continuaram disponíveis.
