@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CalendarDays, PackageCheck, Shield, ShoppingBag } from "lucide-react";
+import { CalendarDays, PackageCheck, Shield, ShieldCheck, ShoppingBag } from "lucide-react";
 import { FsaWordmark } from "@/components/brand/FsaWordmark";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { roleLabel } from "@/lib/auth/roles";
@@ -31,6 +31,7 @@ export default async function AccountPage() {
         <Link href="/loja"><ShoppingBag size={23} /><span><strong>Loja FSA</strong><small>Produtos e pedidos</small></span></Link>
         <Link href="/conta/eventos"><CalendarDays size={23} /><span><strong>Meus eventos</strong><small>Inscrições e check-in</small></span></Link>
         <Link href="/conta/pedidos"><PackageCheck size={23} /><span><strong>Meus pedidos</strong><small>Acompanhar retiradas</small></span></Link>
+        <Link href="/conta/seguranca"><ShieldCheck size={23} /><span><strong>Segurança</strong><small>Senha e autenticação</small></span></Link>
       </section>
       {(role === "admin" || role === "caixa" || role === "cozinha") && (
         <nav className="account-admin-actions" aria-label="Atalhos operacionais">

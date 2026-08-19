@@ -331,3 +331,5 @@
 - [x] Reproduzir e cobrir com testes o erro histórico de referência ambígua `registration_id` no painel administrativo de eventos
 - [x] Reproduzir e cobrir com testes a persistência histórica do formulário de interesse de membros quando a tabela não está disponível no cache de esquema
 - [x] Reproduzir e cobrir com testes a validação histórica de slug do Construtor de Tabelas, garantindo erro de formulário tratável
+- [x] Avaliar Clerk Free versus Supabase Auth para os requisitos de autenticação, MFA, telefone e provedores sociais
+- [ ] Validar em homologação o painel de segurança de conta, OAuth adicional, telefone e MFA conforme a arquitetura aprovada

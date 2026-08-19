@@ -14,6 +14,7 @@ export function LoginForm() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const mfaRedirectPath = "/auth/mfa?next=%2Fconta";
 
   async function loginWithGoogle() {
     setBusy(true);
@@ -22,7 +23,7 @@ export function LoginForm() {
       const supabase = await getBrowserClient();
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${window.location.origin}/auth/callback?next=/conta` },
+        options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(mfaRedirectPath)}` },
       });
       if (oauthError) throw oauthError;
     } catch (authError) {
@@ -42,7 +43,7 @@ export function LoginForm() {
       if (mode === "login") {
         const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
         if (loginError) throw loginError;
-        window.location.assign("/conta");
+        window.location.assign(mfaRedirectPath);
         return;
       }
 
@@ -62,7 +63,7 @@ export function LoginForm() {
       });
       if (signupError) throw signupError;
       if (data.session) {
-        window.location.assign("/conta");
+        window.location.assign(mfaRedirectPath);
         return;
       }
       setMessage("Conta criada. Confira seu e-mail para confirmar o acesso.");
