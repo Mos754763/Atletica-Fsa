@@ -49,3 +49,9 @@ O formulário mantém o campo oculto `company` como honeypot. A ação do servid
 ## Encerramento dos dados sintéticos
 
 O cadastro positivo `qa.member-interest.20260819@atleticafsa.test` foi preservado para auditoria e atualizado para o status `arquivado` no Supabase de homologação. Nenhum dado de produção, preço, estoque ou configuração de pagamentos foi modificado nesta validação.
+
+## Promoção e validação de produção
+
+O merge `4b188ea` promoveu o conjunto homologado para `main`. A Vercel publicou o deployment de produção `dpl_4wUUn3L2bn2R8JcQNA9yXieer3MP` em estado `READY`, associado ao commit de promoção. A consulta de erros recentes para a rota `/` não encontrou falhas do deployment atual; o único grupo no intervalo analisado correspondeu ao diagnóstico histórico `PGRST205` ocorrido no Preview antes da aplicação do schema de homologação.
+
+A leitura externa de `https://atleticafsa.site/` confirmou que a landing pública está disponível e renderiza suas seções principais. Os logs de build filtrados por erros registraram apenas a conclusão do build, sem alertas do Autoprefixer. O endpoint público de configuração respondeu HTTP 200. O trabalho não alterou `PAYMENTS_ENABLED`, estoque, preços ou qualquer dado no projeto Supabase de produção.
