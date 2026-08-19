@@ -58,6 +58,10 @@ export function AccountSecurityCenter() {
       if (factorError) throw factorError;
       if (assuranceError) throw assuranceError;
       if (userError) throw userError;
+      if (!userData.user) {
+        window.location.assign("/login?next=%2Fconta%2Fseguranca");
+        return;
+      }
 
       setFactors((factorData?.all ?? []).map((factor) => ({
         id: factor.id,
@@ -67,8 +71,8 @@ export function AccountSecurityCenter() {
         createdAt: factor.created_at ?? null,
       })));
       setAal(assurance?.currentLevel ?? null);
-      setPhone(userData.user?.phone ?? null);
-      setProviders(Array.from(new Set((userData.user?.identities ?? []).map((identity) => identity.provider))));
+      setPhone(userData.user.phone ?? null);
+      setProviders(Array.from(new Set((userData.user.identities ?? []).map((identity) => identity.provider))));
     } catch (securityError) {
       setNotice({ kind: "error", text: securityError instanceof Error ? securityError.message : "Não foi possível carregar as configurações de segurança." });
     } finally {

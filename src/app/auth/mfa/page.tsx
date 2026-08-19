@@ -10,8 +10,8 @@ export const dynamic = "force-dynamic";
 
 export default async function MfaPage({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
   const supabase = await createServerAuthClient();
-  const { data: claimsData } = await supabase.auth.getClaims();
-  if (!claimsData?.claims?.sub) redirect("/login");
+  const { data: userData } = await supabase.auth.getUser();
+  if (!userData.user) redirect("/login");
   const query = await searchParams;
   const nextPath = resolveSafeRedirectPath(query.next, "/conta");
 
