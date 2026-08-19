@@ -301,3 +301,4 @@
 - [x] Registrar de forma sanitizada a causa de falhas de persistência do interesse de membro para acelerar o diagnóstico em homologação sem expor dados pessoais ou segredos
 
 - [x] Cobrir por teste de regressão a saída antirobô do cadastro de interesse antes de qualquer acesso ao Supabase
+- [x] Criar termos de aceite e matriz de tratamento LGPD por perfil de usuário, com indicação de itens dependentes de revisão jurídica
