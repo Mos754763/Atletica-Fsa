@@ -2,7 +2,8 @@
 
 import { useActionState } from "react";
 import { Send, ShieldCheck } from "lucide-react";
-import { initialMemberInterestState, submitMemberInterest } from "@/app/member-interest-actions";
+import { submitMemberInterest } from "@/app/member-interest-actions";
+import { initialMemberInterestState } from "@/lib/member-interest-action-state";
 
 const interestOptions = ["Esportes", "Eventos", "Marketing", "Sociais", "Suprimentos", "Bateria"];
 

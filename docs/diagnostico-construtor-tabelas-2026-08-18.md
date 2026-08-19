@@ -29,3 +29,13 @@ A correção deverá preservar números opcionais vazios como ausência de valor
 ## Validação posterior em produção
 
 Após a publicação do commit `9a24388`, a rota informada pelo usuário (`/admin/tabelas?table=ab7c5813-860a-45d2-88b5-a5fa245bba60`) carregou com sessão administrativa. A página exibiu a tabela **Fornecedores**, seus campos, o formulário de novo item e a seção de novo campo, sem a exceção de servidor anteriormente apresentada. Esta validação não criou nem alterou tabelas, campos ou registros de produção.
+
+## Incidente posterior: landing indisponível
+
+Em 19 de agosto de 2026, a raiz da landing em `https://atleticafsa.site/` passou a exibir a página de exceção do Next.js com o digest `4029299998@E352`. O incidente foi reportado após a aplicação da migração de interesse de novos membros. A investigação deve correlacionar o digest com os logs da Vercel antes de assumir uma causa.
+
+Foi confirmada a consistência entre a migração aplicada e as ações de cadastro: ambas usam a tabela `member_interest_applications`. Portanto, a tabela não participou da falha de carregamento inicial.
+
+### Causa confirmada
+
+Os registros de runtime da Vercel para a rota `/` confirmaram o erro **`A "use server" file can only export async functions, found object.`** no deployment `dpl_HU3Jsm913kDwyEBbgbtnW77NkWQx`, com o digest `4029299998`. O módulo `src/app/member-interest-actions.ts` tem a diretiva de servidor e exportava, além da ação assíncrona, o objeto `initialMemberInterestState`. A correção segura é mover o tipo e o estado inicial para um módulo neutro/cliente, mantendo no arquivo de action apenas funções `async`.

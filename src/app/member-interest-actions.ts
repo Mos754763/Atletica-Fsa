@@ -3,10 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { parseMemberInterest } from "@/lib/member-interest";
-
-export type MemberInterestActionState = { status: "idle" | "success" | "error"; message: string };
-
-export const initialMemberInterestState: MemberInterestActionState = { status: "idle", message: "" };
+import type { MemberInterestActionState } from "@/lib/member-interest-action-state";
 
 export async function submitMemberInterest(_previousState: MemberInterestActionState, formData: FormData): Promise<MemberInterestActionState> {
   if (String(formData.get("company") ?? "").trim()) return { status: "success", message: "Recebemos seu interesse. Em breve entraremos em contato." };

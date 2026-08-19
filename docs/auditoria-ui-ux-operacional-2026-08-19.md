@@ -56,3 +56,7 @@ As próximas inspeções cobrirão a hierarquia de trabalho do ERP, os estados d
 ## Validação posterior em produção
 
 Na publicação do commit `9a24388`, a landing exibiu o bloco **Vem pra FSA**, os campos de interesse, o texto de consentimento e as opções de setor. O login carregou o mascote institucional e a superfície azul de profundidade reativa, mantendo a separação de contraste entre identidade e formulário. O ERP exibiu o mascote institucional no cabeçalho, substituindo o ornamento anterior do canto superior direito.
+
+## Inventário observado para revisão operacional
+
+Em `https://atleticafsa.site/admin/catalogo`, com sessão administrativa, foram observados seis produtos ativos e quatro categorias: Vestuário, Acessórios, Colecionáveis e Bebidas. Os preços cadastrados são Camiseta Oficial FSA (R$ 69,90), Moletom Titular FSA (R$ 149,90), Copo FSA (R$ 24,90), Chaveiro Coelho FSA (R$ 14,90), Figurinhas FSA (R$ 8,00) e Bebida em lata (R$ 7,00). Todos os itens exibiam **0 em estoque**, portanto não há base operacional para aumentar ou reduzir estoque de forma responsável sem contagem física ou confirmação da diretoria. Nenhum valor foi alterado nesta inspeção.

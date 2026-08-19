@@ -288,3 +288,8 @@
 - [x] Remover o realce visual intrusivo ao focar campos de autenticação, mantendo indicadores de foco acessíveis por teclado
 - [x] Reposicionar o mascote institucional no ERP e substituir o ornamento atual do canto superior direito
 - [x] Auditar e propor melhorias priorizadas de UI/UX para landing, loja, ERP, ODS, eventos e backoffice sem gerar novos ativos
+- [x] Aplicar em produção a migração da fila de interesse de novos membros e verificar os controles de acesso
+- [ ] Executar um cadastro público controlado e confirmar a visibilidade e a triagem no ERP sem usar dados pessoais reais
+- [ ] Revisar produtos existentes no ERP, identificar inconsistências de preço e estoque e aplicar somente correções confirmadas
+- [ ] Realizar auditoria funcional end-to-end dos módulos do ERP, incluindo permissões, catálogo, pedidos, eventos, ODS, automações, integrações e tabelas
+- [x] Diagnosticar e corrigir a exceção de servidor que impede o carregamento da landing em produção após a migração de novos membros
