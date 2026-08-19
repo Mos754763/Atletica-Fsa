@@ -50,3 +50,7 @@ O acesso visual ao painel ficou pendente nesta sessão porque a credencial por s
 ## Resultado — honeypot
 
 O contrato de bloqueio do honeypot foi executado na suíte automatizada específica, incluindo a verificação de que o ramo de honeypot ocorre antes da persistência de interesse. O cenário manual de navegador permanece não concluído porque o campo `Empresa` é corretamente não focalizável e visualmente oculto (`tabIndex=-1` e `aria-hidden=true`), e o navegador conectado não expôs uma forma segura de preenchê-lo sem modificar a aplicação. A promoção permanece condicionada à decisão sobre esta evidência automatizada ou à repetição manual por uma sessão que permita usar o console de desenvolvimento.
+
+## Limpeza de dados sintéticos
+
+Foi executada a rotina de arquivamento limitada a e-mails com o prefixo `qa.abuso%` em homologação. A consulta final não encontrou registros sintéticos ativos nem pendentes desse prefixo, portanto nenhuma linha adicional exigiu alteração. A telemetria preservada para auditoria registrava `1` evento `validation_rejected` e `1` evento `rate_limited`; nenhum dado de produção foi consultado ou alterado.
