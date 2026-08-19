@@ -1,0 +1,81 @@
+.erp-dashboard__header-side {
+  position: relative;
+  min-height: 196px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  justify-items: end;
+  align-items: end;
+  isolation: isolate;
+}
+
+.erp-dashboard__header-side::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 2px;
+  right: 6px;
+  width: 168px;
+  height: 168px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 31% 30%, rgba(255, 210, 63, 0.9), rgba(255, 210, 63, 0.16) 58%, transparent 70%);
+  filter: blur(2px);
+  opacity: 0.85;
+}
+
+.erp-dashboard__header-side .rabbit-mascot {
+  position: absolute;
+  z-index: 1;
+  right: 18px;
+  top: 2px;
+  width: 178px;
+  min-height: 166px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.erp-dashboard__header-side .rabbit-mascot__generated {
+  width: 178px;
+  height: 166px;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 18px 20px rgba(11, 61, 145, 0.2));
+  animation: erp-mascot-float 6.2s ease-in-out infinite;
+}
+
+.erp-dashboard__header-side > a {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+}
+
+@keyframes erp-mascot-float {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-1.25deg); }
+  50% { transform: translate3d(0, -7px, 0) rotate(1.25deg); }
+}
+
+@media (max-width: 760px) {
+  .erp-dashboard__header-side {
+    min-height: 122px;
+    width: 100%;
+  }
+
+  .erp-dashboard__header-side::before {
+    width: 106px;
+    height: 106px;
+    top: 4px;
+  }
+
+  .erp-dashboard__header-side .rabbit-mascot,
+  .erp-dashboard__header-side .rabbit-mascot__generated {
+    width: 106px;
+    height: 104px;
+    min-height: 104px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .erp-dashboard__header-side .rabbit-mascot__generated { animation: none; }
+}

@@ -5,10 +5,11 @@ import { z } from "zod";
 import { requireAdminShell } from "@/lib/auth/require-admin-shell";
 import { createServiceClient } from "@/lib/supabase/server";
 import { normalizeBuilderRecord } from "@/lib/table-builder/record-values";
+import { toBuilderSlug } from "@/lib/table-builder/slugs";
 import { grantMatchesTable } from "@/lib/governance/table-grants";
 
 const fieldTypes = ["text", "number", "date", "single_select", "multi_select", "person", "checkbox"] as const;
-const slug = z.string().trim().toLowerCase().regex(/^[a-z0-9]+(?:-[a-z0-9-]+)*$/, "Use letras minúsculas, números e hífens.").max(80);
+const optionalSlug = z.string().trim().max(80).optional();
 
 async function assertTableAccess(tableId: string, action: "ver" | "criar" | "editar" | "apagar") {
   const session = await requireAdminShell();
@@ -29,23 +30,25 @@ function refresh() { revalidatePath("/admin/tabelas"); revalidatePath("/admin");
 
 export async function createCustomTable(formData: FormData) {
   const session = await requireAdminShell();
-  const values = z.object({ sectorId: z.string().uuid(), name: z.string().trim().min(2).max(80), slug, description: z.string().trim().max(300).optional() }).parse({ sectorId: formData.get("sectorId"), name: formData.get("name"), slug: formData.get("slug"), description: formData.get("description") || undefined });
+  const values = z.object({ sectorId: z.string().uuid(), name: z.string().trim().min(2).max(80), slug: optionalSlug, description: z.string().trim().max(300).optional() }).parse({ sectorId: formData.get("sectorId"), name: formData.get("name"), slug: formData.get("slug")?.toString() || undefined, description: formData.get("description") || undefined });
+  const tableSlug = toBuilderSlug(values.slug || values.name, "nova-tabela");
   const service = createServiceClient();
   if (!session.profile.is_president) {
     const { data: director } = await service.from("sector_memberships").select("id").eq("profile_id", session.userId).eq("sector_id", values.sectorId).eq("role", "diretor").is("ended_at", null).maybeSingle();
     if (!director) throw new Error("Somente a direção do setor pode criar tabelas nele.");
   }
-  const { error } = await service.from("custom_tables").insert({ sector_id: values.sectorId, name: values.name, slug: values.slug, description: values.description || null, created_by: session.userId, updated_by: session.userId });
+  const { error } = await service.from("custom_tables").insert({ sector_id: values.sectorId, name: values.name, slug: tableSlug, description: values.description || null, created_by: session.userId, updated_by: session.userId });
   if (error) throw new Error(error.code === "23505" ? "Já existe uma tabela com este identificador no setor." : "Não foi possível criar a tabela.");
   refresh();
 }
 
 export async function createCustomField(formData: FormData) {
   const tableId = z.string().uuid().parse(formData.get("tableId")); const context = await assertTableAccess(tableId, "editar");
-  const values = z.object({ name: z.string().trim().min(2).max(80), slug, fieldType: z.enum(fieldTypes), required: z.enum(["true", "false"]), options: z.string().trim().max(800).optional() }).parse({ name: formData.get("name"), slug: formData.get("slug"), fieldType: formData.get("fieldType"), required: formData.get("required") || "false", options: formData.get("options") || undefined });
+  const values = z.object({ name: z.string().trim().min(2).max(80), slug: optionalSlug, fieldType: z.enum(fieldTypes), required: z.enum(["true", "false"]), options: z.string().trim().max(800).optional() }).parse({ name: formData.get("name"), slug: formData.get("slug")?.toString() || undefined, fieldType: formData.get("fieldType"), required: formData.get("required") || "false", options: formData.get("options") || undefined });
+  const fieldSlug = toBuilderSlug(values.slug || values.name, "novo-campo");
   const { count } = await context.service.from("custom_table_fields").select("id", { count: "exact", head: true }).eq("table_id", tableId).is("deleted_at", null);
   const options = values.options?.split(",").map((value) => value.trim()).filter(Boolean) ?? [];
-  const { error } = await context.service.from("custom_table_fields").insert({ table_id: tableId, name: values.name, slug: values.slug, field_type: values.fieldType, is_required: values.required === "true", sort_order: count ?? 0, config_json: options.length ? { options } : {}, created_by: context.userId });
+  const { error } = await context.service.from("custom_table_fields").insert({ table_id: tableId, name: values.name, slug: fieldSlug, field_type: values.fieldType, is_required: values.required === "true", sort_order: count ?? 0, config_json: options.length ? { options } : {}, created_by: context.userId });
   if (error) throw new Error(error.code === "23505" ? "Este identificador de campo já existe." : "Não foi possível criar o campo.");
   refresh();
 }

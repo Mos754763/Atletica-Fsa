@@ -11,9 +11,10 @@ type MascotHeaderProps = { eyebrow: string; title: string; copy: string; account
 function MascotHeader({ eyebrow, title, copy, accountLabel = "Minha conta" }: MascotHeaderProps) {
   return (
     <MotionReveal className="erp-dashboard__motion" eager>
-      <header className="erp-dashboard__header">
+      <header className="erp-dashboard__header fx-depth-surface">
+        <span className="fx-depth-surface__glow" aria-hidden="true" />
         <div><p className="eyebrow eyebrow--blue">{eyebrow}</p><h1>{title}</h1><p>{copy}</p></div>
-        <div className="erp-dashboard__header-side"><RabbitMascot compact /><Link href="/conta">{accountLabel} <ArrowRight size={15} /></Link></div>
+        <div className="erp-dashboard__header-side"><div className="erp-dashboard__mascot-stage"><RabbitMascot className="erp-dashboard__mascot" /></div><Link href="/conta">{accountLabel} <ArrowRight size={15} /></Link></div>
       </header>
     </MotionReveal>
   );

@@ -12,6 +12,9 @@ const storefront = readFileSync(resolve(process.cwd(), "src/components/store/Sto
 const loginPage = readFileSync(resolve(process.cwd(), "src/app/login/page.tsx"), "utf8");
 const resetPasswordPage = readFileSync(resolve(process.cwd(), "src/app/redefinir-senha/page.tsx"), "utf8");
 const eventsPage = readFileSync(resolve(process.cwd(), "src/app/eventos/page.tsx"), "utf8");
+const depthSurfaceStyles = readFileSync(resolve(process.cwd(), "src/app/depth-surfaces.css"), "utf8");
+const frontendFx = readFileSync(resolve(process.cwd(), "src/components/fx/FrontendFx.tsx"), "utf8");
+const adminPage = readFileSync(resolve(process.cwd(), "src/app/admin/page.tsx"), "utf8");
 
 describe("experiência pública interativa", () => {
   it("desativa o cursor visual para toque e preferência de movimento reduzido", () => {
@@ -96,5 +99,17 @@ describe("experiência pública interativa", () => {
     expect(globalStyles).toContain("translate3d(-50%,0,0)");
     expect(storefront).toContain('const storeMascotArtwork = institutionalAsset("fsa-hero-gestao-2026.png")');
     expect(storefront).toContain('<HeroMotion artwork={storeMascotArtwork} />');
+  });
+
+  it("ativa superfícies de profundidade pelo ponteiro sem reduzir suporte a movimento reduzido", () => {
+    expect(frontendFx).toContain('".fx-spotlight, .fx-depth-surface"');
+    expect(depthSurfaceStyles).toContain(".fx-depth-surface__glow");
+    expect(depthSurfaceStyles).toContain("var(--fx-spot-x)");
+    expect(depthSurfaceStyles).toContain("@media (prefers-reduced-motion: reduce), (pointer: coarse)");
+    expect(homePage).toContain('className="hero-shell fx-depth-surface"');
+    expect(loginPage).toContain('className="auth-page__intro fx-depth-surface"');
+    expect(loginPage).toContain('className="auth-page__mascot"');
+    expect(adminPage).toContain('className="erp-dashboard__header fx-depth-surface"');
+    expect(adminPage).toContain('className="erp-dashboard__mascot-stage"');
   });
 });

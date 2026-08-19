@@ -12,6 +12,7 @@ import { resolveFsaProductImage } from "@/lib/store-product-assets";
 
 type StorefrontProps = { products: CatalogProduct[] };
 type CartLine = { cartKey: string; productId: string; productName: string; imageUrl: string | null; variantId: string | null; variantName: string | null; salesBatchId: string | null; salesBatchName: string | null; unitPriceCents: number; maxQuantity: number; quantity: number };
+type CatalogFilterGroup = { slug: string; name: string; matcher: (product: CatalogProduct) => boolean };
 
 const PREORDER_CART_LIMIT = 20;
 const storeMascotArtwork = institutionalAsset("fsa-hero-gestao-2026.png");
@@ -27,7 +28,18 @@ export function Storefront({ products }: StorefrontProps) {
   const [paymentNotice, setPaymentNotice] = useState<string | null>(null);
   const [checkingOut, setCheckingOut] = useState(false);
   const categories = useMemo(() => Array.from(new Map(products.filter((product) => product.category).map((product) => [product.category!.slug, product.category!])).values()), [products]);
-  const visibleProducts = selectedCategory === "todos" ? products : products.filter((product) => product.category?.slug === selectedCategory);
+  const categoryGroups = useMemo<CatalogFilterGroup[]>(() => {
+    const hasCategory = (matcher: RegExp) => categories.some((category) => matcher.test(`${category.slug} ${category.name}`));
+    return [
+      { slug: "todos", name: "Todos", matcher: () => true },
+      ...(hasCategory(/vestu[aá]rio|camiseta|moletom|cal[cç]a|short/i) ? [{ slug: "grupo-vestuario", name: "Vestuário", matcher: (product: CatalogProduct) => /vestu[aá]rio|camiseta|moletom|cal[cç]a|short/i.test(`${product.category?.slug ?? ""} ${product.category?.name ?? ""}`) }] : []),
+      ...(hasCategory(/acess[oó]rio|chaveiro|copo|bon[eé]|bolsa/i) ? [{ slug: "grupo-acessorios", name: "Acessórios", matcher: (product: CatalogProduct) => /acess[oó]rio|chaveiro|copo|bon[eé]|bolsa/i.test(`${product.category?.slug ?? ""} ${product.category?.name ?? ""}`) }] : []),
+    ];
+  }, [categories]);
+  const groupedCategorySlugs = new Set(["vestuario", "acessorios"]);
+  const otherCategories = categories.filter((category) => !groupedCategorySlugs.has(category.slug));
+  const activeGroup = categoryGroups.find((group) => group.slug === selectedCategory);
+  const visibleProducts = selectedCategory === "todos" ? products : activeGroup ? products.filter(activeGroup.matcher) : products.filter((product) => product.category?.slug === selectedCategory);
   const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
   const totalCents = cart.reduce((sum, item) => sum + (item.unitPriceCents * item.quantity), 0);
 
@@ -88,7 +100,7 @@ export function Storefront({ products }: StorefrontProps) {
     </header>
     <aside className="store-rail" aria-label="Atalhos de navegação"><Link href="/"><ArrowLeft size={16} /> Início</Link><Link href="/eventos">Eventos</Link><button type="button" onClick={() => setCartOpen(true)}><ShoppingBag size={16} /> Ver carrinho</button></aside>
     <section className="store-hero"><div className="store-hero__copy"><p className="eyebrow eyebrow--blue"><span /> LOJA OFICIAL</p><h1>Vista a <em>torcida.</em></h1><p>Produtos, copos e aquele toque FSA para representar dentro e fora dos eventos.</p></div><div className="store-hero__mascot"><HeroMotion artwork={storeMascotArtwork} /></div></section>
-    <nav className="store-filters" aria-label="Filtrar produtos por categoria"><button aria-pressed={selectedCategory === "todos"} className={selectedCategory === "todos" ? "is-active" : ""} type="button" onClick={() => setSelectedCategory("todos")}>Todos</button>{categories.map((category) => <button aria-pressed={selectedCategory === category.slug} className={selectedCategory === category.slug ? "is-active" : ""} type="button" key={category.id} onClick={() => setSelectedCategory(category.slug)}>{category.name}</button>)}</nav>
+    <nav className="store-filters" aria-label="Filtrar produtos por categoria"><span className="store-filters__label">Explorar por</span>{categoryGroups.map((group) => <button aria-pressed={selectedCategory === group.slug} className={selectedCategory === group.slug ? "is-active" : ""} type="button" key={group.slug} onClick={() => setSelectedCategory(group.slug)}>{group.name}</button>)}{otherCategories.map((category) => <button aria-pressed={selectedCategory === category.slug} className={selectedCategory === category.slug ? "is-active" : ""} type="button" key={category.id} onClick={() => setSelectedCategory(category.slug)}>{category.name}</button>)}</nav>
     <section className="store-grid" aria-live="polite">
       {visibleProducts.map((product, index) => {
         const variant = getVariant(product); const batch = getBatch(product); const productPrice = batch?.priceCents ?? variant?.priceCents ?? product.priceCents; const available = batch ? true : (variant?.stockQuantity ?? product.stockQuantity) > 0;

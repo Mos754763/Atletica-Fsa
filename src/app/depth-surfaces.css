@@ -1,0 +1,49 @@
+.fx-depth-surface {
+  --fx-spot-x: 50%;
+  --fx-spot-y: 50%;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.fx-depth-surface__glow {
+  position: absolute;
+  z-index: 0;
+  inset: -18%;
+  pointer-events: none;
+  opacity: 0.82;
+  background:
+    radial-gradient(44% 56% at var(--fx-spot-x) var(--fx-spot-y), rgba(255, 210, 63, 0.27), transparent 67%),
+    radial-gradient(28% 34% at calc(var(--fx-spot-x) + 12%) calc(var(--fx-spot-y) - 10%), rgba(111, 161, 255, 0.2), transparent 72%);
+  transform: translate3d(0, 0, 0) scale(1.04);
+  transition: opacity 180ms ease-out;
+}
+
+.fx-depth-surface > :not(.fx-depth-surface__glow) { position: relative; z-index: 1; }
+
+.hero-shell.fx-depth-surface .fx-depth-surface__glow {
+  opacity: 0.74;
+  mix-blend-mode: screen;
+}
+
+.auth-page__intro.fx-depth-surface .fx-depth-surface__glow {
+  opacity: 0.56;
+  background:
+    radial-gradient(46% 62% at var(--fx-spot-x) var(--fx-spot-y), rgba(255, 210, 63, 0.34), transparent 68%),
+    radial-gradient(30% 38% at calc(var(--fx-spot-x) - 10%) calc(var(--fx-spot-y) + 15%), rgba(99, 153, 255, 0.2), transparent 73%);
+}
+
+.erp-dashboard__header.fx-depth-surface {
+  border-radius: 24px;
+}
+
+.erp-dashboard__header.fx-depth-surface .fx-depth-surface__glow {
+  opacity: 0.62;
+  background:
+    radial-gradient(38% 90% at var(--fx-spot-x) var(--fx-spot-y), rgba(255, 210, 63, 0.18), transparent 70%),
+    radial-gradient(34% 72% at calc(var(--fx-spot-x) + 12%) calc(var(--fx-spot-y) - 14%), rgba(11, 61, 145, 0.11), transparent 76%);
+}
+
+@media (prefers-reduced-motion: reduce), (pointer: coarse) {
+  .fx-depth-surface__glow { opacity: 0.35; transition: none; }
+}

@@ -279,3 +279,12 @@
 - [x] Adicionar o mascote institucional ao hero da página da loja, com composição equivalente à landing
 - [x] Transformar a faixa amarela de JOGOS, FESTAS, CAMPEONATOS, TORCIDA e LOJA OFICIAL em uma esteira contínua automática
 - [x] Remover o selo textual "PLATAFORMA INTEGRADA" do hero inicial
+- [x] Corrigir a exceção em produção do Construtor de Tabelas ao criar campo numérico opcional e cobrir a regressão por testes
+- [x] Criar formulário público de interesse para novos membros na landing, com consentimento e entrada rastreável no ERP
+- [ ] Adicionar produtos institucionais adicionais ao catálogo público sem criar ou gerar novos assets visuais
+- [x] Refinar filtros de loja para separar claramente vestuário, acessórios e demais categorias, preservando carrinho e URL contextual
+- [x] Criar fundos interativos em 3D acionados pelo ponteiro nas seções públicas selecionadas, com alternativa de movimento reduzido
+- [x] Reintegrar o mascote institucional e um fundo interativo à página de login sem prejudicar contraste ou responsividade
+- [x] Remover o realce visual intrusivo ao focar campos de autenticação, mantendo indicadores de foco acessíveis por teclado
+- [x] Reposicionar o mascote institucional no ERP e substituir o ornamento atual do canto superior direito
+- [x] Auditar e propor melhorias priorizadas de UI/UX para landing, loja, ERP, ODS, eventos e backoffice sem gerar novos ativos

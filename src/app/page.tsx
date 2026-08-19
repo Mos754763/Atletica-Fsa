@@ -16,6 +16,7 @@ import { FsaWordmark } from "@/components/brand/FsaWordmark";
 import { SectionTitle } from "@/components/landing/SectionTitle";
 import { FloatingParticles, HeroMotion, HighlightParallax, MagneticLink, MotionButton, MotionCard, MotionReveal, ParallaxArtwork } from "@/components/landing/LandingMotion";
 import { ManagementCarousel } from "@/components/landing/ManagementCarousel";
+import { MemberInterestForm } from "@/components/landing/MemberInterestForm";
 import { MobileNav } from "@/components/landing/MobileNav";
 import { institutionalAsset } from "@/lib/institutional-assets";
 import { getCatalog } from "@/lib/catalog";
@@ -58,7 +59,8 @@ export default async function HomePage() {
   const products = catalog.filter((product) => product.isFeatured).slice(0, 4);
   return (
     <main>
-      <section className="hero-shell" id="inicio">
+      <section className="hero-shell fx-depth-surface" id="inicio">
+        <span className="fx-depth-surface__glow" aria-hidden="true" />
         <nav className="site-nav page-width" aria-label="Navegação principal">
           <Link href="/" aria-label="ATLETICA FSA - Página inicial"><FsaWordmark /></Link>
           <div className="site-nav__links">
@@ -152,6 +154,18 @@ export default async function HomePage() {
           <div className="event-copy__details"><span><CalendarDays size={18} /> Agenda sempre atualizada</span><span><UsersRound size={18} /> Check-in rápido e seguro</span></div>
           <Link href="/eventos" className="button button--blue">Explorar eventos <ArrowRight size={17} /></Link>
         </MotionReveal>
+      </section>
+
+      <section className="membership-section fx-spotlight" id="participar">
+        <div className="page-width membership-section__layout">
+          <div className="membership-section__copy">
+            <p className="eyebrow"><span /> VEM PRA FSA</p>
+            <h2>Quer mover a torcida com a gente?</h2>
+            <p>Deixe seu interesse para a gestão. Seu cadastro entra na fila de Pessoas do ERP para análise, contato e possível convite para a plataforma.</p>
+            <ul><li>Você escolhe as frentes que mais combinam com você.</li><li>A gestão entra em contato antes de criar qualquer acesso.</li><li>Se aprovado, o convite chega com o papel certo para sua atuação.</li></ul>
+          </div>
+          <MemberInterestForm />
+        </div>
       </section>
 
       <section className="manifesto-section">

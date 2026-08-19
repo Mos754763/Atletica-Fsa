@@ -10,6 +10,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import type { UserRole } from "@/types/domain";
 
 const roleSchema = z.enum(["admin", "cozinha", "caixa", "cliente"]);
+const memberInterestStatusSchema = z.enum(["novo", "em_contato", "convidado", "arquivado"]);
 const inviteSchema = z.object({
   displayName: z.string().trim().min(2, "Informe o nome.").max(100),
   email: z.string().trim().email("Informe um e-mail válido.").max(255).transform((value) => value.toLowerCase()),
@@ -61,4 +62,14 @@ export async function updateMemberRole(formData: FormData) {
   if (error) throw new Error("Não foi possível atualizar o papel deste membro.");
   revalidatePath("/admin/membros");
   revalidatePath("/admin");
+}
+
+export async function updateMemberInterestStatus(formData: FormData) {
+  const { userId } = await requirePresident();
+  const applicationId = z.string().uuid().parse(formData.get("applicationId"));
+  const status = memberInterestStatusSchema.parse(formData.get("status"));
+  const service = createServiceClient();
+  const { error } = await service.from("member_interest_applications").update({ status, reviewed_by: userId, reviewed_at: new Date().toISOString() }).eq("id", applicationId);
+  if (error) throw new Error("Não foi possível atualizar o status deste cadastro.");
+  revalidatePath("/admin/membros");
 }

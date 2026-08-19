@@ -16,4 +16,8 @@ describe("normalizeBuilderRecord", () => {
   it("rejeita a ausência de campo obrigatório", () => {
     expect(() => normalizeBuilderRecord(fields, { titulo: [""] })).toThrow("titulo");
   });
+
+  it("aceita campo numérico opcional vazio sem gravar um valor inválido", () => {
+    expect(normalizeBuilderRecord(fields, { titulo: ["Fornecedor FSA"], prioridade: [""] })).toEqual({ titulo: "Fornecedor FSA", publicado: false });
+  });
 });

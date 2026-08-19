@@ -150,7 +150,7 @@ export function FrontendFx() {
     };
     const updateSpotlight = (event: PointerEvent) => {
       if (!isFinePointer || reduced || !(event.target instanceof Element)) return;
-      const target = event.target.closest<HTMLElement>(".fx-spotlight");
+      const target = event.target.closest<HTMLElement>(".fx-spotlight, .fx-depth-surface");
       if (!target) return;
       const rect = target.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
