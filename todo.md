@@ -310,5 +310,5 @@
 - [x] Registrar eventos minimizados de honeypot e rate limit, com retenção automática e métricas administrativas
 - [x] Exibir o painel de métricas operacionais de abuso para a Presidência
 - [x] Ampliar testes para e-mail inválido, consentimento ausente, honeypot, janela de taxa e retenção de eventos
-- [ ] Validar a proteção em homologação e promover somente após aprovação dos testes
+- [x] Validar a proteção em homologação e promover somente após aprovação dos testes
 - [x] Corrigir e validar o tipo da série diária das métricas de abuso antes da promoção para produção
