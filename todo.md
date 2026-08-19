@@ -293,3 +293,5 @@
 - [ ] Revisar produtos existentes no ERP, identificar inconsistências de preço e estoque e aplicar somente correções confirmadas
 - [ ] Realizar auditoria funcional end-to-end dos módulos do ERP, incluindo permissões, catálogo, pedidos, eventos, ODS, automações, integrações e tabelas
 - [x] Diagnosticar e corrigir a exceção de servidor que impede o carregamento da landing em produção após a migração de novos membros
+- [ ] Corrigir avisos do Autoprefixer substituindo valores flex incompatíveis e medir o impacto no build de produção
+- [ ] Preparar e executar cadastro de membro controlado em homologação, com validação de triagem e descarte seguro do registro de teste
