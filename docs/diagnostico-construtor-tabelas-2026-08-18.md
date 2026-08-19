@@ -39,3 +39,7 @@ Foi confirmada a consistência entre a migração aplicada e as ações de cadas
 ### Causa confirmada
 
 Os registros de runtime da Vercel para a rota `/` confirmaram o erro **`A "use server" file can only export async functions, found object.`** no deployment `dpl_HU3Jsm913kDwyEBbgbtnW77NkWQx`, com o digest `4029299998`. O módulo `src/app/member-interest-actions.ts` tem a diretiva de servidor e exportava, além da ação assíncrona, o objeto `initialMemberInterestState`. A correção segura é mover o tipo e o estado inicial para um módulo neutro/cliente, mantendo no arquivo de action apenas funções `async`.
+
+### Validação após a correção
+
+O commit `55abbc0` foi publicado em Production pelo deployment `dpl_8pjTMTD1ff1AcXU8GpdyGVxSZ8MN`, em estado `READY`. Uma leitura externa da rota `https://atleticafsa.site/` confirmou o conteúdo completo da landing, incluindo o bloco **Vem pra FSA** e o formulário de interesse, sem página de exceção. A suíte unitária passou com **136 testes aprovados e 3 ignorados intencionalmente**; o build de produção concluiu com sucesso. Não foi submetido formulário nem criado registro de interesse em Production, preservando a política de não alterar dados operacionais sem autorização específica.
