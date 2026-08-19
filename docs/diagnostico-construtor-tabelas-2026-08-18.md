@@ -25,3 +25,7 @@ Portanto, o bloqueio não foi causado pelo tipo numérico opcional: ele ocorreu 
 ## Proteção proposta
 
 A correção deverá preservar números opcionais vazios como ausência de valor, validar números finitos e tolerar configurações de campo ausentes no carregamento. A cobertura automatizada deve incluir o valor vazio, um valor válido e entrada numérica inválida.
+
+## Validação posterior em produção
+
+Após a publicação do commit `9a24388`, a rota informada pelo usuário (`/admin/tabelas?table=ab7c5813-860a-45d2-88b5-a5fa245bba60`) carregou com sessão administrativa. A página exibiu a tabela **Fornecedores**, seus campos, o formulário de novo item e a seção de novo campo, sem a exceção de servidor anteriormente apresentada. Esta validação não criou nem alterou tabelas, campos ou registros de produção.

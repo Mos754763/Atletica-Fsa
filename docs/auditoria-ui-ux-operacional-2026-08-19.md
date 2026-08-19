@@ -52,3 +52,7 @@
 Não foram inseridos produtos, favicons, ícones ou mascotes novos durante esta etapa porque não há uma relação aprovada de itens, preços, estoque e ativos existentes. O catálogo continuará sendo abastecido pelo CMS/ERP, mantendo a vitrine pública como reflexo dos dados operacionais em vez de criar conteúdo fictício.
 
 As próximas inspeções cobrirão a hierarquia de trabalho do ERP, os estados de fila no ODS e o funil de inscrição nos eventos. As recomendações serão classificadas por impacto operacional, risco de execução e dependência de dados externos.
+
+## Validação posterior em produção
+
+Na publicação do commit `9a24388`, a landing exibiu o bloco **Vem pra FSA**, os campos de interesse, o texto de consentimento e as opções de setor. O login carregou o mascote institucional e a superfície azul de profundidade reativa, mantendo a separação de contraste entre identidade e formulário. O ERP exibiu o mascote institucional no cabeçalho, substituindo o ornamento anterior do canto superior direito.
