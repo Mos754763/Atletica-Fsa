@@ -23,13 +23,22 @@ describe("member-interest server action contract", () => {
     expect(source).not.toContain("fullName,\n      code:");
   });
 
-  it("encerra o honeypot antes de criar o cliente de persistência", () => {
+  it("registra o honeypot sem persistir um cadastro de interesse", () => {
     const source = readFileSync(resolve(process.cwd(), "src/app/member-interest-actions.ts"), "utf8");
     const honeypotGuard = source.indexOf('if (String(formData.get("company") ?? "").trim())');
-    const serviceClient = source.indexOf("const service = createServiceClient()");
+    const memberInterestInsert = source.indexOf('service.from("member_interest_applications").insert');
 
     expect(honeypotGuard).toBeGreaterThan(-1);
-    expect(serviceClient).toBeGreaterThan(honeypotGuard);
+    expect(memberInterestInsert).toBeGreaterThan(honeypotGuard);
+    expect(source).toContain('registerAbuseEvent(service, "honeypot", ipHash)');
     expect(source).toContain('return { status: "success", message: "Recebemos seu interesse. Em breve entraremos em contato." }');
+  });
+
+  it("usa uma janela de dez tentativas por origem e retorna todas as falhas de validação", () => {
+    const source = readFileSync(resolve(process.cwd(), "src/app/member-interest-actions.ts"), "utf8");
+    expect(source).toContain("p_limit: MEMBER_INTEREST_RATE_LIMIT");
+    expect(source).toContain("Muitas tentativas deste acesso. Aguarde uma hora antes de enviar novamente.");
+    expect(source).toContain("validationMessages(parsed.error.issues)");
+    expect(source).toContain('registerAbuseEvent(service, "validation_rejected", ipHash)');
   });
 });

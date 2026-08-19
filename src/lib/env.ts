@@ -12,6 +12,7 @@ export const env = {
   mercadoPagoPublicKey: optional("NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY"),
   paymentsEnabled: optional("PAYMENTS_ENABLED") === "true",
   cronSecret: optional("CRON_SECRET"),
+  memberInterestAbuseHashSecret: optional("MEMBER_INTEREST_ABUSE_HASH_SECRET"),
   symplaApiToken: optional("SYMPLA_API_TOKEN"),
   slackSymplaAlertWebhookUrl: optional("SLACK_SYMPLA_ALERT_WEBHOOK_URL"),
 };
