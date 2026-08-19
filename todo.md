@@ -312,3 +312,7 @@
 - [x] Ampliar testes para e-mail inválido, consentimento ausente, honeypot, janela de taxa e retenção de eventos
 - [x] Validar a proteção em homologação e promover somente após aprovação dos testes
 - [x] Corrigir e validar o tipo da série diária das métricas de abuso antes da promoção para produção
+
+- [x] Atualizar dependências de produção vulneráveis identificadas pela auditoria e revalidar o build
+- [ ] Registrar a auditoria operacional de produção, incluindo o estado dos cron jobs e integrações
+- [x] Substituir a dependência XLSX vulnerável da exportação administrativa por uma alternativa segura e coberta por teste

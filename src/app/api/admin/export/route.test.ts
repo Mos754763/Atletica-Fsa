@@ -18,7 +18,7 @@ function requireResponse(response: Response | undefined) {
 
 function mockAdminWithClients() {
   const order = vi.fn().mockResolvedValue({
-    data: [{ display_name: "Ana, Souza", email: "ana@example.com", role: "cliente", created_at: "2026-08-01T12:00:00.000Z" }],
+    data: [{ display_name: "Ana, & Souza", email: "ana@example.com", role: "cliente", created_at: "2026-08-01T12:00:00.000Z" }],
     error: null,
   });
   const select = vi.fn().mockReturnValue({ order });
@@ -73,7 +73,7 @@ describe("GET /api/admin/export", () => {
     expect(response.status).toBe(200);
     expect(response.headers.get("content-type")).toContain("text/csv");
     expect(response.headers.get("content-disposition")).toContain('attachment; filename="atletica-fsa-clientes-30-dias.csv"');
-    await expect(response.text()).resolves.toContain('"Ana, Souza"');
+    await expect(response.text()).resolves.toContain('"Ana, & Souza"');
     expect(from).toHaveBeenCalledWith("profiles");
   });
 
@@ -87,6 +87,7 @@ describe("GET /api/admin/export", () => {
     expect(response.headers.get("content-type")).toContain("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     expect(response.headers.get("content-disposition")).toContain('atletica-fsa-clientes-7-dias.xlsx');
     expect([...body.slice(0, 2)]).toEqual([0x50, 0x4b]);
+    expect(new TextDecoder().decode(body)).toContain("Ana, &amp; Souza");
   });
 
   it("gera PDF com o tipo MIME e a assinatura de documento esperados", async () => {

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import PDFDocument from "pdfkit";
-import * as XLSX from "xlsx";
 import { z } from "zod";
 import { getApiProfile } from "@/lib/api/auth";
 import { formatBRL } from "@/lib/format";
@@ -18,6 +17,42 @@ function safeFileName(value: string) { return value.normalize("NFD").replace(/[\
 function csvCell(value: string | number) { const text = String(value); return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text; }
 function csvBody(rows: ExportRow[]) { const headers = Object.keys(rows[0] ?? {}); return [headers.join(","), ...rows.map((row) => headers.map((header) => csvCell(row[header] ?? "")).join(","))].join("\n"); }
 function labelFromKey(value: string) { return value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()); }
+function xmlCell(value: string | number) { return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&apos;"); }
+function columnName(index: number) { let result = ""; let value = index + 1; while (value > 0) { const remainder = (value - 1) % 26; result = String.fromCharCode(65 + remainder) + result; value = Math.floor((value - 1) / 26); } return result; }
+
+const crcTable = (() => {
+  const table = new Uint32Array(256);
+  for (let index = 0; index < 256; index += 1) { let value = index; for (let bit = 0; bit < 8; bit += 1) value = (value & 1) ? (0xedb88320 ^ (value >>> 1)) : (value >>> 1); table[index] = value >>> 0; }
+  return table;
+})();
+function crc32(input: Buffer) { let value = 0xffffffff; for (const byte of input) value = crcTable[(value ^ byte) & 0xff] ^ (value >>> 8); return (value ^ 0xffffffff) >>> 0; }
+function uint16(value: number) { const output = Buffer.alloc(2); output.writeUInt16LE(value); return output; }
+function uint32(value: number) { const output = Buffer.alloc(4); output.writeUInt32LE(value >>> 0); return output; }
+function zipStored(files: Array<{ name: string; content: string }>) {
+  const timestamp = new Date(); const dosTime = (timestamp.getHours() << 11) | (timestamp.getMinutes() << 5) | Math.floor(timestamp.getSeconds() / 2); const dosDate = ((timestamp.getFullYear() - 1980) << 9) | ((timestamp.getMonth() + 1) << 5) | timestamp.getDate();
+  const locals: Buffer[] = []; const centrals: Buffer[] = []; let offset = 0;
+  for (const file of files) {
+    const name = Buffer.from(file.name, "utf8"); const content = Buffer.from(file.content, "utf8"); const checksum = crc32(content);
+    const local = Buffer.concat([uint32(0x04034b50), uint16(20), uint16(0x0800), uint16(0), uint16(dosTime), uint16(dosDate), uint32(checksum), uint32(content.length), uint32(content.length), uint16(name.length), uint16(0), name, content]);
+    locals.push(local);
+    centrals.push(Buffer.concat([uint32(0x02014b50), uint16(20), uint16(20), uint16(0x0800), uint16(0), uint16(dosTime), uint16(dosDate), uint32(checksum), uint32(content.length), uint32(content.length), uint16(name.length), uint16(0), uint16(0), uint16(0), uint16(0), uint32(0), uint32(offset), name]));
+    offset += local.length;
+  }
+  const directory = Buffer.concat(centrals); const localData = Buffer.concat(locals);
+  return Buffer.concat([localData, directory, uint32(0x06054b50), uint16(0), uint16(0), uint16(files.length), uint16(files.length), uint32(directory.length), uint32(localData.length), uint16(0)]);
+}
+function xlsxBody(rows: ExportRow[]) {
+  const headers = Object.keys(rows[0] ?? {}); const allRows: Array<Array<string | number>> = headers.length ? [headers, ...rows.map((row) => headers.map((header) => row[header] ?? ""))] : [];
+  const rowXml = allRows.map((row, rowIndex) => `<row r="${rowIndex + 1}">${row.map((value, columnIndex) => { const reference = `${columnName(columnIndex)}${rowIndex + 1}`; return typeof value === "number" ? `<c r="${reference}"><v>${value}</v></c>` : `<c r="${reference}" t="inlineStr"><is><t xml:space="preserve">${xmlCell(value)}</t></is></c>`; }).join("")}</row>`).join("");
+  const lastColumn = headers.length ? columnName(headers.length - 1) : "A"; const lastRow = Math.max(allRows.length, 1);
+  return zipStored([
+    { name: "[Content_Types].xml", content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>' },
+    { name: "_rels/.rels", content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+    { name: "xl/workbook.xml", content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Dados" sheetId="1" r:id="rId1"/></sheets></workbook>' },
+    { name: "xl/_rels/workbook.xml.rels", content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>' },
+    { name: "xl/worksheets/sheet1.xml", content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><dimension ref="A1:${lastColumn}${lastRow}"/><sheetData>${rowXml}</sheetData></worksheet>` },
+  ]);
+}
 
 async function loadRows(dataset: z.infer<typeof querySchema>["dataset"], period: number, supabase: Awaited<ReturnType<typeof getApiProfile>> extends infer Result ? Result extends { supabase: infer Client } ? Client : never : never) {
   const since = new Date(); since.setDate(since.getDate() - period); const sinceIso = since.toISOString();
@@ -80,7 +115,7 @@ export async function GET(request: Request) {
   try {
     const { dataset, format, period } = parsed.data; const rows = await loadRows(dataset, period, auth.supabase); const title = `${labelFromKey(dataset)}-${period}-dias`; const filename = safeFileName(`atletica-fsa-${title}`);
     if (format === "csv") return new NextResponse(csvBody(rows), { headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": `attachment; filename="${filename}.csv"` } });
-    if (format === "xlsx") { const sheet = XLSX.utils.json_to_sheet(rows); const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, sheet, "Dados"); const output = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" }); return new NextResponse(output, { headers: { "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Content-Disposition": `attachment; filename="${filename}.xlsx"` } }); }
+    if (format === "xlsx") { const output = xlsxBody(rows); return new NextResponse(output, { headers: { "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Content-Disposition": `attachment; filename="${filename}.xlsx"` } }); }
     const output = await pdfBody(labelFromKey(dataset), rows); const body = output.buffer.slice(output.byteOffset, output.byteOffset + output.byteLength) as ArrayBuffer; return new NextResponse(body, { headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="${filename}.pdf"` } });
   } catch { return NextResponse.json({ error: "Não foi possível preparar a exportação solicitada." }, { status: 500 }); }
 }
