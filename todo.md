@@ -304,3 +304,4 @@
 - [x] Criar termos de aceite e matriz de tratamento LGPD por perfil de usuário, com indicação de itens dependentes de revisão jurídica
 - [x] Promover a estrutura validada de cadastro de interesse da homologação para produção, sem alterar registros, estoque, preços ou o gate de pagamentos
 - [x] Executar validação ponta a ponta controlada do cadastro de interesse na landing pública e arquivar o registro sintético em produção
+- [x] Auditar o Construtor de Tabelas do ERP quanto a persistência, permissões, operações disponíveis, limites e visualização
