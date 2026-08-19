@@ -305,3 +305,10 @@
 - [x] Promover a estrutura validada de cadastro de interesse da homologação para produção, sem alterar registros, estoque, preços ou o gate de pagamentos
 - [x] Executar validação ponta a ponta controlada do cadastro de interesse na landing pública e arquivar o registro sintético em produção
 - [x] Auditar o Construtor de Tabelas do ERP quanto a persistência, permissões, operações disponíveis, limites e visualização
+- [x] Auditar a limitação de taxa, a telemetria do honeypot e as validações de e-mail e consentimento do formulário público de interesse
+- [x] Implementar rate limit de 10 tentativas por IP por hora no cadastro público de interesse
+- [x] Registrar eventos minimizados de honeypot e rate limit, com retenção automática e métricas administrativas
+- [x] Exibir o painel de métricas operacionais de abuso para a Presidência
+- [x] Ampliar testes para e-mail inválido, consentimento ausente, honeypot, janela de taxa e retenção de eventos
+- [x] Validar a proteção em homologação e promover somente após aprovação dos testes
+- [x] Corrigir e validar o tipo da série diária das métricas de abuso antes da promoção para produção
