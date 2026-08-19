@@ -34,8 +34,11 @@ describe("experiência pública interativa", () => {
     expect(managementCarousel).toContain("useReducedMotion");
     expect(managementCarousel).toContain('type CardPosition = "active" | "previous" | "next" | "hidden"');
     expect(managementCarousel).toContain('aria-hidden={!isActive}');
+    expect(managementCarousel).toContain('aria-current={isActive ? "true" : undefined}');
+    expect(managementCarousel).toContain('style={isActive ? { opacity: 1, visibility: "visible" } : undefined}');
     expect(managementCarousel).toContain('aria-live="polite"');
     expect(experienceStyles).toContain("perspective:1600px");
+    expect(experienceStyles).toContain(".people-carousel__slide--active { z-index:4; display:grid; visibility:visible; opacity:1");
     expect(experienceStyles).toContain(".people-carousel__slide--previous { transform:translate3d(-34%,0,-180px) rotateY(31deg) scale(.79); }");
     expect(experienceStyles).toContain(".people-carousel__slide--next { transform:translate3d(34%,0,-180px) rotateY(-31deg) scale(.79); }");
   });

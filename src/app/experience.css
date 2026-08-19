@@ -14,10 +14,10 @@
 .people-carousel { position:relative; display:grid; grid-template-columns:minmax(0,1fr) 58px; gap:22px; margin-top:42px; }
 .people-carousel__viewport { position:relative; min-width:0; min-height:420px; overflow:hidden; outline:none; perspective:1600px; isolation:isolate; }
 .people-carousel__viewport:focus-visible { outline:2px solid var(--yellow); outline-offset:8px; }
-.people-carousel__track { position:relative; min-height:420px; transform-style:preserve-3d; }
+.people-carousel__track { position:relative; min-height:420px; transform-style:preserve-3d; isolation:isolate; }
 .people-carousel__status { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 .people-carousel__slide { position:absolute; z-index:1; top:0; right:14%; bottom:0; left:14%; display:grid; grid-template-columns:minmax(190px,.82fr) 1fr; min-height:360px; overflow:hidden; color:var(--white); background:linear-gradient(122deg,#061c48,#0b3d91); box-shadow:18px 18px 0 var(--yellow); transform-origin:center center; transform-style:preserve-3d; transition:transform .68s cubic-bezier(.23,1,.32,1),opacity .42s ease,filter .42s ease; will-change:transform,opacity; }
-.people-carousel__slide--active { z-index:4; opacity:1; transform:translate3d(0,0,0) rotateY(0) scale(1); }
+.people-carousel__slide--active { z-index:4; display:grid; visibility:visible; opacity:1; background-color:#0b3d91; transform:translate3d(0,0,0) rotateY(0) scale(1); }
 .people-carousel__slide--previous,.people-carousel__slide--next { z-index:2; opacity:.62; filter:saturate(.72) brightness(.76); pointer-events:none; }
 .people-carousel__slide--previous { transform:translate3d(-34%,0,-180px) rotateY(31deg) scale(.79); }
 .people-carousel__slide--next { transform:translate3d(34%,0,-180px) rotateY(-31deg) scale(.79); }
