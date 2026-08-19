@@ -332,4 +332,7 @@
 - [x] Reproduzir e cobrir com testes a persistência histórica do formulário de interesse de membros quando a tabela não está disponível no cache de esquema
 - [x] Reproduzir e cobrir com testes a validação histórica de slug do Construtor de Tabelas, garantindo erro de formulário tratável
 - [x] Avaliar Clerk Free versus Supabase Auth para os requisitos de autenticação, MFA, telefone e provedores sociais
-- [ ] Validar em homologação o painel de segurança de conta, OAuth adicional, telefone e MFA conforme a arquitetura aprovada
+- [x] Implementar e validar em homologação o Centro de Segurança e MFA TOTP sem alterar o RBAC existente
+- [ ] Configurar e validar Microsoft OAuth em homologação após receber o registro do Microsoft Entra ID
+- [ ] Configurar e validar Apple OAuth em homologação após receber as credenciais Apple Developer
+- [ ] Selecionar provedor SMS e validar telefone/MFA por SMS em homologação com CAPTCHA, limites e orçamento aprovados
