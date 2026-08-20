@@ -73,3 +73,21 @@ O login foi concluído no Preview isolado e redirecionou para `/conta`. A págin
 Apesar de o módulo **Catálogo** não estar exposto na navegação do papel Caixa, a navegação direta para `/admin/catalogo` carregou a página completa, inclusive formulários de criação, edição e exclusão. Nenhum formulário foi enviado e nenhum registro foi modificado. A causa foi confirmada no código: tanto a rota quanto suas nove ações server-side aceitavam indevidamente `admin` e `caixa`.
 
 A correção local passou a restringir a rota e cada ação de mutação do catálogo exclusivamente a `admin`. O novo contrato automatizado verifica a ausência de `caixa` nos guards e contabiliza os nove guards administrativos das ações. A verificação local passou com `195` testes aprovados, `3` ignorados intencionalmente, typecheck sem erros e build de produção concluído. A correção ainda requer integração, deployment Preview e repetição da tentativa direta com a mesma conta Caixa antes de encerrar a matriz.
+
+O Preview da correção foi disponibilizado em estado `READY`, associado ao commit `f17c4a5` e à pull request de RBAC. A revalidação autenticada foi reiniciada nesse ambiente com a identidade sintética de Caixa; nenhum formulário administrativo foi submetido.
+
+O login no novo Preview foi concluído com sucesso e `/conta` exibiu o rótulo **Caixa**. Permaneceram visíveis somente os atalhos pessoais de loja, eventos, pedidos, segurança e o acesso operacional **Abrir ERP**. A tentativa direta da rota de catálogo será repetida a seguir, sem executar qualquer mutação.
+
+A repetição da navegação direta para `/admin/catalogo` foi corretamente bloqueada e redirecionada para `/conta?acesso=negado`. Em seguida, `/admin` exibiu a visão operacional coerente com Caixa: navegação e módulos de **Pedidos**, **Relatórios** e **ODS de pedidos**, sem Catálogo, Eventos, Pessoas ou Integrações. Não houve chamadas de escrita nem alteração de dados. A falha de autorização de catálogo está, portanto, revalidada como corrigida no Preview.
+
+O acesso direto a `/ods` permaneceu disponível para Caixa e exibiu a fila operacional, sem acionar ações de pagamento, atualização ou criação de pedido. Como segunda rota administrativa restrita, `/admin/eventos` redirecionou corretamente para `/conta?acesso=negado`. Com isso, foram validadas tanto as permissões operacionais previstas quanto as barreiras diretas de Catálogo e Eventos para Caixa.
+
+Após autorização explícita para limpeza, a lista de usuários do Supabase de homologação confirmou a presença das quatro identidades exclusivamente sintéticas — Cliente, Administração, Backoffice e Caixa — sob o padrão `qa-*@atleticafsa.test`. A revogação será limitada a esses quatro registros de QA.
+
+A conferência final da listagem confirmou que os quatro registros selecionados para revogação não se confundem com a conta administrativa real de homologação. A exclusão não será aplicada a nenhum e-mail fora do padrão sintético de QA.
+
+Na seleção em massa de revogação, foram marcadas inicialmente somente as identidades sintéticas de Administração e Backoffice. O painel indicou duas contas selecionadas; a conta real de administração continuou desmarcada.
+
+Foram adicionadas, em seguida, somente as identidades sintéticas de Caixa e Cliente. O painel confirmou exatamente quatro usuários selecionados para exclusão, correspondentes às quatro contas de QA autorizadas; a conta administrativa real permaneceu fora da seleção.
+
+A exclusão irreversível das quatro identidades sintéticas foi confirmada no painel do Supabase de homologação. O painel exibiu confirmação de sucesso e passou a listar somente a conta administrativa real; nenhum usuário real, dado de Production, preço, estoque, pedido ou pagamento foi alterado. A matriz autenticada de QA foi encerrada após a revalidação da correção de RBAC para Caixa.
