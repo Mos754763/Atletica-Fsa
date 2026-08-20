@@ -59,6 +59,8 @@ describe("experiência pública interativa", () => {
   it("mantém semântica válida e nomes acessíveis que incluem o texto visível", () => {
     expect(homePage).toContain('<section className="hero-ticker" aria-label="Destaques da ATLETICA FSA">');
     expect(homePage).not.toContain('<div className="hero-ticker" aria-label=');
+    expect(homePage).toContain('<Link href="/"><FsaWordmark /></Link>');
+    expect(homePage).not.toContain('aria-label="ATLETICA FSA - Página inicial"');
     expect(homePage).toContain('aria-label="Seguir a FSA no Instagram"');
     expect(storefront).toContain('aria-label={`${product.isFeatured ? "Destaque. " : ""}${resolveFsaProductImage(product.name, product.imageUrl) ? "" : "FSA. "}Ver produto: ${product.name}`}');
   });

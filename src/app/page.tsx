@@ -62,7 +62,7 @@ export default async function HomePage() {
       <section className="hero-shell fx-depth-surface" id="inicio">
         <span className="fx-depth-surface__glow" aria-hidden="true" />
         <nav className="site-nav page-width" aria-label="Navegação principal">
-          <Link href="/" aria-label="ATLETICA FSA - Página inicial"><FsaWordmark /></Link>
+          <Link href="/"><FsaWordmark /></Link>
           <div className="site-nav__links">
             <a href="#setores">Setores</a>
             <a href="#gestao">Gestão</a>
