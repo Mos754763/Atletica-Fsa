@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { classifyCronRouteHealth, classifyIntegrationHealth, latestCronRouteHeartbeatsBefore, shouldSendRecovery } from "./integration-health";
+import { classifyCronRouteHealth, classifyIntegrationHealth, healthAlertDedupeKey, latestCronRouteHeartbeatsBefore, shouldSendRecovery } from "./integration-health";
 
 describe("classifyIntegrationHealth", () => {
   it("classifica estado saudável sem backlog ou falhas", () => {
@@ -17,6 +17,29 @@ describe("classifyIntegrationHealth", () => {
   it("notifica recuperação somente após estado não saudável", () => {
     expect(shouldSendRecovery("critical", "healthy")).toBe(true);
     expect(shouldSendRecovery("healthy", "healthy")).toBe(false);
+  });
+
+  it("eleva um pico de dead letters e sinaliza recuperação somente quando a métrica volta a saudável", () => {
+    const deadLetterPeak = { open_dead_letters: 6, new_dead_letters_15m: 6, oldest_open_minutes: 12, failed_runs_1h: 1, total_runs_1h: 4 };
+    const recoveredMetrics = { open_dead_letters: 0, new_dead_letters_15m: 0, oldest_open_minutes: 0, failed_runs_1h: 0, total_runs_1h: 4 };
+
+    const incidentStatus = classifyIntegrationHealth(deadLetterPeak);
+    const recoveredStatus = classifyIntegrationHealth(recoveredMetrics);
+
+    expect(incidentStatus).toBe("critical");
+    expect(recoveredStatus).toBe("healthy");
+    expect(shouldSendRecovery(incidentStatus, recoveredStatus)).toBe(true);
+    expect(shouldSendRecovery("healthy", recoveredStatus)).toBe(false);
+  });
+
+  it("deduplica alertas pela integração, tipo e início do incidente", () => {
+    const incidentStartedAt = "2026-08-20T18:00:00.000Z";
+    const peak = healthAlertDedupeKey("sympla-main", "sympla_health_peak", incidentStartedAt);
+
+    expect(healthAlertDedupeKey("sympla-main", "sympla_health_peak", incidentStartedAt)).toBe(peak);
+    expect(healthAlertDedupeKey("sympla-main", "sympla_health_recovered", incidentStartedAt)).not.toBe(peak);
+    expect(healthAlertDedupeKey("sympla-main", "sympla_health_peak", "2026-08-20T19:00:00.000Z")).not.toBe(peak);
+    expect(healthAlertDedupeKey("sympla-secondary", "sympla_health_peak", incidentStartedAt)).not.toBe(peak);
   });
 
   it("detecta cron diário ausente, falho ou atrasado", () => {

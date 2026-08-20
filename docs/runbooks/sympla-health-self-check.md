@@ -14,6 +14,8 @@ A rota `/api/cron/integration-health` avalia a cadência das rotas monitoradas, 
 | Não aceitar evento futuro ou retry concorrente | Mesmo filtro estrito descarta tempos posteriores. | Heartbeat posterior ao início é ignorado. |
 | Preservar a última execução anterior | Mapa mantém o maior `executedAt` elegível por rota. | Heartbeat semanal da rodada anterior permanece selecionado. |
 | Não esconder falhas reais | A classificação continua recebendo o status do último heartbeat anterior. | Os testes existentes preservam cenários ausente, falho, warning e crítico. |
+| Escalar e recuperar health da Sympla | Métricas de dead letters classificam o incidente e `shouldSendRecovery` exige estado anterior não saudável. | Fixture de pico crítico seguida de métricas saudáveis; não há recuperação para estado já saudável. |
+| Não duplicar alerta do mesmo incidente | Chave de deduplicação inclui integração, tipo de alerta e início do incidente. | A mesma entrada gera a mesma chave; tipo, integração ou instante diferentes geram chaves distintas. |
 
 ## Validação de homologação
 
@@ -29,8 +31,8 @@ O cron mantém a cadência definida em `vercel.json`; esta correção não cria 
 
 | Verificação | Resultado | Situação |
 |---|---|---|
-| Teste direcionado | `integration-health.test.ts` aprovou 8 cenários, incluindo a exclusão de heartbeat no mesmo instante ou após o início. | Aprovado. |
-| Validação local completa | `pnpm typecheck`, `pnpm test` (146 aprovados; 3 ignorados), `pnpm audit --prod` e `pnpm build` concluíram sem falhas. | Aprovado. |
+| Teste direcionado | `integration-health.test.ts` aprovou 10 cenários, incluindo autoavaliação, pico de dead letters, recuperação e deduplicação. | Aprovado. |
+| Validação local completa | `pnpm typecheck`, `pnpm test` (148 aprovados; 3 ignorados), `pnpm audit --prod` e `pnpm build` concluíram sem falhas. | Aprovado. |
 | Preview Vercel | O deployment do commit `1089d5a` no branch `fix/sympla-health-self-check` concluiu com estado `READY`. | Aprovado. |
 | Proteção HTTP do cron | Uma requisição sem cabeçalho `Authorization` ao preview respondeu `401` e `{"error":"Não autorizado."}`. Nenhum heartbeat foi iniciado. | Aprovado. |
 | Chamada autenticada do cron | Não executada. O segredo de cron não é exposto para a validação e a segregação efetiva das variáveis de Preview precisa ser confirmada antes de uma chamada que possa registrar heartbeat ou disparar alerta. | Pendente controlada. |
