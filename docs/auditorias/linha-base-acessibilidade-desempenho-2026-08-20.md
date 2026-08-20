@@ -102,7 +102,7 @@ Uma análise comparativa dos cinco relatórios Lighthouse identificou que o elem
 | --- | ---: | ---: | --- |
 | LCP e FCP | 6,977 s / 6,977 s | 1,406–1,698 s / 1,386–1,678 s | A primeira pintura só ocorreu com o LCP; o atraso aconteceu antes da interface ganhar conteúdo visível. |
 | Resposta do documento `/loja` | 607 ms | 648–670 ms | Não há indício de lentidão excepcional no processamento de origem da aplicação. |
-| Maior RTT observado | 1.235 ms para `atleticafsa.site` | 0,679–1,518 ms | Evidência mais forte de variação transitória de conexão/origem durante a quarta execução. |
+| Maior RTT observado | 1.234,969 ms (1,235 s) para `atleticafsa.site` | 0,679–1,518 ms | Evidência mais forte de variação transitória de conexão/origem durante a quarta execução. |
 | Trabalho de main thread | 747 ms | 1.011–1.293 ms nas amostras 1–3 | Não há sinal de saturação de JavaScript, execução ou layout como causa primária. |
 | Carga do recurso LCP | 646 ms | 176–327 ms nas amostras 1–3 | A transferência da mídia também foi mais lenta e amplificou o evento. |
 
