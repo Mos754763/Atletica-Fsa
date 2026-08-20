@@ -192,7 +192,8 @@
 - [x] Preparar o executável do pnpm no workflow de CI e validar uma execução verde no GitHub Actions
 - [x] Tornar o teste unitário de resposta definitiva da Sympla independente de um token de ambiente do runner
 
-- [ ] Mapear e medir a linha de base visual, de acessibilidade e desempenho das rotas públicas e operacionais
+- [x] Mapear e medir a linha de base visual, de acessibilidade e desempenho das rotas públicas e operacionais
+- [x] Consolidar evidências Lighthouse e critérios de regressão para as rotas prioritárias da linha de base
 - [x] Consolidar tokens de tema, preferências de movimento e infraestrutura de efeitos frontend-fx sem bibliotecas concorrentes
 - [x] Reestruturar landing, loja, detalhe de produto, carrinho e eventos com navegação e estados reais
 - [x] Refinar a experiência operacional de ERP, Admin e ODS com clareza de tema, layout e permissões preservadas
