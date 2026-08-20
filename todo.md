@@ -317,3 +317,7 @@
 - [x] Registrar a auditoria operacional de produção, incluindo o estado dos cron jobs e integrações
 - [x] Substituir a dependência XLSX vulnerável da exportação administrativa por uma alternativa segura e coberta por teste
 - [x] Endurecer e validar em homologação os grants P0 de `claim_email_outbox`, `settle_paid_event_ticket` e `expire_stale_email_outbox` antes de qualquer promoção
+- [x] Corrigir e validar a autoavaliação temporal do health check da integração Sympla em homologação
+- [x] Ampliar os testes de contrato do health check Sympla com fixture de dead letter e recuperação de alerta
+- [x] Diagnosticar e corrigir a causa comprovada do estado UNSTABLE da PR #2 no GitHub
+- [x] Atualizar as actions do CI para runtime Node.js 24 e remover o aviso de depreciação sem alterar a versão da aplicação

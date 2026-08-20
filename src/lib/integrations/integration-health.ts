@@ -16,6 +16,22 @@ export type CronRouteHeartbeat = {
   executedAt: string;
 };
 
+/**
+ * Seleciona somente os últimos batimentos anteriores ao início da avaliação.
+ * Um batimento da execução atual (ou futuro) não pode comprovar a saúde dela própria.
+ */
+export function latestCronRouteHeartbeatsBefore(heartbeats: CronRouteHeartbeat[], startedAt: Date) {
+  const cutoff = startedAt.getTime();
+  const latest = new Map<string, CronRouteHeartbeat>();
+  for (const heartbeat of heartbeats) {
+    const executedAt = new Date(heartbeat.executedAt).getTime();
+    if (!Number.isFinite(executedAt) || executedAt >= cutoff) continue;
+    const previous = latest.get(heartbeat.routePath);
+    if (!previous || executedAt > new Date(previous.executedAt).getTime()) latest.set(heartbeat.routePath, heartbeat);
+  }
+  return latest;
+}
+
 export function classifyIntegrationHealth(metrics: IntegrationHealthMetrics): IntegrationHealthStatus {
   const failureRate = metrics.total_runs_1h > 0 ? metrics.failed_runs_1h / metrics.total_runs_1h : 0;
   if (metrics.open_dead_letters >= 10 || metrics.new_dead_letters_15m >= 6 || metrics.oldest_open_minutes > 60 || failureRate > 0.25) return "critical";
