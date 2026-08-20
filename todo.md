@@ -9,7 +9,7 @@
 - [x] Integrar Supabase Auth com Google OAuth e e-mail/senha
 - [x] Implementar RBAC para admin, cozinha, caixa e cliente
 - [x] Configurar o provedor Google OAuth e os redirects locais no Supabase
-- [ ] Promover o primeiro acesso do proprietário ao papel admin após o login inicial
+- [x] Promover o primeiro acesso do proprietário ao papel admin após o login inicial
 - [x] Implementar backoffice e CMS de produtos, categorias, fotos via S3 e estoque
 - [x] Implementar catálogo público e carrinho mobile-first
 - [x] Implementar fluxo Mobile Order & Pay, preparo para Mercado Pago Checkout Pro e webhook assinado
@@ -299,7 +299,7 @@
 - [x] Reposicionar o mascote institucional no ERP e substituir o ornamento atual do canto superior direito
 - [x] Auditar e propor melhorias priorizadas de UI/UX para landing, loja, ERP, ODS, eventos e backoffice sem gerar novos ativos
 - [x] Aplicar em produção a migração da fila de interesse de novos membros e verificar os controles de acesso
-- [ ] Executar um cadastro público controlado e confirmar a visibilidade e a triagem no ERP sem usar dados pessoais reais
+- [x] Executar um cadastro público controlado e confirmar a visibilidade e a triagem no ERP sem usar dados pessoais reais
 - [ ] Revisar produtos existentes no ERP, identificar inconsistências de preço e estoque e aplicar somente correções confirmadas
 - [ ] Realizar auditoria funcional end-to-end dos módulos do ERP, incluindo permissões, catálogo, pedidos, eventos, ODS, automações, integrações e tabelas
 - [x] Diagnosticar e corrigir a exceção de servidor que impede o carregamento da landing em produção após a migração de novos membros
@@ -309,7 +309,7 @@
 - [ ] Executar e documentar o roteiro automatizado de QA em homologação para rotas públicas, contratos críticos, autorização, catálogo, eventos, ODS e integrações
 - [x] Permitir execução autenticada do smoke QA contra Preview protegido sem expor ou versionar segredo de bypass da Vercel
 - [x] Revisar a proximidade do menu contextual flutuante com o primeiro cartão na loja móvel, sem reduzir o acesso ao carrinho ou às rotas de retorno
-- [ ] Configurar no Preview Vercel as variáveis Supabase exclusivas de homologação e confirmar que nenhuma variável de produção será usada no teste de membro
+- [x] Configurar no Preview Vercel as variáveis Supabase exclusivas de homologação e confirmar que nenhuma variável de produção será usada no teste de membro
 - [x] Registrar de forma sanitizada a causa de falhas de persistência do interesse de membro para acelerar o diagnóstico em homologação sem expor dados pessoais ou segredos
 
 - [x] Cobrir por teste de regressão a saída antirobô do cadastro de interesse antes de qualquer acesso ao Supabase

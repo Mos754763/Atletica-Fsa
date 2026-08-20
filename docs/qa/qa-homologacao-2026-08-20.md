@@ -22,6 +22,12 @@ O script aceita o segredo oficial `VERCEL_AUTOMATION_BYPASS_SECRET` em ambiente 
 
 Em 20/08/2026, o acesso temporário de compartilhamento e o fetch autenticado da Vercel ainda retornaram redirecionamento SSO para requisições HTTP sem uma sessão de automação. Assim, os smoke tests remotos diretos permanecem corretamente classificados como **não executados por bloqueio de proteção**, não como aprovação nem falha de aplicação. O próximo pré-requisito é gerar o *Protection Bypass for Automation* no painel da Vercel e disponibilizá-lo exclusivamente ao executor de QA como `VERCEL_AUTOMATION_BYPASS_SECRET`.[1]
 
+### Reconfirmação segura de ambiente
+
+Em 20/08/2026, uma leitura autenticada pelo controle de acesso da Vercel à rota `/api/public-config` do Preview da revisão de QA retornou HTTP 200 e `configured=true`. A URL pública retornada aponta para `gfnbdjdqumewspvfxicl`, o projeto Supabase de homologação. A verificação não imprimiu, alterou ou transportou chaves privadas; logo, confirma o isolamento da configuração exposta ao navegador sem substituir os smoke tests de fluxo autenticado.
+
+Na mesma rodada, a tentativa de leitura de `/admin` nesse Preview recebeu HTTP 302 para o SSO da Vercel antes de alcançar a autenticação da aplicação. Portanto, esse método confirma que a proteção de deployment continua ativa, mas não pode ser usado como evidência do redirecionamento interno de RBAC. A prova desse boundary permanece coberta pelo teste local e deve ser repetida em Preview somente com o bypass temporário de automação autorizado.
+
 ## Validações automatizadas locais
 
 Em 20/08/2026, na mesma revisão candidata de homologação, a suíte completa aprovou **53 arquivos de teste**, com **181 testes aprovados** e **3 ignorados intencionalmente**; a auditoria de dependências produtivas não encontrou vulnerabilidades conhecidas e o build Next.js 16.3.1 concluiu com êxito. A cobertura inclui contratos de autenticação, MFA, permissões, eventos e check-in, ODS, estoque e pedidos, Mercado Pago, Sympla, Slack, cron, LGPD, catálogo, exportação e configuração Supabase.
