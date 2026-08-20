@@ -337,3 +337,4 @@
 - [ ] Configurar e validar Apple OAuth em homologação após receber as credenciais Apple Developer
 - [ ] Selecionar provedor SMS e validar telefone/MFA por SMS em homologação com CAPTCHA, limites e orçamento aprovados
 - [x] Executar auditoria integral de escopo, código, rotas, dados, RLS, multitenancy, integrações, variáveis, CI/CD e documentação sem alterar produção
+- [x] Especificar requisitos pendentes, testes, edge cases, plano corretivo e governança de branches, pull requests e CI/CD
