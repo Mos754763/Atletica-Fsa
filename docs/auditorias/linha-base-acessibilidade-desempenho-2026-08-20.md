@@ -61,7 +61,7 @@ Esta auditoria é **não destrutiva**. Ela mede rotas públicas em Production po
 | P1 | Contraste marginal no selo dos cartões da Gestão. | Marca “FSA” com razão 4,46:1 sobre fundo amarelo; a regra requer 4,5:1. | Razão mínima de 4,5:1 para texto normal no componente. |
 | P1 | O mascote visual do ERP não carregou na inspeção autenticada. | O navegador exibiu texto alternativo onde deveria estar a imagem no cabeçalho do ERP. | A imagem responde com sucesso ou existe fallback visual equivalente e intencional. |
 | P2 | LCP móvel acima da meta na landing e na redefinição de senha. | LCP de 4,2 s em `/` e 3,6 s em `/redefinir-senha`. | LCP móvel ≤2,5 s em uma série de medições comparáveis, ou justificativa documentada para conteúdo não crítico. |
-| P2 | Instabilidade de carregamento na loja em desktop. | Três execuções: LCP de 7,0 s, 3,9 s e 1,2 s. | Mediana e p75 documentados em cinco execuções; nenhuma regressão de LCP acima do orçamento aprovado. A documentação do Lighthouse recomenda interpretar o resultado como distribuição, pois condições de execução podem variar. [2] |
+| P2 | Instabilidade de carregamento na loja em desktop. | A série de cinco execuções está documentada abaixo; houve um outlier de 6,977 s, mas p75 de LCP de 1,698 s. | Mediana e p75 documentados em cinco execuções; nenhuma regressão de LCP acima do orçamento aprovado. A documentação do Lighthouse recomenda interpretar o resultado como distribuição, pois condições de execução podem variar. [2] |
 | P2 | Deslocamento de layout acima da referência na loja móvel. | CLS 0,138 em `/loja`. | CLS ≤0,10 em uma série de medições comparáveis. |
 
 ## Correção P1 e reauditoria local — 20 de agosto de 2026
@@ -77,6 +77,22 @@ As correções foram executadas em branch isolada, sem alterações de dados, cr
 | Mascote indisponível no ERP | O componente usa o asset institucional `fsa-hero-gestao-2026.png` e mantém fallback ilustrado, responsivo e semântico quando a mídia falha. | Contrato específico do mascote e build de produção aprovados. |
 
 > A confirmação visual autenticada do cabeçalho de `/erp` será repetida no Preview da revisão e em Production após a promoção. A correção já possui fallback visual, portanto a ausência eventual do asset não volta a expor somente texto alternativo na interface.
+
+## Série estatística da loja — desktop em Production — 20 de agosto de 2026
+
+Foram executadas cinco auditorias consecutivas, não autenticadas e sem interação de compra em `https://atleticafsa.site/loja`, com Lighthouse 12.8.2, `--preset=desktop`, categoria `performance`, navegador headless e intervalo de três segundos entre as coletas. O percentil 75 adota o método de **posto mais próximo**: para cinco observações ordenadas, seleciona-se a quarta observação. Este método torna a amostra pequena explícita e reproduzível.
+
+| Medição | LCP | CLS | Nota de desempenho |
+| --- | ---: | ---: | ---: |
+| 1 | 1,698 s | 0,041981 | 78 |
+| 2 | 1,549 s | 0,041981 | 83 |
+| 3 | 1,406 s | 0,041981 | 85 |
+| 4 | 6,977 s | 0,041981 | 55 |
+| 5 | 1,533 s | 0,041981 | 83 |
+| **Mediana** | **1,549 s** | **0,041981** | — |
+| **p75** | **1,698 s** | **0,041981** | — |
+
+A mediana e o p75 cumprem o critério desktop proposto de LCP ≤2,5 s e CLS ≤0,10. A quarta medição, porém, é um outlier relevante; ela não deve ser ignorada, pois confirma que o carregamento ainda pode sofrer variação. A loja passa a ter um patamar quantitativo de acompanhamento: investigar regressões quando a mediana ou o p75 ultrapassarem o orçamento, e investigar qualquer repetição do outlier em uma nova série.
 
 ## Critérios de regressão propostos
 
@@ -103,7 +119,18 @@ node scripts/summarize-lighthouse-baseline.mjs \
   'Loja=/tmp/atletica-baseline-loja-desktop.json'
 ```
 
-O extrator versionado `scripts/summarize-lighthouse-baseline.mjs` converte as saídas JSON em tabela Markdown e detalha as falhas da categoria de acessibilidade com a opção `--accessibility-details`.
+Para consolidar cinco coletas, utilize arquivos distintos e a opção estatística:
+
+```bash
+node scripts/summarize-lighthouse-baseline.mjs --performance-series \
+  /tmp/atletica-loja-desktop-serie-5-1.json \
+  /tmp/atletica-loja-desktop-serie-5-2.json \
+  /tmp/atletica-loja-desktop-serie-5-3.json \
+  /tmp/atletica-loja-desktop-serie-5-4.json \
+  /tmp/atletica-loja-desktop-serie-5-5.json
+```
+
+O extrator versionado `scripts/summarize-lighthouse-baseline.mjs` converte as saídas JSON em tabela Markdown, detalha as falhas da categoria de acessibilidade com a opção `--accessibility-details` e consolida mediana e p75 de LCP e CLS com `--performance-series`.
 
 ## Limitações conhecidas
 
