@@ -1,10 +1,9 @@
-import { institutionalAsset } from "@/lib/institutional-assets";
-
 export const fsaStoreAssets = {
-  camiseta: institutionalAsset("store/fsa-camiseta-estudio.png"),
-  copo: institutionalAsset("store/fsa-copo-estudio.png"),
-  moletom: institutionalAsset("store/fsa-moletom-estudio.png"),
-  chaveiro: institutionalAsset("store/fsa-chaveiro-estudio.png"),
+  camiseta: "/manus-storage/atletica-fsa-produto-camiseta_e311f6b9.png",
+  copo: "/manus-storage/atletica-fsa-produto-copo_1d782280.png",
+  moletom: "/manus-storage/atletica-fsa-produto-moletom_55d0ab13.png",
+  chaveiro: "/manus-storage/atletica-fsa-produto-chaveiro_37b43413.png",
+  adesivos: "/manus-storage/atletica-fsa-produto-adesivos_7d26c6e1.png",
 } as const;
 
 export function resolveFsaProductImage(productName: string, fallback: string | null) {
@@ -14,5 +13,6 @@ export function resolveFsaProductImage(productName: string, fallback: string | n
   if (normalizedName.includes("copo")) return fsaStoreAssets.copo;
   if (normalizedName.includes("moletom")) return fsaStoreAssets.moletom;
   if (normalizedName.includes("chaveiro")) return fsaStoreAssets.chaveiro;
+  if (normalizedName.includes("figurinha") || normalizedName.includes("adesivo")) return fsaStoreAssets.adesivos;
   return fallback;
 }

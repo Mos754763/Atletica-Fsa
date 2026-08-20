@@ -9,6 +9,7 @@ describe("resolveFsaProductImage", () => {
 
   it("mantém a arte institucional apenas como fallback sem foto cadastrada", () => {
     expect(resolveFsaProductImage("Copo FSA", null)).toBe(fsaStoreAssets.copo);
+    expect(resolveFsaProductImage("Figurinhas FSA", null)).toBe(fsaStoreAssets.adesivos);
   });
 
   it("não inventa uma imagem para produtos sem fallback conhecido", () => {

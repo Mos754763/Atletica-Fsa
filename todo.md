@@ -323,3 +323,5 @@
 - [x] Atualizar as actions do CI para runtime Node.js 24 e remover o aviso de depreciação sem alterar a versão da aplicação
 - [ ] Preparar e executar em homologação o ensaio controlado da outbox de e-mails com contratos de idempotência, retry e concorrência
 - [x] Corrigir a composição vertical e responsividade da tela de login em desktop e mobile
+- [x] Definir, gerar e integrar o pacote de imagens institucionais da ATLETICA FSA sem substituir a identidade visual existente sem revisão
+- [x] Consolidar evidências de homologação, segurança e ambiente para decidir a promoção segura à Production
