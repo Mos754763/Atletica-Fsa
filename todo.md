@@ -321,3 +321,4 @@
 - [x] Ampliar os testes de contrato do health check Sympla com fixture de dead letter e recuperação de alerta
 - [x] Diagnosticar e corrigir a causa comprovada do estado UNSTABLE da PR #2 no GitHub
 - [x] Atualizar as actions do CI para runtime Node.js 24 e remover o aviso de depreciação sem alterar a versão da aplicação
+- [ ] Preparar e executar em homologação o ensaio controlado da outbox de e-mails com contratos de idempotência, retry e concorrência
