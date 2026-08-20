@@ -198,6 +198,7 @@
 - [x] Restaurar a mídia institucional do ERP com fallback visual intencional e testável
 - [x] Reexecutar a auditoria P1 e registrar a evidência de correção sem alterar dados operacionais
 - [x] Executar cinco medições comparáveis da loja e consolidar mediana e p75 de LCP e CLS
+- [x] Investigar o outlier de LCP da quarta medição da loja com comparativo de rede, recursos e diagnóstico Lighthouse
 - [x] Consolidar tokens de tema, preferências de movimento e infraestrutura de efeitos frontend-fx sem bibliotecas concorrentes
 - [x] Reestruturar landing, loja, detalhe de produto, carrinho e eventos com navegação e estados reais
 - [x] Refinar a experiência operacional de ERP, Admin e ODS com clareza de tema, layout e permissões preservadas

@@ -94,6 +94,22 @@ Foram executadas cinco auditorias consecutivas, não autenticadas e sem interaç
 
 A mediana e o p75 cumprem o critério desktop proposto de LCP ≤2,5 s e CLS ≤0,10. A quarta medição, porém, é um outlier relevante; ela não deve ser ignorada, pois confirma que o carregamento ainda pode sofrer variação. A loja passa a ter um patamar quantitativo de acompanhamento: investigar regressões quando a mediana ou o p75 ultrapassarem o orçamento, e investigar qualquer repetição do outlier em uma nova série.
 
+### Investigação do outlier de LCP — evidência complementar
+
+Uma análise comparativa dos cinco relatórios Lighthouse identificou que o elemento LCP permaneceu o mesmo em todas as coletas: a imagem institucional do mascote no hero, servida pelo armazenamento público do Supabase. O recurso retornou HTTP 200 e aproximadamente 1,079 MB em todas as execuções; portanto, não há evidência de troca de asset, erro de origem ou mudança de conteúdo especificamente na quarta amostra.
+
+| Sinal comparado | Execução 4 | Faixa das quatro execuções regulares | Interpretação |
+| --- | ---: | ---: | --- |
+| LCP e FCP | 6,977 s / 6,977 s | 1,406–1,698 s / 1,386–1,678 s | A primeira pintura só ocorreu com o LCP; o atraso aconteceu antes da interface ganhar conteúdo visível. |
+| Resposta do documento `/loja` | 607 ms | 648–670 ms | Não há indício de lentidão excepcional no processamento de origem da aplicação. |
+| Maior RTT observado | 1.235 ms para `atleticafsa.site` | 0,679–1,518 ms | Evidência mais forte de variação transitória de conexão/origem durante a quarta execução. |
+| Trabalho de main thread | 747 ms | 1.011–1.293 ms nas amostras 1–3 | Não há sinal de saturação de JavaScript, execução ou layout como causa primária. |
+| Carga do recurso LCP | 646 ms | 176–327 ms nas amostras 1–3 | A transferência da mídia também foi mais lenta e amplificou o evento. |
+
+O conjunto de evidências indica como causa mais provável uma **variação transitória de rede/conexão entre o executor Lighthouse e `atleticafsa.site`**, com transferência mais lenta da imagem LCP. A resposta do documento permaneceu estável e o navegador só pintou conteúdo quando o hero foi concluído; isso é coerente com um atraso de caminho crítico externo, não com uma regressão consistente do código da loja.
+
+Há, entretanto, uma oportunidade estrutural independente do outlier: o asset LCP de cerca de 1,079 MB é solicitado com prioridade `Low`, e o diagnóstico Lighthouse recomenda `fetchpriority="high"`. Essa prioridade não explica por si só uma única execução — ela foi igual nas cinco coletas —, mas aumenta a exposição do LCP à variação da conexão. A decomposição interna de fases de LCP fornecida pelo Lighthouse exibiu valores divergentes entre suas tabelas nesta amostra; por isso, ela não foi usada para atribuição numérica adicional. A confirmação deve ocorrer em nova série de cinco coletas e, se o padrão se repetir, com um trace de rede do navegador.
+
 ## Critérios de regressão propostos
 
 | Área | Critério mínimo antes de promover alteração visual ou de navegação |
