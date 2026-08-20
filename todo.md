@@ -323,3 +323,11 @@
 - [x] Atualizar as actions do CI para runtime Node.js 24 e remover o aviso de depreciação sem alterar a versão da aplicação
 - [ ] Preparar e executar em homologação o ensaio controlado da outbox de e-mails com contratos de idempotência, retry e concorrência
 - [x] Corrigir a composição vertical e responsividade da tela de login em desktop e mobile
+- [x] Definir, gerar e integrar o pacote de imagens institucionais da ATLETICA FSA sem substituir a identidade visual existente sem revisão
+- [x] Consolidar evidências de homologação, segurança e ambiente para decidir a promoção segura à Production
+
+- [x] Atualizar o inventário de Production, homologação e revisões abertas, consolidando somente promoções validadas e reversíveis
+- [x] Reproduzir e cobrir com testes a indisponibilidade histórica de configuração pública e privada do Supabase em rotas administrativas e cron
+- [x] Reproduzir e cobrir com testes o erro histórico de referência ambígua `registration_id` no painel administrativo de eventos
+- [x] Reproduzir e cobrir com testes a persistência histórica do formulário de interesse de membros quando a tabela não está disponível no cache de esquema
+- [x] Reproduzir e cobrir com testes a validação histórica de slug do Construtor de Tabelas, garantindo erro de formulário tratável

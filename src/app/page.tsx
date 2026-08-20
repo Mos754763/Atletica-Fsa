@@ -28,11 +28,11 @@ const storeArtwork = institutionalAsset("fsa-store-pattern.png");
 const eventArtwork = institutionalAsset("fsa-events-pattern.png");
 
 const sectors = [
-  { number: "01", name: "Suprimentos", copy: "Tudo para a torcida chegar junto.", image: institutionalAsset("sectors/fsa-sector-suprimentos.png") },
-  { number: "02", name: "Eventos", copy: "Experiências que viram história.", image: institutionalAsset("sectors/fsa-sector-eventos.png") },
-  { number: "03", name: "Sociais", copy: "A conexão que move a FSA.", image: institutionalAsset("sectors/fsa-sector-sociais.png") },
-  { number: "04", name: "Marketing", copy: "Orgulho que ganha voz.", image: institutionalAsset("sectors/fsa-sector-marketing.png") },
-  { number: "05", name: "Esportes", copy: "Raça dentro e fora da quadra.", image: institutionalAsset("sectors/fsa-sector-esportes.png") },
+  { number: "01", name: "Suprimentos", copy: "Tudo para a torcida chegar junto.", image: "/manus-storage/atletica-fsa-setor-suprimentos_2318c314.png" },
+  { number: "02", name: "Eventos", copy: "Experiências que viram história.", image: "/manus-storage/atletica-fsa-setor-eventos_eaeefbad.png" },
+  { number: "03", name: "Sociais", copy: "A conexão que move a FSA.", image: "/manus-storage/atletica-fsa-setor-social_a88e0697.png" },
+  { number: "04", name: "Marketing", copy: "Orgulho que ganha voz.", image: "/manus-storage/atletica-fsa-setor-marketing_4ea365e4.png" },
+  { number: "05", name: "Esportes", copy: "Raça dentro e fora da quadra.", image: "/manus-storage/atletica-fsa-setor-esportes_cc4b3956.png" },
 ];
 
 const capabilities = [
