@@ -325,9 +325,17 @@
 - [x] Corrigir a composição vertical e responsividade da tela de login em desktop e mobile
 - [x] Definir, gerar e integrar o pacote de imagens institucionais da ATLETICA FSA sem substituir a identidade visual existente sem revisão
 - [x] Consolidar evidências de homologação, segurança e ambiente para decidir a promoção segura à Production
+- [ ] Revisar e promover de forma inativa a PoC de segurança de conta, preservando MFA e provedores externos desativados até configuração formal
 
 - [x] Atualizar o inventário de Production, homologação e revisões abertas, consolidando somente promoções validadas e reversíveis
 - [x] Reproduzir e cobrir com testes a indisponibilidade histórica de configuração pública e privada do Supabase em rotas administrativas e cron
 - [x] Reproduzir e cobrir com testes o erro histórico de referência ambígua `registration_id` no painel administrativo de eventos
 - [x] Reproduzir e cobrir com testes a persistência histórica do formulário de interesse de membros quando a tabela não está disponível no cache de esquema
 - [x] Reproduzir e cobrir com testes a validação histórica de slug do Construtor de Tabelas, garantindo erro de formulário tratável
+- [x] Avaliar Clerk Free versus Supabase Auth para os requisitos de autenticação, MFA, telefone e provedores sociais
+- [x] Implementar e validar em homologação o Centro de Segurança e MFA TOTP sem alterar o RBAC existente
+- [ ] Configurar e validar Microsoft OAuth em homologação após receber o registro do Microsoft Entra ID
+- [ ] Configurar e validar Apple OAuth em homologação após receber as credenciais Apple Developer
+- [ ] Selecionar provedor SMS e validar telefone/MFA por SMS em homologação com CAPTCHA, limites e orçamento aprovados
+- [x] Executar auditoria integral de escopo, código, rotas, dados, RLS, multitenancy, integrações, variáveis, CI/CD e documentação sem alterar produção
+- [x] Especificar requisitos pendentes, testes, edge cases, plano corretivo e governança de branches, pull requests e CI/CD
