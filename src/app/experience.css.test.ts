@@ -51,6 +51,24 @@ describe("experiência pública interativa", () => {
     expect(experienceStyles).toContain(".people-carousel__slide--next { transform:translate3d(34%,0,-180px) rotateY(-31deg) scale(.79); }");
     expect(experienceStyles).toContain(".people-carousel__brand-mark");
     expect(experienceStyles).toContain(".people-carousel__arrow--previous");
+    expect(experienceStyles).toContain("[role=tab] { position:relative; display:grid; width:32px; height:32px");
+    expect(experienceStyles).toContain("[role=tab]:focus-visible");
+    expect(experienceStyles).toContain(".people-carousel__brand-mark { color:var(--fsa-black); }");
+  });
+
+  it("mantém semântica válida e nomes acessíveis que incluem o texto visível", () => {
+    expect(homePage).toContain('<section className="hero-ticker" aria-label="Destaques da ATLETICA FSA">');
+    expect(homePage).not.toContain('<div className="hero-ticker" aria-label=');
+    expect(homePage).toContain('aria-label="Seguir a FSA no Instagram"');
+    expect(storefront).toContain('aria-label={`${product.isFeatured ? "Destaque. " : ""}${resolveFsaProductImage(product.name, product.imageUrl) ? "" : "FSA. "}Ver produto: ${product.name}`}');
+  });
+
+  it("remove controles focáveis do carrinho fechado e devolve o foco ao acionador", () => {
+    expect(storefront).toContain('hidden={!isCartOpen} role="dialog" aria-modal="true"');
+    expect(storefront).not.toContain('aria-hidden={!isCartOpen}');
+    expect(storefront).toContain("cartCloseButtonRef.current?.focus()");
+    expect(storefront).toContain("cartTriggerRef.current?.focus()");
+    expect(storefront).toContain('event.key === "Escape"');
   });
 
   it("mantém a interação de produto baseada em transformações e a desativa em toque ou movimento reduzido", () => {

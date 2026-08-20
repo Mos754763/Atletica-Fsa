@@ -85,12 +85,12 @@ export default async function HomePage() {
           </div>
               <HeroMotion artwork={heroArtwork} />
         </div>
-        <div className="hero-ticker" aria-label="Destaques da ATLETICA FSA">
-          <div className="hero-ticker__track" aria-hidden="true">
+        <section className="hero-ticker" aria-label="Destaques da ATLETICA FSA">
+          <div className="hero-ticker__track">
             <div className="hero-ticker__group"><span>JOGOS</span><i /><span>FESTAS</span><i /><span>CAMPEONATOS</span><i /><span>TORCIDA</span><i /><span>LOJA OFICIAL</span><i /></div>
-            <div className="hero-ticker__group"><span>JOGOS</span><i /><span>FESTAS</span><i /><span>CAMPEONATOS</span><i /><span>TORCIDA</span><i /><span>LOJA OFICIAL</span><i /></div>
+            <div className="hero-ticker__group" aria-hidden="true"><span>JOGOS</span><i /><span>FESTAS</span><i /><span>CAMPEONATOS</span><i /><span>TORCIDA</span><i /><span>LOJA OFICIAL</span><i /></div>
           </div>
-        </div>
+        </section>
       </section>
 
       <section className="capability-strip capability-strip--motion">
@@ -181,7 +181,7 @@ export default async function HomePage() {
           <div><FsaWordmark /><p>Esporte, festa, amizade e tradição. Tudo em azul, amarelo e muita atitude.</p></div>
           <div className="footer-links"><strong>Explore</strong><Link href="/loja">Loja</Link><Link href="/eventos">Eventos</Link><a href="#setores">Setores</a></div>
           <div className="footer-links"><strong>Acesso</strong><Link href="/login">Minha conta</Link></div>
-          <a className="instagram-link" href={instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram da ATLETICA FSA"><Instagram size={20} /> Seguir a FSA</a>
+          <a className="instagram-link" href={instagramUrl} target="_blank" rel="noreferrer" aria-label="Seguir a FSA no Instagram"><Instagram size={20} /> Seguir a FSA</a>
         </div>
         <div className="page-width footer-bottom"><span>© 2026 ATLETICA FSA</span><span>FEITO PARA QUEM TORCE JUNTO.</span><Handshake size={17} /></div>
       </footer>

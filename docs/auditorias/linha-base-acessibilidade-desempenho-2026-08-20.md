@@ -64,6 +64,20 @@ Esta auditoria é **não destrutiva**. Ela mede rotas públicas em Production po
 | P2 | Instabilidade de carregamento na loja em desktop. | Três execuções: LCP de 7,0 s, 3,9 s e 1,2 s. | Mediana e p75 documentados em cinco execuções; nenhuma regressão de LCP acima do orçamento aprovado. A documentação do Lighthouse recomenda interpretar o resultado como distribuição, pois condições de execução podem variar. [2] |
 | P2 | Deslocamento de layout acima da referência na loja móvel. | CLS 0,138 em `/loja`. | CLS ≤0,10 em uma série de medições comparáveis. |
 
+## Correção P1 e reauditoria local — 20 de agosto de 2026
+
+As correções foram executadas em branch isolada, sem alterações de dados, credenciais ou fluxos de pagamento. A verificação final usou o build de produção local com Lighthouse 12.8.2, limitado à categoria de acessibilidade. A landing e a loja obtiveram **100/100** e não apresentaram auditorias com pontuação zero nessa amostra. A medição de desempenho em Production permanece como linha de base P2 e não foi substituída por esta reauditoria local.
+
+| Achado P1 original | Correção aplicada | Evidência de validação |
+| --- | --- | --- |
+| Alvos de toque e contraste do carrossel | As abas do carrossel passaram a ter área clicável de 32×32 px, foco visível e marca em `--fsa-black` sobre o selo amarelo. | Contrato de CSS e reauditoria da landing com acessibilidade 100. |
+| ARIA inválida na landing | O wordmark compacto recebeu `role="img"` junto ao nome acessível; a versão textual não recebe mais `aria-label` redundante. | A falha `aria-prohibited-attr` não foi reportada na reauditoria. |
+| Nome acessível divergente na loja | As ações de produto agora incluem o texto visual “Destaque” e, quando aplicável, “FSA” no rótulo acessível. | A falha `label-content-name-mismatch` não foi reportada na reauditoria. |
+| Foco no carrinho oculto | O carrinho fechado recebe `hidden`; a abertura move o foco para o botão de fechar e o encerramento retorna ao acionador. | Contrato da vitrine cobre os atributos e o comportamento de foco. |
+| Mascote indisponível no ERP | O componente usa o asset institucional `fsa-hero-gestao-2026.png` e mantém fallback ilustrado, responsivo e semântico quando a mídia falha. | Contrato específico do mascote e build de produção aprovados. |
+
+> A confirmação visual autenticada do cabeçalho de `/erp` será repetida no Preview da revisão e em Production após a promoção. A correção já possui fallback visual, portanto a ausência eventual do asset não volta a expor somente texto alternativo na interface.
+
 ## Critérios de regressão propostos
 
 | Área | Critério mínimo antes de promover alteração visual ou de navegação |
