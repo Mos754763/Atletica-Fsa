@@ -35,6 +35,58 @@ export function resolvePreviewHeaders(bypassSecret) {
   return headers;
 }
 
+export function resolvePreviewShareUrl(previewShareUrl, origin) {
+  const normalizedUrl = previewShareUrl?.trim();
+  if (!normalizedUrl) return undefined;
+
+  const url = new URL(normalizedUrl);
+  if (url.origin !== origin) {
+    throw new Error("QA_VERCEL_SHARE_URL deve pertencer ao mesmo Preview informado em QA_BASE_URL.");
+  }
+
+  if (!url.searchParams.has("_vercel_share")) {
+    throw new Error("QA_VERCEL_SHARE_URL deve conter o acesso temporário autorizado da Vercel.");
+  }
+
+  return url.toString();
+}
+
+function getSetCookies(headers) {
+  const values = typeof headers.getSetCookie === "function"
+    ? headers.getSetCookie()
+    : [headers.get("set-cookie")].filter(Boolean);
+
+  return values
+    .flatMap((value) => String(value).split(/,(?=[^;]+=)/))
+    .map((value) => value.split(";", 1)[0]?.trim())
+    .filter(Boolean);
+}
+
+export async function resolvePreviewRequestHeaders(bypassSecret, previewShareUrl, origin, fetchImplementation = fetch) {
+  const headers = resolvePreviewHeaders(bypassSecret);
+  if (bypassSecret?.trim()) return headers;
+
+  const authorizedShareUrl = resolvePreviewShareUrl(previewShareUrl, origin);
+  if (!authorizedShareUrl) return headers;
+
+  const response = await fetchImplementation(authorizedShareUrl, {
+    method: "GET",
+    redirect: "manual",
+    headers,
+  });
+
+  if (![200, 301, 302, 303, 307, 308].includes(response.status)) {
+    throw new Error(`O acesso temporário da Vercel retornou HTTP ${response.status}.`);
+  }
+
+  const cookies = getSetCookies(response.headers);
+  if (cookies.length === 0) {
+    throw new Error("O acesso temporário da Vercel não retornou um cookie de sessão para o smoke QA.");
+  }
+
+  return { ...headers, Cookie: cookies.join("; ") };
+}
+
 function expectStatus(result, allowedStatuses) {
   if (!allowedStatuses.includes(result.status)) {
     throw new Error(`${result.name}: HTTP ${result.status}; esperado ${allowedStatuses.join(" ou ")}.`);
@@ -65,7 +117,11 @@ async function request(origin, name, path, allowedStatuses, assertion, headers) 
 
 export async function runHomologationSmoke(baseUrl, environment, bypassSecret) {
   const origin = resolveHomologationTarget(baseUrl, environment);
-  const headers = resolvePreviewHeaders(bypassSecret);
+  const headers = await resolvePreviewRequestHeaders(
+    bypassSecret,
+    process.env.QA_VERCEL_SHARE_URL,
+    origin,
+  );
   const results = [];
 
   for (const [name, path] of [
