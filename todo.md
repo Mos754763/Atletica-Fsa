@@ -296,6 +296,8 @@
 - [x] Corrigir avisos do Autoprefixer substituindo valores flex incompatíveis e medir o impacto no build de produção
 - [x] Preparar e executar cadastro de membro controlado em homologação, com validação de triagem e descarte seguro do registro de teste
 - [ ] Verificar com uma conta de QA os fluxos autenticados prioritários de pedidos, eventos, ODS, integrações e automações em homologação, sem pagamentos nem dados produtivos
+- [ ] Executar e documentar o roteiro automatizado de QA em homologação para rotas públicas, contratos críticos, autorização, catálogo, eventos, ODS e integrações
+- [x] Permitir execução autenticada do smoke QA contra Preview protegido sem expor ou versionar segredo de bypass da Vercel
 - [x] Revisar a proximidade do menu contextual flutuante com o primeiro cartão na loja móvel, sem reduzir o acesso ao carrinho ou às rotas de retorno
 - [ ] Configurar no Preview Vercel as variáveis Supabase exclusivas de homologação e confirmar que nenhuma variável de produção será usada no teste de membro
 - [x] Registrar de forma sanitizada a causa de falhas de persistência do interesse de membro para acelerar o diagnóstico em homologação sem expor dados pessoais ou segredos
