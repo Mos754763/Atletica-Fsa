@@ -325,6 +325,7 @@
 - [x] Corrigir a composição vertical e responsividade da tela de login em desktop e mobile
 - [x] Definir, gerar e integrar o pacote de imagens institucionais da ATLETICA FSA sem substituir a identidade visual existente sem revisão
 - [x] Consolidar evidências de homologação, segurança e ambiente para decidir a promoção segura à Production
+- [ ] Revisar e promover de forma inativa a PoC de segurança de conta, preservando MFA e provedores externos desativados até configuração formal
 
 - [x] Atualizar o inventário de Production, homologação e revisões abertas, consolidando somente promoções validadas e reversíveis
 - [x] Reproduzir e cobrir com testes a indisponibilidade histórica de configuração pública e privada do Supabase em rotas administrativas e cron
