@@ -24,3 +24,14 @@ A rota `/api/cron/integration-health` avalia a cadência das rotas monitoradas, 
 5. Registrar apenas resultados sanitizados; não incluir segredos de cron, URLs de banco ou tokens em logs, commits ou PRs.
 
 O cron mantém a cadência definida em `vercel.json`; esta correção não cria timers no processo e não altera a agenda, os limites de alerta ou o fluxo de Slack.
+
+## Evidência registrada — 2026-08-20
+
+| Verificação | Resultado | Situação |
+|---|---|---|
+| Teste direcionado | `integration-health.test.ts` aprovou 8 cenários, incluindo a exclusão de heartbeat no mesmo instante ou após o início. | Aprovado. |
+| Validação local completa | `pnpm typecheck`, `pnpm test` (146 aprovados; 3 ignorados), `pnpm audit --prod` e `pnpm build` concluíram sem falhas. | Aprovado. |
+| Preview Vercel | O deployment do commit `1089d5a` no branch `fix/sympla-health-self-check` concluiu com estado `READY`. | Aprovado. |
+| Chamada autenticada do cron | Não executada. O segredo de cron não é exposto para a validação e a segregação efetiva das variáveis de Preview precisa ser confirmada antes de uma chamada que possa registrar heartbeat ou disparar alerta. | Pendente controlada. |
+
+> Não foi registrada qualquer alegação de resposta da rota, alteração de `integration_health_states` ou alerta Slack. Essas evidências só podem ser declaradas após uma chamada autenticada no ambiente de homologação com o mapeamento de variáveis verificado.
