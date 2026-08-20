@@ -336,3 +336,4 @@
 - [ ] Configurar e validar Microsoft OAuth em homologação após receber o registro do Microsoft Entra ID
 - [ ] Configurar e validar Apple OAuth em homologação após receber as credenciais Apple Developer
 - [ ] Selecionar provedor SMS e validar telefone/MFA por SMS em homologação com CAPTCHA, limites e orçamento aprovados
+- [x] Executar auditoria integral de escopo, código, rotas, dados, RLS, multitenancy, integrações, variáveis, CI/CD e documentação sem alterar produção
