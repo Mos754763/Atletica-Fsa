@@ -95,7 +95,7 @@ export function Storefront({ products }: StorefrontProps) {
 
   return <main className="store-page">
     <header className="store-nav">
-      <Link href="/" className="store-nav__brand">ATLETICA <strong>FSA</strong></Link>
+      <Link href="/" className="store-nav__brand" aria-label="Voltar ao início da ATLETICA FSA">ATLETICA <strong>FSA</strong></Link>
       <nav aria-label="Navegação da loja"><Link className="store-nav__events" href="/eventos">Eventos</Link><button type="button" className="store-cart-trigger" onClick={() => setCartOpen(true)}><ShoppingBag size={17} /> Carrinho {totalQuantity > 0 && <b>{totalQuantity}</b>}</button></nav>
     </header>
     <aside className="store-rail" aria-label="Atalhos de navegação"><Link href="/"><ArrowLeft size={16} /> Início</Link><Link href="/eventos">Eventos</Link><button type="button" onClick={() => setCartOpen(true)}><ShoppingBag size={16} /> Ver carrinho</button></aside>

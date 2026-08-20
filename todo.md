@@ -296,7 +296,7 @@
 - [x] Corrigir avisos do Autoprefixer substituindo valores flex incompatíveis e medir o impacto no build de produção
 - [x] Preparar e executar cadastro de membro controlado em homologação, com validação de triagem e descarte seguro do registro de teste
 - [ ] Verificar com uma conta de QA os fluxos autenticados prioritários de pedidos, eventos, ODS, integrações e automações em homologação, sem pagamentos nem dados produtivos
-- [ ] Revisar a proximidade do menu contextual flutuante com o primeiro cartão na loja móvel, sem reduzir o acesso ao carrinho ou às rotas de retorno
+- [x] Revisar a proximidade do menu contextual flutuante com o primeiro cartão na loja móvel, sem reduzir o acesso ao carrinho ou às rotas de retorno
 - [ ] Configurar no Preview Vercel as variáveis Supabase exclusivas de homologação e confirmar que nenhuma variável de produção será usada no teste de membro
 - [x] Registrar de forma sanitizada a causa de falhas de persistência do interesse de membro para acelerar o diagnóstico em homologação sem expor dados pessoais ou segredos
 
@@ -325,7 +325,7 @@
 - [x] Corrigir a composição vertical e responsividade da tela de login em desktop e mobile
 - [x] Definir, gerar e integrar o pacote de imagens institucionais da ATLETICA FSA sem substituir a identidade visual existente sem revisão
 - [x] Consolidar evidências de homologação, segurança e ambiente para decidir a promoção segura à Production
-- [ ] Revisar e promover de forma inativa a PoC de segurança de conta, preservando MFA e provedores externos desativados até configuração formal
+- [x] Revisar e promover de forma inativa a PoC de segurança de conta, preservando MFA e provedores externos desativados até configuração formal
 
 - [x] Atualizar o inventário de Production, homologação e revisões abertas, consolidando somente promoções validadas e reversíveis
 - [x] Reproduzir e cobrir com testes a indisponibilidade histórica de configuração pública e privada do Supabase em rotas administrativas e cron
