@@ -36,3 +36,9 @@ O workflow foi atualizado de `actions/checkout@v4`, `pnpm/action-setup@v4` e `ac
 | Build de produção | Aprovado com Next.js 16.3.1. |
 
 A validação remota do novo workflow só será considerada concluída após o commit ser enviado e a execução correspondente no GitHub Actions terminar. Nenhuma inferência sobre os checks remotos deve ser feita antes dessa evidência.
+
+## Evidência remota após a correção
+
+O commit `182105d` foi enviado ao branch da PR #2. A execução remota `#32368726583` terminou com **success** em 1 minuto e 11 segundos: checkout, configuração do pnpm, configuração do Node.js, instalação, typecheck, testes e build foram concluídos. A consulta posterior da PR registrou `mergeStateStatus=CLEAN` para o mesmo commit.
+
+O cliente de automação ainda não possui permissão para ler anotações detalhadas de checks (`403`), mas essa limitação não impede a confirmação do resultado da execução nem do estado de merge. Não houve erro de workflow, conflito ou preview bloqueando a PR neste recorte. A aprovação humana de revisão continua pendente e não foi simulada.
