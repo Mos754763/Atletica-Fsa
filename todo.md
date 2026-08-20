@@ -305,7 +305,7 @@
 - [x] Diagnosticar e corrigir a exceção de servidor que impede o carregamento da landing em produção após a migração de novos membros
 - [x] Corrigir avisos do Autoprefixer substituindo valores flex incompatíveis e medir o impacto no build de produção
 - [x] Preparar e executar cadastro de membro controlado em homologação, com validação de triagem e descarte seguro do registro de teste
-- [ ] Verificar com uma conta de QA os fluxos autenticados prioritários de pedidos, eventos, ODS, integrações e automações em homologação, sem pagamentos nem dados produtivos
+- [x] Verificar com uma conta de QA os fluxos autenticados prioritários de pedidos, eventos, ODS, integrações e automações em homologação, sem pagamentos nem dados produtivos
 - [x] Executar e documentar o roteiro automatizado de QA em homologação para rotas públicas, contratos críticos, autorização, catálogo, eventos, ODS e integrações
 - [x] Permitir que o roteiro de smoke de homologação use acesso temporário autorizado do Preview sem registrar tokens, cookies ou segredos
 - [x] Permitir execução autenticada do smoke QA contra Preview protegido sem expor ou versionar segredo de bypass da Vercel
@@ -352,3 +352,7 @@
 - [ ] Selecionar provedor SMS e validar telefone/MFA por SMS em homologação com CAPTCHA, limites e orçamento aprovados
 - [x] Executar auditoria integral de escopo, código, rotas, dados, RLS, multitenancy, integrações, variáveis, CI/CD e documentação sem alterar produção
 - [x] Especificar requisitos pendentes, testes, edge cases, plano corretivo e governança de branches, pull requests e CI/CD
+- [x] Produzir relatório detalhado e atualizado de todas as pendências remanescentes, com prioridade, bloqueios e critérios de aceite
+- [x] Preparar identidades e uma matriz autenticada de QA para validar em homologação os fluxos prioritários por papel, sem pagamentos ou dados produtivos
+- [x] Corrigir o mapeamento do papel operacional de backoffice na matriz de QA após a rejeição do enum `user_role` em homologação
+- [x] Corrigir a autorização de rota do catálogo administrativo, que foi acessível diretamente pelo papel Caixa no Preview de homologação, e cobrir a regressão por testes
