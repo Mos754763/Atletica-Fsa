@@ -78,6 +78,19 @@ As correções foram executadas em branch isolada, sem alterações de dados, cr
 
 > A confirmação visual autenticada do cabeçalho de `/erp` será repetida no Preview da revisão e em Production após a promoção. A correção já possui fallback visual, portanto a ausência eventual do asset não volta a expor somente texto alternativo na interface.
 
+## Revalidação P1 em Production — 20 de agosto de 2026
+
+A revalidação foi executada de forma não destrutiva após a promoção da correção do wordmark de navegação. As auditorias Lighthouse desktop limitadas à categoria de acessibilidade retornaram **100/100** tanto para `/` quanto para `/loja`, sem auditorias com pontuação zero. Assim, não foram reportadas as falhas P1 de ARIA proibido, nome acessível divergente, foco em conteúdo oculto, contraste ou alvo de toque na amostra publicada.
+
+| Controle revalidado | Evidência publicada | Resultado |
+| --- | --- | --- |
+| Landing e loja | Lighthouse 12.8.2, `--preset=desktop`, somente acessibilidade | 100/100; nenhuma falha de acessibilidade com pontuação zero. |
+| Nome do wordmark de navegação | O link inicial passa a derivar seu nome do conteúdo visível `FsaWordmark`, sem `aria-label` divergente. | A falha residual `label-content-name-mismatch` não foi reportada. |
+| Asset prioritário do mascote | `fsa-hero-gestao-2026.png` no armazenamento institucional público | HTTP 200, `image/png`. |
+| ERP autenticado | Inspeção visual de `/erp`, redirecionada para a visão geral `/admin` do usuário autorizado | Cabeçalho renderizado com ilustração institucional visível e tag “NÓS SOMOS FSA”; sem texto alternativo isolado. |
+
+Nenhuma operação de pedidos, catálogo, pagamentos, usuários, credenciais ou configuração de Production foi executada durante esta revalidação.
+
 ## Série estatística da loja — desktop em Production — 20 de agosto de 2026
 
 Foram executadas cinco auditorias consecutivas, não autenticadas e sem interação de compra em `https://atleticafsa.site/loja`, com Lighthouse 12.8.2, `--preset=desktop`, categoria `performance`, navegador headless e intervalo de três segundos entre as coletas. O percentil 75 adota o método de **posto mais próximo**: para cinco observações ordenadas, seleciona-se a quarta observação. Este método torna a amostra pequena explícita e reproduzível.

@@ -199,8 +199,8 @@
 - [x] Reexecutar a auditoria P1 e registrar a evidência de correção sem alterar dados operacionais
 - [x] Executar cinco medições comparáveis da loja e consolidar mediana e p75 de LCP e CLS
 - [x] Investigar o outlier de LCP da quarta medição da loja com comparativo de rede, recursos e diagnóstico Lighthouse
-- [ ] Revalidar agora as prioridades P1 de acessibilidade pública e mídia do ERP no ambiente publicado
-- [ ] Corrigir o nome acessível divergente do wordmark de navegação na landing identificado na revalidação P1
+- [x] Revalidar agora as prioridades P1 de acessibilidade pública e mídia do ERP no ambiente publicado
+- [x] Corrigir o nome acessível divergente do wordmark de navegação na landing identificado na revalidação P1
 - [x] Consolidar tokens de tema, preferências de movimento e infraestrutura de efeitos frontend-fx sem bibliotecas concorrentes
 - [x] Reestruturar landing, loja, detalhe de produto, carrinho e eventos com navegação e estados reais
 - [x] Refinar a experiência operacional de ERP, Admin e ODS com clareza de tema, layout e permissões preservadas
