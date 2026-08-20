@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { env } from "@/lib/env";
-import { classifyCronRouteHealth, classifyIntegrationHealth, formatHealthMetrics, healthAlertDedupeKey, shouldSendRecovery, type CronRouteHeartbeat, type IntegrationHealthMetrics, type IntegrationHealthStatus } from "@/lib/integrations/integration-health";
+import { classifyCronRouteHealth, classifyIntegrationHealth, formatHealthMetrics, healthAlertDedupeKey, latestCronRouteHeartbeatsBefore, shouldSendRecovery, type CronRouteHeartbeat, type IntegrationHealthMetrics, type IntegrationHealthStatus } from "@/lib/integrations/integration-health";
 import { sendSymplaHealthSlackAlert } from "@/lib/integrations/slack-alerts";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -47,7 +47,7 @@ async function deliverHealthAlert(input: {
 
 export async function GET(request: Request) {
   if (!env.cronSecret || request.headers.get("authorization") !== `Bearer ${env.cronSecret}`) return NextResponse.json({ error: "Não autorizado." }, { status: 401 });
-  const startedAt = Date.now();
+  const startedAt = new Date();
   const supabase = createServiceClient();
   try {
     const { data, error } = await supabase.rpc("get_sympla_integration_health");
@@ -56,14 +56,15 @@ export async function GET(request: Request) {
       .from("scheduled_route_heartbeats")
       .select("route_path,status,executed_at")
       .in("route_path", CRON_ROUTE_LIMITS.map((route) => route.path))
+      // A própria execução só será registrada ao final; mesmo assim, excluímos
+      // qualquer batimento igual ou posterior ao início como defesa contra retries.
+      .lt("executed_at", startedAt.toISOString())
       .order("executed_at", { ascending: false });
     if (heartbeatError) throw new Error("Não foi possível verificar os batimentos das rotas cron.");
-    const latestHeartbeats = new Map<string, CronRouteHeartbeat>();
-    for (const heartbeat of (heartbeatRows ?? []) as HeartbeatRow[]) {
-      if (!latestHeartbeats.has(heartbeat.route_path)) {
-        latestHeartbeats.set(heartbeat.route_path, { routePath: heartbeat.route_path, status: heartbeat.status, executedAt: heartbeat.executed_at });
-      }
-    }
+    const latestHeartbeats = latestCronRouteHeartbeatsBefore(
+      ((heartbeatRows ?? []) as HeartbeatRow[]).map((heartbeat) => ({ routePath: heartbeat.route_path, status: heartbeat.status, executedAt: heartbeat.executed_at })),
+      startedAt,
+    );
     const routeResults = CRON_ROUTE_LIMITS.map((route) => ({
       ...route,
       status: classifyCronRouteHealth(latestHeartbeats.get(route.path) ?? null, route.maxAgeMinutes),
@@ -106,11 +107,11 @@ export async function GET(request: Request) {
       }
       results[results.length - 1] = { ...results[results.length - 1], cronRoutes: { status: routeStatus, alert: routeAlert, routes: routeResults } };
     }
-    await supabase.from("scheduled_route_heartbeats").insert({ route_path: "/api/cron/integration-health", status: "succeeded", duration_ms: Date.now() - startedAt });
+    await supabase.from("scheduled_route_heartbeats").insert({ route_path: "/api/cron/integration-health", status: "succeeded", duration_ms: Date.now() - startedAt.getTime() });
     return NextResponse.json({ ok: true, cadence: "weekly", results }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     const detail = error instanceof Error ? error.message.slice(0, 600) : "Falha desconhecida no health check.";
-    await supabase.from("scheduled_route_heartbeats").insert({ route_path: "/api/cron/integration-health", status: "failed", duration_ms: Date.now() - startedAt, detail });
+    await supabase.from("scheduled_route_heartbeats").insert({ route_path: "/api/cron/integration-health", status: "failed", duration_ms: Date.now() - startedAt.getTime(), detail });
     return NextResponse.json({ error: "A verificação semanal de integrações falhou; consulte os logs." }, { status: 503 });
   }
 }

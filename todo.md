@@ -317,3 +317,4 @@
 - [x] Registrar a auditoria operacional de produção, incluindo o estado dos cron jobs e integrações
 - [x] Substituir a dependência XLSX vulnerável da exportação administrativa por uma alternativa segura e coberta por teste
 - [x] Endurecer e validar em homologação os grants P0 de `claim_email_outbox`, `settle_paid_event_ticket` e `expire_stale_email_outbox` antes de qualquer promoção
+- [x] Corrigir e validar a autoavaliação temporal do health check da integração Sympla em homologação
