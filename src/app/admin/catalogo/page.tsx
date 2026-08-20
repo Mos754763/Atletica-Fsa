@@ -27,7 +27,7 @@ export default async function CatalogAdminPage({ searchParams }: { searchParams:
   const q = (params.q ?? "").trim().toLowerCase();
   const selectedCategory = params.category ?? "all";
   const availability = ["all", "active", "hidden", "low_stock"].includes(params.availability ?? "") ? params.availability! : "all";
-  const { supabase } = await requireRole(["admin", "caixa"]);
+  const { supabase } = await requireRole(["admin"]);
   const [{ data: categories }, { data: products }, { data: variants }] = await Promise.all([
     supabase.from("categories").select("id,name,slug").order("sort_order").returns<Category[]>(),
     supabase.from("products").select("id,name,sku,description,price_cents,stock_quantity,is_active,is_featured,categories(id,name,slug),product_images(id,public_url,alt_text,sort_order)").order("created_at", { ascending: false }).returns<Product[]>(),

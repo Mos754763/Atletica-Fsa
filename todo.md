@@ -352,3 +352,7 @@
 - [ ] Selecionar provedor SMS e validar telefone/MFA por SMS em homologação com CAPTCHA, limites e orçamento aprovados
 - [x] Executar auditoria integral de escopo, código, rotas, dados, RLS, multitenancy, integrações, variáveis, CI/CD e documentação sem alterar produção
 - [x] Especificar requisitos pendentes, testes, edge cases, plano corretivo e governança de branches, pull requests e CI/CD
+- [x] Produzir relatório detalhado e atualizado de todas as pendências remanescentes, com prioridade, bloqueios e critérios de aceite
+- [ ] Preparar identidades e uma matriz autenticada de QA para validar em homologação os fluxos prioritários por papel, sem pagamentos ou dados produtivos
+- [ ] Corrigir o mapeamento do papel operacional de backoffice na matriz de QA após a rejeição do enum `user_role` em homologação
+- [ ] Corrigir a autorização de rota do catálogo administrativo, que foi acessível diretamente pelo papel Caixa no Preview de homologação, e cobrir a regressão por testes
