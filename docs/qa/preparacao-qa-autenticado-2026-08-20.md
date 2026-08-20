@@ -91,3 +91,5 @@ Na seleção em massa de revogação, foram marcadas inicialmente somente as ide
 Foram adicionadas, em seguida, somente as identidades sintéticas de Caixa e Cliente. O painel confirmou exatamente quatro usuários selecionados para exclusão, correspondentes às quatro contas de QA autorizadas; a conta administrativa real permaneceu fora da seleção.
 
 A exclusão irreversível das quatro identidades sintéticas foi confirmada no painel do Supabase de homologação. O painel exibiu confirmação de sucesso e passou a listar somente a conta administrativa real; nenhum usuário real, dado de Production, preço, estoque, pedido ou pagamento foi alterado. A matriz autenticada de QA foi encerrada após a revalidação da correção de RBAC para Caixa.
+
+O commit documental final da pull request foi disponibilizado pela Vercel em Preview com estado `READY`, associado ao commit `cf38696dd789836a0a73f12b0f5f05568e77dca5` e ao Preview `https://atletica-8af5qnlgw-moises-faustino-rodrigues-s-projects.vercel.app`. Esse deployment preserva a correção de RBAC previamente revalidada, sem promover nenhuma alteração de dados para Production.
