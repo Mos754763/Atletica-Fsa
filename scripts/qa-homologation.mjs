@@ -23,13 +23,25 @@ export function resolveHomologationTarget(baseUrl, environment) {
   return url.origin;
 }
 
+export function resolvePreviewHeaders(bypassSecret) {
+  const headers = { "User-Agent": "ATLETICA-FSA-Homologation-QA/1.0" };
+  const normalizedSecret = bypassSecret?.trim();
+
+  if (normalizedSecret) {
+    headers["x-vercel-protection-bypass"] = normalizedSecret;
+    headers["x-vercel-set-bypass-cookie"] = "true";
+  }
+
+  return headers;
+}
+
 function expectStatus(result, allowedStatuses) {
   if (!allowedStatuses.includes(result.status)) {
     throw new Error(`${result.name}: HTTP ${result.status}; esperado ${allowedStatuses.join(" ou ")}.`);
   }
 }
 
-async function request(origin, name, path, allowedStatuses, assertion) {
+async function request(origin, name, path, allowedStatuses, assertion, headers) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 15_000);
 
@@ -38,7 +50,7 @@ async function request(origin, name, path, allowedStatuses, assertion) {
       method: "GET",
       redirect: "manual",
       signal: controller.signal,
-      headers: { "User-Agent": "ATLETICA-FSA-Homologation-QA/1.0" },
+      headers,
     });
     const result = { name, path, status: response.status, location: response.headers.get("location") };
     expectStatus(result, allowedStatuses);
@@ -51,8 +63,9 @@ async function request(origin, name, path, allowedStatuses, assertion) {
   }
 }
 
-export async function runHomologationSmoke(baseUrl, environment) {
+export async function runHomologationSmoke(baseUrl, environment, bypassSecret) {
   const origin = resolveHomologationTarget(baseUrl, environment);
+  const headers = resolvePreviewHeaders(bypassSecret);
   const results = [];
 
   for (const [name, path] of [
@@ -62,7 +75,7 @@ export async function runHomologationSmoke(baseUrl, environment) {
     ["login", "/login"],
     ["redefinição de senha", "/redefinir-senha"],
   ]) {
-    results.push(await request(origin, name, path, [200]));
+    results.push(await request(origin, name, path, [200], undefined, headers));
   }
 
   results.push(await request(origin, "configuração pública", "/api/public-config", [200], async (response) => {
@@ -70,21 +83,25 @@ export async function runHomologationSmoke(baseUrl, environment) {
     if (config.configured !== true || !String(config.url ?? "").includes("gfnbdjdqumewspvfxicl")) {
       throw new Error("A configuração pública não aponta para o projeto Supabase de homologação esperado.");
     }
-  }));
+  }, headers));
 
   results.push(await request(origin, "proteção da área administrativa", "/admin", [302, 303, 307], async (response) => {
     if (!response.headers.get("location")?.includes("/login")) {
       throw new Error("A rota administrativa não redirecionou para o login.");
     }
-  }));
+  }, headers));
 
-  results.push(await request(origin, "proteção do cron", "/api/cron/integration-health", [401, 403]));
+  results.push(await request(origin, "proteção do cron", "/api/cron/integration-health", [401, 403], undefined, headers));
 
   return { checkedAt: new Date().toISOString(), environment, origin, mode: "read-only", results };
 }
 
 if (import.meta.url === new URL(process.argv[1], "file:").href) {
-  const report = await runHomologationSmoke(process.env.QA_BASE_URL ?? "", process.env.QA_ENVIRONMENT);
+  const report = await runHomologationSmoke(
+    process.env.QA_BASE_URL ?? "",
+    process.env.QA_ENVIRONMENT,
+    process.env.VERCEL_AUTOMATION_BYPASS_SECRET ?? process.env.QA_VERCEL_PROTECTION_BYPASS_SECRET,
+  );
   console.log(JSON.stringify(report, null, 2));
   if (report.results.some((item) => item.state === "failed")) process.exitCode = 1;
 }
