@@ -201,6 +201,8 @@
 - [x] Investigar o outlier de LCP da quarta medição da loja com comparativo de rede, recursos e diagnóstico Lighthouse
 - [x] Revalidar agora as prioridades P1 de acessibilidade pública e mídia do ERP no ambiente publicado
 - [x] Corrigir o nome acessível divergente do wordmark de navegação na landing identificado na revalidação P1
+- [x] Ajustar a composição responsiva da página de login com o mascote institucional do hero da landing
+- [x] Validar em desktop e mobile o enquadramento do mascote, a legibilidade e os fluxos de autenticação do login
 - [x] Consolidar tokens de tema, preferências de movimento e infraestrutura de efeitos frontend-fx sem bibliotecas concorrentes
 - [x] Reestruturar landing, loja, detalhe de produto, carrinho e eventos com navegação e estados reais
 - [x] Refinar a experiência operacional de ERP, Admin e ODS com clareza de tema, layout e permissões preservadas

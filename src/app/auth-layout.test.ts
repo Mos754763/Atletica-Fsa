@@ -12,6 +12,15 @@ describe("contrato de composição do login", () => {
   it("reduz a composição do painel visual em telas compactas", () => {
     expect(authStyles).toContain("@media(max-width:780px){.auth-page{grid-template-columns:1fr}");
     expect(authStyles).toContain(".auth-page__panel{min-height:auto;padding:38px 20px 52px}");
-    expect(authStyles).toContain(".auth-page__mascot{right:20px;bottom:20px;width:130px}");
+    expect(authStyles).toContain(".auth-page__mascot{right:clamp(12px,4vw,24px)!important;bottom:16px!important;width:clamp(112px,30vw,160px)!important}");
+    expect(authStyles).toContain("@media(max-width:420px){.auth-page__mascot{right:12px!important;bottom:12px!important;width:clamp(112px,32vw,136px)!important}}");
+    expect(authStyles).toContain("@media(max-width:420px){.auth-page__intro{min-height:288px;padding:96px 20px 126px}");
+  });
+
+  it("usa no login o mesmo enquadramento circular do mascote institucional no hero", () => {
+    expect(authStyles).toContain(".auth-page__mascot{position:absolute!important;z-index:3!important;right:clamp(0px,1.6vw,22px)!important");
+    expect(authStyles).toContain("width:clamp(250px,26vw,405px)!important;min-height:0!important;aspect-ratio:1!important;overflow:hidden!important;border-radius:50%!important;background:#061c48");
+    expect(authStyles).toContain(".auth-page__mascot .rabbit-mascot__generated{display:block;width:100%;height:100%;max-height:none;object-fit:cover!important;object-position:77% center!important}");
+    expect(authStyles).toContain("@media(max-height:760px) and (min-width:781px)");
   });
 });
