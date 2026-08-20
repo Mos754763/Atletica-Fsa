@@ -12,6 +12,7 @@
     "test:slack-webhook": "RUN_LIVE_SLACK_WEBHOOK_TEST=true vitest run src/lib/integrations/slack-webhook.secret.test.ts",
     "test:point-resilience": "vitest run src/lib/payments/point-resilience.test.ts",
     "test:integration:qr-concurrency": "RUN_QR_CONCURRENCY_TESTS=true node scripts/test-qr-concurrency.mjs",
+    "qa:homologation": "node scripts/qa-homologation.mjs",
     "audit:catalog-media": "node scripts/audit-catalog-media.mjs",
     "seed:catalog-images": "node scripts/seed-catalog-images.mjs",
     "diagnose:cron": "node scripts/diagnose-cron-health.mjs"
