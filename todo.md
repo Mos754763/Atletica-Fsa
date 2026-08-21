@@ -367,3 +367,4 @@
 - [ ] Explicar e reconciliar a diferença comprovada de uma tabela pública entre homologação (47) e Production (48), com migration versionada somente se necessária
 - [x] Atualizar a credencial ou o escopo efetivo da API Sympla em Production, pois duas dead letters abertas comprovam resposta HTTP 403 na busca de eventos; validar com sincronização controlada antes de reprocessar registros
 - [x] Corrigir a identificação visual da página de integrações Sympla para refletir corretamente Production ou homologação, sem apresentar limites de homologação no domínio produtivo
+- [ ] Criar, testar em homologação e aplicar com autorização final em Production a migração reversível de remoção de `public.table_name`, comprovadamente vazia e não referenciada

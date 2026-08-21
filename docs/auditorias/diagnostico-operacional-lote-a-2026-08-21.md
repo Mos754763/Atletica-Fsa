@@ -96,6 +96,12 @@ A regra foi coberta por dois testes unitários e verificada com `pnpm typecheck`
 
 O deployment automático do commit `477f462` ficou `READY` em Production. A verificação autenticada da página produtiva confirmou visualmente os rótulos corrigidos, o modo somente leitura, a execução Sympla mais recente em estado `succeeded` e as duas dead letters históricas em `RESOLVIDA`, cada qual com uma tentativa de replay.
 
+## Migração de reconciliação de schema em homologação
+
+A migration `20260821190000_remove_preexisting_table_name.sql` foi executada em homologação usando conexão TLS e `ON_ERROR_STOP`. Como esperado, o banco respondeu que `public.table_name` está ausente e concluiu o bloco com sucesso, sem modificar tabelas de domínio. A verificação posterior retornou `table_exists: false` e `public_table_count: 47`.
+
+A migration é idempotente quando o artefato está ausente e falha fechada quando encontra linhas, chaves estrangeiras de entrada ou views dependentes. Ela usa `DROP TABLE` sem `CASCADE` e documenta o shape observado para restauração somente de schema, caso seja necessário. O teste unitário associado aprovou três salvaguardas e o typecheck permaneceu verde.
+
 ## Referências
 
 [1]: https://vercel.com/docs/cron-jobs/quickstart "Vercel Cron Jobs Quickstart"
