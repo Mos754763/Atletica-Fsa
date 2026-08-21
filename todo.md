@@ -356,3 +356,4 @@
 - [x] Preparar identidades e uma matriz autenticada de QA para validar em homologação os fluxos prioritários por papel, sem pagamentos ou dados produtivos
 - [x] Corrigir o mapeamento do papel operacional de backoffice na matriz de QA após a rejeição do enum `user_role` em homologação
 - [x] Corrigir a autorização de rota do catálogo administrativo, que foi acessível diretamente pelo papel Caixa no Preview de homologação, e cobrir a regressão por testes
+- [ ] Permitir atribuições cumulativas de papéis por usuário, com migração segura, RLS, administração presidencial e cobertura de regressão em homologação

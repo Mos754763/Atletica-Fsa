@@ -11,15 +11,20 @@ export function roleDescription(role: UserRole) {
   return manageableRoles.find((item) => item.value === role)?.description ?? "Acesso não identificado.";
 }
 
-export function assertMemberRoleChange(input: {
+export function rolesDescription(roles: readonly UserRole[]) {
+  return roles.map(roleDescription).join(" ");
+}
+
+export function assertMemberRolesChange(input: {
   actorId: string;
   targetId: string;
-  currentRole: UserRole;
-  nextRole: UserRole;
+  currentRoles: readonly UserRole[];
+  nextRoles: readonly UserRole[];
   adminCount: number;
 }) {
   if (input.actorId === input.targetId) throw new Error("Altere o próprio acesso por outro administrador.");
-  if (input.currentRole === "admin" && input.nextRole !== "admin" && input.adminCount <= 1) {
+  if (!input.nextRoles.length) throw new Error("Todo integrante precisa manter ao menos uma atribuição.");
+  if (input.currentRoles.includes("admin") && !input.nextRoles.includes("admin") && input.adminCount <= 1) {
     throw new Error("A plataforma precisa manter ao menos um administrador.");
   }
 }

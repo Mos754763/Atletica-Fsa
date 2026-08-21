@@ -24,7 +24,7 @@ function mockAdminWithClients() {
   const select = vi.fn().mockReturnValue({ order });
   const from = vi.fn().mockReturnValue({ select });
   getApiProfileMock.mockResolvedValue({
-    profile: { id: "admin-id", email: "admin@example.com", display_name: "Admin", role: "admin" },
+    profile: { id: "admin-id", email: "admin@example.com", display_name: "Admin", role: "admin", roles: ["admin"] },
     supabase: { from },
     accessToken: "test-token",
   } as never);
@@ -45,7 +45,7 @@ describe("GET /api/admin/export", () => {
 
   it("restringe exportações a administradores", async () => {
     getApiProfileMock.mockResolvedValue({
-      profile: { id: "cashier-id", email: "cashier@example.com", display_name: "Caixa", role: "caixa" },
+      profile: { id: "cashier-id", email: "cashier@example.com", display_name: "Caixa", role: "caixa", roles: ["caixa"] },
       supabase: {},
       accessToken: "test-token",
     } as never);
@@ -63,6 +63,19 @@ describe("GET /api/admin/export", () => {
 
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({ error: "Parâmetros de exportação inválidos." });
+  });
+
+  it("permite exportação quando Administração é uma das atribuições acumuladas", async () => {
+    const { from } = mockAdminWithClients();
+    getApiProfileMock.mockResolvedValue({
+      profile: { id: "admin-cashier-id", email: "operacao@example.com", display_name: "Operação", role: "admin", roles: ["admin", "caixa"] },
+      supabase: { from },
+      accessToken: "test-token",
+    } as never);
+
+    const response = requireResponse(await GET(request()));
+
+    expect(response.status).toBe(200);
   });
 
   it("gera CSV com dados escapados e cabeçalhos de download", async () => {
@@ -85,7 +98,7 @@ describe("GET /api/admin/export", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("content-type")).toContain("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    expect(response.headers.get("content-disposition")).toContain('atletica-fsa-clientes-7-dias.xlsx');
+    expect(response.headers.get("content-disposition")).toContain("atletica-fsa-clientes-7-dias.xlsx");
     expect([...body.slice(0, 2)]).toEqual([0x50, 0x4b]);
     expect(new TextDecoder().decode(body)).toContain("Ana, &amp; Souza");
   });
@@ -98,7 +111,7 @@ describe("GET /api/admin/export", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("content-type")).toContain("application/pdf");
-    expect(response.headers.get("content-disposition")).toContain('atletica-fsa-clientes-90-dias.pdf');
+    expect(response.headers.get("content-disposition")).toContain("atletica-fsa-clientes-90-dias.pdf");
     expect(body).toBe("%PDF");
   });
 });

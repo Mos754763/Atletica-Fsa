@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { canAccessRole } from "@/lib/auth/roles";
+import { canAccessRoles, normalizeRoles } from "@/lib/auth/roles";
 import { createServerAuthClient } from "@/lib/supabase/server-auth";
 import type { UserRole } from "@/types/domain";
 
@@ -16,12 +16,15 @@ export async function requireRole(allowedRoles: readonly UserRole[]) {
     .eq("id", userId)
     .single();
 
-  if (!profile || !canAccessRole(profile.role as UserRole, allowedRoles)) {
+  const { data: assignedRoles } = profile ? await supabase.rpc("current_user_roles") : { data: [] as UserRole[] };
+  const roles = normalizeRoles((assignedRoles ?? []) as UserRole[], profile?.role as UserRole | undefined);
+
+  if (!profile || !canAccessRoles(roles, allowedRoles)) {
     if (profile) {
       await supabase.rpc("record_crm_access_denied", { p_allowed_roles: [...allowedRoles] });
     }
     redirect("/conta?acesso=negado");
   }
 
-  return { supabase, profile, userId };
+  return { supabase, profile: { ...profile, role: profile.role as UserRole, roles }, userId };
 }

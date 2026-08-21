@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import PDFDocument from "pdfkit";
 import { z } from "zod";
 import { getApiProfile } from "@/lib/api/auth";
+import { canAccessRoles } from "@/lib/auth/roles";
 import { formatBRL } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -109,7 +110,7 @@ function pdfBody(title: string, rows: ExportRow[]) {
 
 export async function GET(request: Request) {
   const auth = await getApiProfile(request); if ("error" in auth) return auth.error;
-  if (auth.profile.role !== "admin") return NextResponse.json({ error: "Somente administradores podem exportar dados operacionais." }, { status: 403 });
+  if (!canAccessRoles(auth.profile.roles, ["admin"])) return NextResponse.json({ error: "Somente administradores podem exportar dados operacionais." }, { status: 403 });
   const parsed = querySchema.safeParse(Object.fromEntries(new URL(request.url).searchParams));
   if (!parsed.success) return NextResponse.json({ error: "Parâmetros de exportação inválidos." }, { status: 400 });
   try {
