@@ -1,7 +1,7 @@
 # Evidências — Lote A de paridade entre homologação e produção
 
 **Data:** 21 de agosto de 2026  
-**Escopo:** inventário somente leitura, sem alteração de dados ou configuração.
+**Escopo:** inventário técnico, recuperação operacional controlada e reconciliação de schema explicitamente aprovada; sem alteração de dados de domínio, catálogo, preços, estoque ou configuração de pagamentos.
 
 ## Homologação — inventário técnico
 
@@ -52,14 +52,14 @@ Consultas executadas pelo responsável no SQL Editor do projeto Production `tbxi
 | Controle | Resultado em Production | Resultado em homologação | Situação inicial |
 | --- | ---: | ---: | --- |
 | Valores de `public.user_role` | `admin`, `backoffice`, `caixa`, `cliente` | `admin`, `backoffice`, `caixa`, `cliente` | Conforme. |
-| Tabelas base no schema `public` | 48 | 47 | Divergência a explicar antes de promoção adicional. |
+| Tabelas base no schema `public` | 47 | 47 | Conforme após a remoção controlada, sem `CASCADE`, de `public.table_name`, artefato preexistente vazio e sem dependências. |
 | Políticas RLS no schema `public` | 74 | 74 | Conforme por contagem. |
 | Funções `SECURITY DEFINER` | 48 | 48 | Conforme por contagem. |
 | Funções `SECURITY DEFINER` executáveis por `anon` | 21 | 21 | Conforme por contagem; manter revisão por função como controle permanente. |
 | `profile_role_assignments` existe | Sim | Sim | Conforme; RBAC cumulativo presente. |
 | Registros em `email_outbox` | 0 | 1 | Dado operacional, não bloqueador isolado. Não houve envio. |
 | Registros em `email_deliveries` | 0 | 0 | Conforme no momento da coleta. |
-| Dead letters Sympla em aberto | 2 | 0 | **Bloqueio operacional em Production** até diagnóstico e tratamento auditável. |
+| Dead letters Sympla em aberto | 0 | 0 | Conforme após a atualização controlada da credencial, sincronização validada e dois replays individuais concluídos. |
 
 ### Funções P0 — grants em Production
 
@@ -73,11 +73,11 @@ Consultas executadas pelo responsável no SQL Editor do projeto Production `tbxi
 
 | Escopo | Estado | Início do incidente | Evidência operacional | Classificação inicial |
 | --- | --- | --- | --- | --- |
-| `cron_routes` | `critical` | 2026-08-17 18:15 UTC | `/api/cron/integration-health` sem execução registrada (`lastExecutedAt: null`); as rotas Sympla e lembretes do mesmo snapshot estavam saudáveis. | Bloqueadora de produção. |
-| `sync` | `critical` | 2026-08-17 18:14 UTC | Há dead letters Sympla abertas; o snapshot registra ao menos uma com idade superior a 3.941 minutos. | Bloqueadora de produção. |
+| `cron_routes` | `healthy` | Recuperado em 2026-08-21 | As quatro rotas monitoradas foram reavaliadas após a recuperação, com alerta de recuperação deduplicado. | Conforme. |
+| `sync` | `healthy` | Recuperado em 2026-08-21 | A sincronização autenticada retornou HTTP 200 e as duas dead letters históricas foram resolvidas por replay auditável. | Conforme. |
 
 > **Correção de nomenclatura documental:** o schema atual utiliza `public.integration_health_states`, e não `public.integration_health`. A referência anterior deve ser tratada como documentação desatualizada, não como falha de banco.
 
 ## Conclusão do Lote A
 
-Os controles de autorização e a estrutura principal comprovadamente coincidem entre os ambientes: enum RBAC, RLS por contagem, quantidade de funções privilegiadas, grants P0 e a tabela de atribuições cumulativas. O Lote A não autoriza nova promoção operacional enquanto houver o incidente crítico sem recuperação da rota de saúde, dead letters Sympla abertas e a tabela adicional de Production sem reconciliação. Nenhuma modificação foi feita em Production durante a auditoria.
+Os controles de autorização e a estrutura principal comprovadamente coincidem entre os ambientes: enum RBAC, 47 tabelas públicas, RLS por contagem, quantidade de funções privilegiadas, grants P0 e a tabela de atribuições cumulativas. Os dois incidentes operacionais críticos foram recuperados e as duas dead letters Sympla históricas foram resolvidas por replay individual auditável. A única divergência de schema, `public.table_name`, foi removida em Production por fluxo administrativo aprovado, sem `CASCADE`, depois da validação prévia de que estava vazia e não referenciada. Portanto, os seis controles do Lote A estão **conformes**; `PAYMENTS_ENABLED=false` permaneceu preservado.

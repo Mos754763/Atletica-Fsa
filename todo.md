@@ -361,10 +361,12 @@
 - [x] Corrigir com urgência a sidebar retrátil do ERP, preservando largura do conteúdo, navegação por teclado, persistência e responsividade desktop/mobile
 - [x] Tornar o controle de modo escuro do ERP arrastável, persistente e não obstrutivo ao conteúdo
 - [x] Aprimorar a área de Pessoas do ERP com tabela operacional detalhada, cantos levemente arredondados, conteúdo sem cortes e partículas interativas acessíveis nos temas claro e escuro
-- [ ] Executar auditoria de paridade entre homologação e Production, corrigir lacunas comprovadas em homologação e promover lotes validados com evidências, rollback e gates de segurança
+- [x] Executar auditoria de paridade entre homologação e Production, corrigir lacunas comprovadas em homologação e promover lotes validados com evidências, rollback e gates de segurança
 - [x] Investigar o estado crítico da rota `/api/cron/integration-health` em homologação e Production, comprovar a limitação de cron em preview e recuperar os batimentos de Production com alerta de recuperação deduplicado
 - [x] Investigar e reprocessar de forma auditável as dead letters Sympla abertas, validando a causa, a deduplicação e o encerramento seguro antes de qualquer mudança em Production
-- [ ] Explicar e reconciliar a diferença comprovada de uma tabela pública entre homologação (47) e Production (48), com migration versionada somente se necessária
+- [x] Explicar e reconciliar a diferença comprovada de uma tabela pública entre homologação (47) e Production (48), com migration versionada somente se necessária
 - [x] Atualizar a credencial ou o escopo efetivo da API Sympla em Production, pois duas dead letters abertas comprovam resposta HTTP 403 na busca de eventos; validar com sincronização controlada antes de reprocessar registros
 - [x] Corrigir a identificação visual da página de integrações Sympla para refletir corretamente Production ou homologação, sem apresentar limites de homologação no domínio produtivo
-- [ ] Criar, testar em homologação e aplicar com autorização final em Production a migração reversível de remoção de `public.table_name`, comprovadamente vazia e não referenciada
+- [x] Criar, testar em homologação e aplicar com autorização final em Production a migração reversível de remoção de `public.table_name`, comprovadamente vazia e não referenciada
+- [ ] Rotacionar `CRON_SECRET` em Vercel para Production e Preview após a validação, com novo deployment e teste autenticado de rota cron
+- [ ] Rotacionar `SYMPLA_API_TOKEN` no portal do provedor e atualizar Vercel em Production e Preview, com nova sincronização controlada

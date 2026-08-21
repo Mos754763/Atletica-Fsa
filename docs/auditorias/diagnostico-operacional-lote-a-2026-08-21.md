@@ -102,6 +102,18 @@ A migration `20260821190000_remove_preexisting_table_name.sql` foi executada em 
 
 A migration é idempotente quando o artefato está ausente e falha fechada quando encontra linhas, chaves estrangeiras de entrada ou views dependentes. Ela usa `DROP TABLE` sem `CASCADE` e documenta o shape observado para restauração somente de schema, caso seja necessário. O teste unitário associado aprovou três salvaguardas e o typecheck permaneceu verde.
 
+## Conclusão da reconciliação de schema em Production
+
+Em 21/08/2026, a remoção aprovada de `public.table_name` foi concluída no projeto Production (`tbxihkzuyzszrfxqmleq`). O SQL Editor autenticado permaneceu com comportamento inconsistente de cache; por isso, foi usado o fluxo administrativo alternativo do Table Editor, após as salvaguardas documentadas na migration versionada. A exclusão foi confirmada com a opção **Drop table with cascade** desmarcada, preservando a exigência de não eliminar dependências implicitamente.
+
+| Verificação pós-operação | Resultado em Production | Resultado esperado |
+| --- | --- | --- |
+| Busca por `public.table_name` no Table Editor | `No results found` | A relação não deve mais existir. |
+| Lista completa de tabelas do schema `public` | `47 tables` | Deve coincidir com homologação. |
+| Remoção com `CASCADE` | Não utilizada | A reconciliação não pode remover dependências de forma implícita. |
+
+A contagem final de **47 tabelas públicas** iguala Production à homologação. A alteração removeu exclusivamente o artefato preexistente e vazio; não houve alteração de registros de domínio, estoque, preços, pedidos, pagamentos ou do gate `PAYMENTS_ENABLED=false`. Com isso, a divergência de schema que bloqueava o Lote A está encerrada.
+
 ## Referências
 
 [1]: https://vercel.com/docs/cron-jobs/quickstart "Vercel Cron Jobs Quickstart"
