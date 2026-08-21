@@ -4,13 +4,14 @@ import { canMoveOrderStatus } from "@/lib/orders/workflow";
 import { normalizePickupQrToken } from "@/lib/orders/pickup-token";
 import { sendOrderStatusEmail } from "@/lib/email/transactional";
 import { createAuthenticatedServerClient } from "@/lib/supabase/server";
+import { canAccessRoles } from "@/lib/auth/roles";
 import type { OrderState } from "@/types/domain";
 
 const visibleStates: OrderState[] = ["aguardando_pagamento", "pago", "em_preparo", "pronto"];
 
 export async function GET(request: Request) {
   const auth = await getApiProfile(request); if ("error" in auth) return auth.error;
-  if (!["admin", "cozinha", "caixa"].includes(auth.profile.role)) return NextResponse.json({ error: "Acesso restrito à operação." }, { status: 403 });
+  if (!canAccessRoles(auth.profile.roles, ["admin", "cozinha", "caixa"])) return NextResponse.json({ error: "Acesso restrito à operação." }, { status: 403 });
   const { data, error } = await auth.supabase.from("orders").select("id,order_number,status,fulfillment,customer_name,notes,created_at,order_items(product_name,quantity)").in("status", visibleStates).order("created_at", { ascending: true });
   if (error) return NextResponse.json({ error: "Não foi possível carregar a fila." }, { status: 500 });
   return NextResponse.json({ orders: data ?? [] });
@@ -18,7 +19,7 @@ export async function GET(request: Request) {
 
 export async function PATCH(request: Request) {
   const auth = await getApiProfile(request); if ("error" in auth) return auth.error;
-  if (!["admin", "cozinha", "caixa"].includes(auth.profile.role)) return NextResponse.json({ error: "Acesso restrito à operação." }, { status: 403 });
+  if (!canAccessRoles(auth.profile.roles, ["admin", "cozinha", "caixa"])) return NextResponse.json({ error: "Acesso restrito à operação." }, { status: 403 });
   const body = await request.json().catch(() => null) as { orderId?: string; status?: OrderState; pickupToken?: string } | null; if (!body?.orderId || !body.status) return NextResponse.json({ error: "Atualização inválida." }, { status: 400 });
   const { data: order } = await auth.supabase.from("orders").select("id,order_number,status,customer_id,customer_email,fulfillment,pickup_code").eq("id", body.orderId).single();
   if (!order || !canMoveOrderStatus(order.status as OrderState, body.status)) return NextResponse.json({ error: "Transição de pedido inválida." }, { status: 409 });
@@ -42,7 +43,7 @@ export async function PATCH(request: Request) {
 
 export async function POST(request: Request) {
   const auth = await getApiProfile(request); if ("error" in auth) return auth.error;
-  if (!["admin", "cozinha", "caixa"].includes(auth.profile.role)) return NextResponse.json({ error: "Acesso restrito à operação." }, { status: 403 });
+  if (!canAccessRoles(auth.profile.roles, ["admin", "cozinha", "caixa"])) return NextResponse.json({ error: "Acesso restrito à operação." }, { status: 403 });
 
   const body = await request.json().catch(() => null) as {
     fulfillment?: string;
