@@ -17,7 +17,7 @@ export function canAccessRoles(roles: UserRoles | null | undefined, allowedRoles
 export function roleLabel(role: UserRole) {
   return {
     admin: "Administração",
-    cozinha: "Backoffice",
+    backoffice: "Backoffice",
     caixa: "Caixa",
     cliente: "Cliente",
   }[role];

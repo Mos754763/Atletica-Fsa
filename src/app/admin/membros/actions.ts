@@ -9,7 +9,7 @@ import { assertMemberRolesChange } from "@/lib/members";
 import { createServiceClient } from "@/lib/supabase/server";
 import type { UserRole } from "@/types/domain";
 
-const roleSchema = z.enum(["admin", "cozinha", "caixa", "cliente"]);
+const roleSchema = z.enum(["admin", "backoffice", "caixa", "cliente"]);
 const rolesSchema = z.array(roleSchema).min(1, "Selecione ao menos uma atribuição.").transform((roles) => [...new Set(roles)]);
 const memberInterestStatusSchema = z.enum(["novo", "em_contato", "convidado", "arquivado"]);
 const inviteSchema = z.object({

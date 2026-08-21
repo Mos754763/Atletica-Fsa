@@ -34,10 +34,10 @@ export default async function AccountPage() {
         <Link href="/conta/pedidos"><PackageCheck size={23} /><span><strong>Meus pedidos</strong><small>Acompanhar retiradas</small></span></Link>
         <Link href="/conta/seguranca"><ShieldCheck size={23} /><span><strong>Segurança</strong><small>Senha e autenticação</small></span></Link>
       </section>
-      {canAccessRoles(roles, ["admin", "caixa", "cozinha"]) && (
+      {canAccessRoles(roles, ["admin", "caixa", "backoffice"]) && (
         <nav className="account-admin-actions" aria-label="Atalhos operacionais">
           <Link className="account-admin-link" href="/erp">{canAccessRoles(roles, ["admin", "caixa"]) ? "Abrir ERP" : "Abrir backoffice"}</Link>
-          {canAccessRoles(roles, ["admin", "cozinha", "caixa"]) && <Link className="account-admin-link" href="/ods">Abrir ODS</Link>}
+          {canAccessRoles(roles, ["admin", "backoffice", "caixa"]) && <Link className="account-admin-link" href="/ods">Abrir ODS</Link>}
         </nav>
       )}
     </main>

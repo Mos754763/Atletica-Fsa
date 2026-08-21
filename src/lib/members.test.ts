@@ -3,9 +3,9 @@ import { assertMemberRolesChange, manageableRoles, roleDescription, rolesDescrip
 
 describe("gestão administrativa de membros", () => {
   it("expõe todos os papéis operacionais com suas descrições", () => {
-    expect(manageableRoles.map((role) => role.value)).toEqual(["admin", "caixa", "cozinha", "cliente"]);
-    expect(manageableRoles.find((role) => role.value === "cozinha")?.label).toBe("Backoffice");
-    expect(roleDescription("cozinha")).toContain("ODS");
+    expect(manageableRoles.map((role) => role.value)).toEqual(["admin", "caixa", "backoffice", "cliente"]);
+    expect(manageableRoles.find((role) => role.value === "backoffice")?.label).toBe("Backoffice");
+    expect(roleDescription("backoffice")).toContain("ODS");
   });
 
   it("impede que o último administrador seja rebaixado", () => {
