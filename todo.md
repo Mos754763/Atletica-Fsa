@@ -358,3 +358,4 @@
 - [x] Corrigir a autorização de rota do catálogo administrativo, que foi acessível diretamente pelo papel Caixa no Preview de homologação, e cobrir a regressão por testes
 - [x] Permitir atribuições cumulativas de papéis por usuário, com migração segura, RLS, administração presidencial e cobertura de regressão em homologação
 - [x] Renomear tecnicamente o papel `cozinha` para `backoffice`, com migração compatível de enum, RLS, atribuições existentes, interface e testes em homologação e Production
+- [x] Corrigir com urgência a sidebar retrátil do ERP, preservando largura do conteúdo, navegação por teclado, persistência e responsividade desktop/mobile

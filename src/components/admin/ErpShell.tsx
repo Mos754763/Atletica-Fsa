@@ -5,7 +5,15 @@ import { ErpSidebar } from "@/components/admin/ErpSidebar";
 import { ErpMotionWorkspace } from "@/components/admin/ErpMotionWorkspace";
 import type { UserRoles } from "@/types/domain";
 
-const STORAGE_KEY = "fsa-erp-sidebar-collapsed";
+export const ERP_SIDEBAR_STORAGE_KEY = "fsa-erp-sidebar-collapsed";
+
+export function readErpSidebarCollapsed(value: string | null) {
+  return value === "true";
+}
+
+export function persistErpSidebarCollapsed(storage: Pick<Storage, "setItem">, collapsed: boolean) {
+  storage.setItem(ERP_SIDEBAR_STORAGE_KEY, String(collapsed));
+}
 
 type ErpShellProps = {
   children: React.ReactNode;
@@ -19,12 +27,12 @@ export function ErpShell({ children, displayName, roles, isPresident, canAccessB
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-    setCollapsed(window.localStorage.getItem(STORAGE_KEY) === "true");
+    setCollapsed(readErpSidebarCollapsed(window.localStorage.getItem(ERP_SIDEBAR_STORAGE_KEY)));
   }, []);
 
   function handleCollapsedChange(nextValue: boolean) {
     setCollapsed(nextValue);
-    window.localStorage.setItem(STORAGE_KEY, String(nextValue));
+    persistErpSidebarCollapsed(window.localStorage, nextValue);
   }
 
   return <div className={`erp-shell${collapsed ? " is-collapsed" : ""}`}>
