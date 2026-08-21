@@ -359,3 +359,4 @@
 - [x] Permitir atribuições cumulativas de papéis por usuário, com migração segura, RLS, administração presidencial e cobertura de regressão em homologação
 - [x] Renomear tecnicamente o papel `cozinha` para `backoffice`, com migração compatível de enum, RLS, atribuições existentes, interface e testes em homologação e Production
 - [x] Corrigir com urgência a sidebar retrátil do ERP, preservando largura do conteúdo, navegação por teclado, persistência e responsividade desktop/mobile
+- [ ] Tornar o controle de modo escuro do ERP arrastável, persistente e não obstrutivo ao conteúdo

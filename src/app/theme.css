@@ -1,7 +1,7 @@
 html[data-theme="light"] { color-scheme:light; --fx-background:#eff5ff; --accent-text:#0B3D91; }
 html[data-theme="dark"] { --fx-background:#080d18; --accent-text:#FFD23F; }
-.theme-toggle { position:fixed; z-index:70; right:20px; bottom:20px; display:inline-flex; align-items:center; gap:8px; min-height:42px; padding:0 13px; border:1px solid rgba(6,28,72,.2); border-radius:999px; color:var(--blue-ink); background:rgba(255,255,255,.92); box-shadow:0 10px 28px rgba(6,28,72,.18); backdrop-filter:blur(12px); cursor:pointer; font-size:11px; font-weight:850; transition:transform .16s ease,background .16s ease,color .16s ease,border-color .16s ease; }
-.theme-toggle:hover { transform:translateY(-2px); }.theme-toggle:active { transform:scale(.97); }.theme-toggle__label { line-height:1; }
+.theme-toggle { position:fixed; z-index:70; right:20px; bottom:20px; display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:0 11px 0 13px; border:1px solid rgba(6,28,72,.2); border-radius:999px; color:var(--blue-ink); background:rgba(255,255,255,.92); box-shadow:0 10px 28px rgba(6,28,72,.18); backdrop-filter:blur(12px); cursor:grab; touch-action:none; user-select:none; font-size:11px; font-weight:850; transition:transform .16s ease,background .16s ease,color .16s ease,border-color .16s ease; }
+.theme-toggle[data-positioned="true"] { right:auto; bottom:auto; }.theme-toggle:hover { transform:translateY(-2px); }.theme-toggle:active { transform:scale(.97); }.theme-toggle[data-dragging="true"] { cursor:grabbing; transform:none; transition:background .16s ease,color .16s ease,border-color .16s ease; }.theme-toggle__label { line-height:1; }.theme-toggle__grip { opacity:.58; flex:none; }
 
 html[data-theme="dark"] { color-scheme:dark; background:#080d18; }
 html[data-theme="dark"] body { color:#e8edf8; }
@@ -37,4 +37,4 @@ html[data-theme="dark"] .store-page :is(.store-nav,.store-hero,.store-filters,.s
 /* A vitrine prioriza legibilidade: os canvases decorativos ficam fora da composição escura. */
 html[data-theme="dark"] .ambient-scene,html[data-theme="dark"] .frontend-fx { display:none!important; }
 
-@media(max-width:640px){.theme-toggle{right:13px;bottom:14px;min-height:40px;padding:0 12px}.theme-toggle__label{display:none}}
+@media(max-width:640px){.theme-toggle{right:13px;bottom:14px;min-height:40px;padding:0 10px}.theme-toggle__label{display:none}.theme-toggle__grip{opacity:.7}}
