@@ -21,8 +21,11 @@ function MascotHeader({ eyebrow, title, copy, accountLabel = "Minha conta" }: Ma
 }
 
 export default async function AdminPage() {
-  const { profile, supabase } = await requireRole(["admin", "caixa", "cozinha"]);
-  if (profile.role === "cozinha") {
+  const { profile, supabase } = await requireRole(["admin", "caixa", "backoffice"]);
+  const hasAdmin = profile.roles.includes("admin");
+  const hasCashier = profile.roles.includes("caixa");
+  const hasBackofficeOnly = profile.roles.includes("backoffice") && !hasAdmin && !hasCashier;
+  if (hasBackofficeOnly) {
     return (
       <main className="erp-dashboard">
         <MascotHeader eyebrow="BACKOFFICE FSA / OPERAÇÃO" title="Pedidos em produção." copy="Use o painel operacional para acompanhar a fila e atualizar cada pedido com rapidez durante o atendimento." />
@@ -45,7 +48,7 @@ export default async function AdminPage() {
     ["Relatórios", "Vendas, eventos e indicadores reais.", BarChart3, "/admin/relatorios"],
     ["ODS de pedidos", "Tela de produção para a operação ao vivo.", ListChecks, "/ods"],
   ];
-  const visibleShortcuts = profile.role === "admin" ? shortcuts : shortcuts.filter(([title]) => title === "Pedidos" || title === "Relatórios");
+  const visibleShortcuts = hasAdmin ? shortcuts : shortcuts.filter(([title]) => title === "Pedidos" || title === "Relatórios");
   const stats = [["Produtos", productCount ?? 0, Boxes], ["Pedidos em andamento", orderCount ?? 0, PackageCheck], ["Eventos cadastrados", eventCount ?? 0, CalendarCog], ["Pessoas na plataforma", memberCount ?? 0, UsersRound]];
 
   return (

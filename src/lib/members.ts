@@ -3,7 +3,7 @@ import type { UserRole } from "@/types/domain";
 export const manageableRoles: Array<{ value: UserRole; label: string; description: string }> = [
   { value: "admin", label: "Administrador", description: "Acesso completo e gestão de membros." },
   { value: "caixa", label: "Caixa", description: "Catálogo, pedidos e relatórios." },
-  { value: "cozinha", label: "Backoffice", description: "Acesso à operação do ODS." },
+  { value: "backoffice", label: "Backoffice", description: "Acesso à operação do ODS." },
   { value: "cliente", label: "Cliente", description: "Loja, conta e inscrições em eventos." },
 ];
 

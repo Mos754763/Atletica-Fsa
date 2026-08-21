@@ -33,7 +33,7 @@ export function ErpSidebar({ displayName, roles, isPresident, canAccessBuilder, 
   const pathname = usePathname() ?? "";
   const reducedMotion = useReducedMotion();
   const isAdmin = canAccessRoles(roles, ["admin"]);
-  const isOperational = canAccessRoles(roles, ["admin", "cozinha", "caixa"]);
+  const isOperational = canAccessRoles(roles, ["admin", "backoffice", "caixa"]);
   const availableItems = !isOperational ? [] : navigationItems.filter((item) => (!item.adminOnly || isAdmin) && (!item.presidentOnly || isPresident));
   const getItemClassName = (href: string) => (href === "/admin" ? pathname === href : pathname.startsWith(href)) ? "is-active" : "";
 
