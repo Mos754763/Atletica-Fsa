@@ -360,3 +360,4 @@
 - [x] Renomear tecnicamente o papel `cozinha` para `backoffice`, com migração compatível de enum, RLS, atribuições existentes, interface e testes em homologação e Production
 - [x] Corrigir com urgência a sidebar retrátil do ERP, preservando largura do conteúdo, navegação por teclado, persistência e responsividade desktop/mobile
 - [x] Tornar o controle de modo escuro do ERP arrastável, persistente e não obstrutivo ao conteúdo
+- [x] Aprimorar a área de Pessoas do ERP com tabela operacional detalhada, cantos levemente arredondados, conteúdo sem cortes e partículas interativas acessíveis nos temas claro e escuro

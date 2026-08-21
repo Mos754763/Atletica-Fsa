@@ -30,6 +30,13 @@ describe("proteção visual da loja no tema escuro", () => {
     expect(themeStyles).toContain('html[data-theme="dark"] .store-cart { background-color:transparent!important; }');
   });
 
+  it("aplica superfícies e texto legíveis à área de Pessoas no Backoffice escuro", () => {
+    expect(themeStyles).toContain('html[data-theme="dark"] .members-page { --white:#121e32;');
+    expect(themeStyles).toContain("--blue-ink:#f5f8ff");
+    expect(themeStyles).toContain(".members-abuse-card,.members-invite-card,.members-list-card");
+    expect(themeStyles).toContain(".members-abuse-kpis article");
+  });
+
   it("não permite que o drawer fechado ou o layout de recuperação ampliem a página em telas móveis", () => {
     expect(mobileOverflowStyles).toContain(".store-cart {");
     expect(mobileOverflowStyles).toContain("overflow: hidden;");
