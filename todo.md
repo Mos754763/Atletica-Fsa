@@ -370,3 +370,4 @@
 - [x] Criar, testar em homologação e aplicar com autorização final em Production a migração reversível de remoção de `public.table_name`, comprovadamente vazia e não referenciada
 - [ ] Rotacionar `CRON_SECRET` em Vercel para Production e Preview após a validação, com novo deployment e teste autenticado de rota cron
 - [ ] Rotacionar `SYMPLA_API_TOKEN` no portal do provedor e atualizar Vercel em Production e Preview, com nova sincronização controlada
+- [x] Executar smoke test pós-merge da PR #23 nas rotas públicas e operacionais essenciais em Production
