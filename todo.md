@@ -361,3 +361,7 @@
 - [x] Corrigir com urgência a sidebar retrátil do ERP, preservando largura do conteúdo, navegação por teclado, persistência e responsividade desktop/mobile
 - [x] Tornar o controle de modo escuro do ERP arrastável, persistente e não obstrutivo ao conteúdo
 - [x] Aprimorar a área de Pessoas do ERP com tabela operacional detalhada, cantos levemente arredondados, conteúdo sem cortes e partículas interativas acessíveis nos temas claro e escuro
+- [ ] Executar auditoria de paridade entre homologação e Production, corrigir lacunas comprovadas em homologação e promover lotes validados com evidências, rollback e gates de segurança
+- [ ] Investigar e recuperar em homologação o estado crítico da rota `/api/cron/integration-health`, incluindo evidência de execução recente e alerta de recuperação sem ruído duplicado
+- [ ] Investigar e reprocessar de forma auditável as dead letters Sympla abertas, validando a causa, a deduplicação e o encerramento seguro antes de qualquer mudança em Production
+- [ ] Explicar e reconciliar a diferença comprovada de uma tabela pública entre homologação (47) e Production (48), com migration versionada somente se necessária
