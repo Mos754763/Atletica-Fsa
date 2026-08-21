@@ -45,7 +45,7 @@ export function ManagementCarousel({ people }: ManagementCarouselProps) {
 
             return (
               <article key={person.name} className={`people-carousel__slide people-carousel__slide--${position}`} aria-hidden={!isActive} aria-current={isActive ? "true" : undefined} data-position={position} style={isActive ? { opacity: 1, visibility: "visible" } : undefined}>
-                <div className="people-carousel__photo"><img src={person.image} alt={isActive ? `${person.name}, ${person.role}, na gestão 2026 da ATLETICA FSA` : ""} /></div>
+                <div className="people-carousel__photo"><img src={person.image} alt={isActive ? `${person.name}, ${person.role}, na gestão 2026 da ATLETICA FSA` : ""} loading="lazy" decoding="async" /></div>
                 <div className="people-carousel__copy"><p>GESTÃO 2026 · {String(index + 1).padStart(2, "0")}/{String(people.length).padStart(2, "0")}</p><h3>{person.name}</h3><span>{person.role}</span></div>
                 <span className="people-carousel__brand-mark" aria-hidden="true">FSA</span>
               </article>
