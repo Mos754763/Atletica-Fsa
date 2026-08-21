@@ -40,17 +40,22 @@ export default async function MembersAdminPage({ searchParams }: { searchParams:
     <section className="members-abuse-card" aria-labelledby="abuse-metrics-title">
       <div className="members-list-card__head"><div><span>SEGURANÇA DA LANDING</span><h2 id="abuse-metrics-title">Tentativas bloqueadas</h2></div><ShieldAlert size={19} /></div>
       <p>Eventos minimizados de proteção, visíveis apenas para a Presidência. Endereços de origem permanecem pseudonimizados e os eventos expiram em 30 dias.</p>
-      <div className="members-abuse-kpis">
-        <article><strong>{abuseSummary?.events_24h ?? 0}</strong><span>eventos nas últimas 24h</span></article>
-        <article><strong>{abuseSummary?.honeypot_24h ?? 0}</strong><span>honeypots acionados</span></article>
-        <article><strong>{abuseSummary?.rate_limited_24h ?? 0}</strong><span>limites de taxa</span></article>
-        <article><strong>{abuseSummary?.validation_rejected_24h ?? 0}</strong><span>validações recusadas</span></article>
-        <article><strong>{abuseSummary?.distinct_sources_24h ?? 0}</strong><span>origens distintas</span></article>
+      <div className="members-abuse-kpis" aria-label="Resumo de proteção das últimas 24 horas">
+        <article><span>Eventos bloqueados</span><strong>{abuseSummary?.events_24h ?? 0}</strong><small>tentativas recusadas nas últimas 24h</small></article>
+        <article><span>Honeypot</span><strong>{abuseSummary?.honeypot_24h ?? 0}</strong><small>preenchimentos no campo invisível</small></article>
+        <article><span>Limite de taxa</span><strong>{abuseSummary?.rate_limited_24h ?? 0}</strong><small>origens acima da política por hora</small></article>
+        <article><span>Validação</span><strong>{abuseSummary?.validation_rejected_24h ?? 0}</strong><small>dados inválidos ou consentimento ausente</small></article>
+        <article><span>Origens distintas</span><strong>{abuseSummary?.distinct_sources_24h ?? 0}</strong><small>identificadores pseudonimizados observados</small></article>
       </div>
       <small className="members-abuse-card__last">
         {abuseSummary?.last_event_at ? `Último evento: ${new Date(abuseSummary.last_event_at).toLocaleString("pt-BR")}` : "Nenhum evento de abuso registrado nas últimas 24 horas."}
       </small>
-      <div className="members-table-wrap"><table><thead><tr><th>Dia</th><th>Honeypot</th><th>Rate limit</th><th>Validação recusada</th></tr></thead><tbody>{abuseMetrics.map((metric) => <tr key={metric.metric_day}><td>{new Date(`${metric.metric_day}T12:00:00`).toLocaleDateString("pt-BR")}</td><td>{metric.honeypot_count}</td><td>{metric.rate_limited_count}</td><td>{metric.validation_rejected_count}</td></tr>)}</tbody></table></div>
+      <div className="members-table-wrap members-table-wrap--security"><table className="members-security-table"><caption>Histórico diário de bloqueios e validações da landing page.</caption><thead><tr><th scope="col">Período</th><th scope="col">Honeypot</th><th scope="col">Limite de taxa</th><th scope="col">Validação</th><th scope="col">Total bloqueado</th><th scope="col">Leitura operacional</th></tr></thead><tbody>{abuseMetrics.map((metric) => {
+        const totalBlocked = metric.honeypot_count + metric.rate_limited_count + metric.validation_rejected_count;
+        const signal = totalBlocked === 0 ? "Sem bloqueios" : metric.rate_limited_count > 0 ? "Taxa limitada" : metric.honeypot_count > 0 ? "Bot provável" : "Dados recusados";
+        return <tr key={metric.metric_day}><td><time dateTime={metric.metric_day}>{new Date(`${metric.metric_day}T12:00:00`).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" })}</time></td><td><strong>{metric.honeypot_count}</strong></td><td><strong>{metric.rate_limited_count}</strong></td><td><strong>{metric.validation_rejected_count}</strong></td><td><strong>{totalBlocked}</strong></td><td><span className={`members-security-signal${totalBlocked === 0 ? " is-clear" : ""}`}>{signal}</span></td></tr>;
+      })}{abuseMetrics.length === 0 && <tr><td colSpan={6} className="members-empty">Nenhuma métrica de proteção foi registrada no período consultado.</td></tr>}</tbody></table></div>
+      <p className="members-security-note">Cada linha consolida um dia completo. Use o resumo acima para observar o volume imediato e esta tabela para identificar recorrência, picos e o tipo de bloqueio predominante.</p>
     </section>
     <section className="members-layout">
       <article className="members-invite-card"><div className="members-card-title"><MailPlus size={19} /><div><span>CONVITE POR E-MAIL</span><h2>Novo integrante</h2></div></div><form action={inviteMember} className="members-form"><label>Nome completo<input name="displayName" required minLength={2} placeholder="Ex.: Ana da Silva" /></label><label>E-mail institucional ou pessoal<input name="email" type="email" required placeholder="ana@exemplo.com" /></label><fieldset><legend>Atribuições iniciais</legend>{manageableRoles.map((role) => <label key={role.value}><input name="roles" type="checkbox" value={role.value} defaultChecked={role.value === "cliente"} /> {role.label}</label>)}</fieldset><button type="submit">Enviar convite</button></form><p>O convite é enviado pelo Supabase Auth. Selecione uma ou mais atribuições; a pessoa escolhe a senha no primeiro acesso.</p></article>
