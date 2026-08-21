@@ -22,6 +22,7 @@ import { ExperienceChrome } from "@/components/fx/ExperienceChrome";
 import { FrontendFx } from "@/components/fx/FrontendFx";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { DEFAULT_THEME } from "@/lib/theme";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "ATLETICA FSA | Um só grito, uma só torcida",
@@ -32,7 +33,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem('fsa-theme');var d=t==='dark'||t==='light'?t:'${DEFAULT_THEME}';document.documentElement.dataset.theme=d;document.documentElement.style.colorScheme=d}catch(e){}` }} /></head>
-      <body><div className="ambient-scene" aria-hidden="true"><span /><span /><span /></div><FrontendFx /><ExperienceChrome />{children}<ThemeToggle /></body>
+      <body><div className="ambient-scene" aria-hidden="true"><span /><span /><span /></div><FrontendFx /><ExperienceChrome />{children}<ThemeToggle /><SpeedInsights /></body>
     </html>
   );
 }
