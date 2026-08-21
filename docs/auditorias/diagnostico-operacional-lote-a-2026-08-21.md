@@ -94,6 +94,8 @@ Foi corrigida no código a identificação estática indevida do ambiente na pá
 
 A regra foi coberta por dois testes unitários e verificada com `pnpm typecheck`, suíte completa (`66` arquivos aprovados; `221` testes aprovados; `3` skips intencionais) e `pnpm build` de Next.js 16.3.1. A publicação da alteração depende do fluxo automático já conectado ao `main`.
 
+O deployment automático do commit `477f462` ficou `READY` em Production. A verificação autenticada da página produtiva confirmou visualmente os rótulos corrigidos, o modo somente leitura, a execução Sympla mais recente em estado `succeeded` e as duas dead letters históricas em `RESOLVIDA`, cada qual com uma tentativa de replay.
+
 ## Referências
 
 [1]: https://vercel.com/docs/cron-jobs/quickstart "Vercel Cron Jobs Quickstart"
