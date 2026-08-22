@@ -60,6 +60,46 @@ html[data-theme="dark"] .ambient-scene,html[data-theme="dark"] .frontend-fx { di
 
 @media(max-width:640px){.theme-toggle{top:14px;right:13px;bottom:auto;left:auto;min-height:40px;padding:0 10px}.theme-toggle__label{display:none}.theme-toggle__grip{opacity:.7}}
 
-/* A troca manual interpola apenas cores e superfícies; a resolução inicial e a animação do mascote permanecem intactas. */
-@media(prefers-reduced-motion:no-preference){html.is-theme-transitioning :is(.auth-page,.auth-page__intro,.auth-page__panel,.auth-card,.auth-google,.auth-field,.auth-submit,.auth-form label,.auth-divider,.auth-feedback,.theme-toggle){transition:background-color .22s var(--ease-out),color .18s var(--ease-out),border-color .18s var(--ease-out),box-shadow .22s var(--ease-out)}}
-@media(prefers-reduced-motion:reduce){html.is-theme-transitioning :is(.auth-page,.auth-page__intro,.auth-page__panel,.auth-card,.auth-google,.auth-field,.auth-submit,.auth-form label,.auth-divider,.auth-feedback,.theme-toggle){transition:none}}
+/* A landing mantém superfícies próprias no escuro para que a tipografia clara nunca fique sobre o fundo claro original. */
+html[data-theme="dark"] .management-section { color:#edf4ff; background:linear-gradient(145deg,#061833 0%,#082249 100%); }
+html[data-theme="dark"] .management-section :is(.section-title h2,.management-heading__link) { color:#f7faff; }
+html[data-theme="dark"] .management-section :is(.section-title p,.section-title span) { color:#b9c9e2; }
+html[data-theme="dark"] .people-carousel__arrow { color:#ffd23f; border-color:rgba(255,210,63,.28); background:#0d294f; box-shadow:0 12px 28px rgba(0,0,0,.3); }
+html[data-theme="dark"] .people-carousel__arrow:hover { color:#061c48; background:#ffd23f; }
+html[data-theme="dark"] .people-carousel__controls [role=tab]::after { background:rgba(198,219,255,.45); }
+html[data-theme="dark"] .people-carousel__controls [role=tab].is-active::after { background:#ffd23f; }
+
+html[data-theme="dark"] .membership-section { background:radial-gradient(circle at var(--spot-x,72%) var(--spot-y,30%),rgba(255,210,63,.2),transparent 25%),linear-gradient(120deg,#04142e 0%,#082b61 62%,#0b3d91 100%); }
+html[data-theme="dark"] .membership-form { color:#edf4ff; border:1px solid rgba(198,219,255,.24); background:linear-gradient(145deg,#0d294f 0%,#061a3d 100%); box-shadow:0 30px 60px rgba(1,9,24,.48); }
+html[data-theme="dark"] .membership-form :is(>label:not(.membership-form__message):not(.membership-form__consent),legend,.membership-form__message) { color:#edf4ff; }
+html[data-theme="dark"] .membership-form :is(>label small,legend small,.membership-form__consent) { color:#c2cee2; }
+html[data-theme="dark"] .membership-form :is(input:not([type=checkbox]),textarea) { color:#edf4ff; border-color:rgba(198,219,255,.28); background:#061a32; }
+html[data-theme="dark"] .membership-form :is(input:not([type=checkbox]),textarea)::placeholder { color:#aebfd9; }
+html[data-theme="dark"] .membership-form__interests span { color:#c2cee2; border-color:rgba(198,219,255,.24); background:#0a2347; }
+html[data-theme="dark"] .membership-form__interests input:checked+span { color:#061c48; border-color:#ffd23f; background:#ffd23f; }
+html[data-theme="dark"] .membership-form__consent input { accent-color:#ffd23f; }
+html[data-theme="dark"] .membership-form__notice--success { color:#bcf4cf; background:#103c2a; }
+html[data-theme="dark"] .membership-form__notice--error { color:#ffd1d1; background:#52272d; }
+html[data-theme="dark"] .manifesto-section { background:#030711; }
+html[data-theme="dark"] .site-footer { background:#041a3b; }
+
+/* Rotas públicas e operacionais que usam superfícies próprias, fora dos cartões genéricos. */
+html[data-theme="dark"] .events-page { color:#edf4ff; background:#04142e; }
+html[data-theme="dark"] .events-page .events-heading :is(h1,h2) { color:#f7faff; }
+html[data-theme="dark"] .events-page .events-heading>p:not(.eyebrow) { color:#c2cee2; }
+html[data-theme="dark"] :is(.crm-activities-page,.erp-integration-page) { color:#e8edf8; }
+html[data-theme="dark"] :is(.crm-activities-page__header,.erp-page__header) { border-color:rgba(187,207,244,.17); }
+html[data-theme="dark"] :is(.crm-activities-page__header h1,.erp-page__header h1,.crm-section-heading h2,.erp-card h2) { color:#f5f8ff; }
+html[data-theme="dark"] :is(.crm-activities-page__header p:not(.eyebrow),.erp-page__header p:not(.erp-eyebrow),.crm-section-heading>div>span,.crm-section-heading>span,.erp-eyebrow,.erp-kpi span,.erp-kpi small,.erp-integration-note p,.erp-table th,.erp-table td,.crm-empty,.erp-empty) { color:#aebbd0; }
+html[data-theme="dark"] :is(.crm-activities-page__header>a,.erp-page__back,.erp-integration-note a) { color:#9fc7ff; }
+html[data-theme="dark"] :is(.crm-activities-kpis article,.crm-expectation-panel,.crm-timeline-panel,.erp-kpi,.erp-card,.crm-timeline-item) { border-color:rgba(187,207,244,.17); background:#121e32; box-shadow:0 6px 20px rgba(0,0,0,.18); }
+html[data-theme="dark"] :is(.crm-activities-kpis strong,.crm-expectation-card h3,.crm-timeline-item strong,.erp-kpi strong) { color:#f5f8ff; }
+html[data-theme="dark"] :is(.crm-expectation-form,.crm-filterbar,.crm-state-pill) { border-color:rgba(187,207,244,.17); color:#c7d5e9; background:#0b1424; }
+html[data-theme="dark"] :is(.crm-expectation-form label,.crm-filterbar label,.crm-expectation-card p,.crm-expectation-card small,.crm-timeline-item small,.crm-timeline-item__content>div>span,.crm-timeline-item p) { color:#aebbd0; }
+html[data-theme="dark"] .crm-expectation-card { border-color:rgba(187,207,244,.17); background:#101c30; }
+html[data-theme="dark"] .crm-expectation-card.is_em_atraso { background:#321e2a; }
+html[data-theme="dark"] .crm-timeline:before { background:rgba(187,207,244,.25); }
+
+/* A troca manual interpola apenas cores e superfícies em todas as rotas; a resolução inicial e as animações de conteúdo permanecem intactas. */
+@media(prefers-reduced-motion:no-preference){html.is-theme-transitioning body,html.is-theme-transitioning body *{transition:background-color .22s var(--ease-out),color .18s var(--ease-out),border-color .18s var(--ease-out),box-shadow .22s var(--ease-out)}}
+@media(prefers-reduced-motion:reduce){html.is-theme-transitioning body,html.is-theme-transitioning body *{transition:none}}

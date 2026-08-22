@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 const themeStyles = readFileSync(resolve(process.cwd(), "src/app/theme.css"), "utf8");
 const globalStyles = readFileSync(resolve(process.cwd(), "src/app/globals.css"), "utf8");
 const mobileOverflowStyles = readFileSync(resolve(process.cwd(), "src/app/mobile-overflow.css"), "utf8");
+const memberInterestStyles = readFileSync(resolve(process.cwd(), "src/app/member-interest.css"), "utf8");
 
 describe("proteção visual da loja no tema escuro", () => {
   it("mantém a raiz e os blocos essenciais da vitrine explicitamente visíveis", () => {
@@ -63,8 +64,25 @@ describe("proteção visual da loja no tema escuro", () => {
     expect(themeStyles).toContain("border-color:#ffd23f");
   });
 
-  it("limita a transição de tema à troca manual e desativa a animação para redução de movimento", () => {
-    expect(themeStyles).toContain("html.is-theme-transitioning :is(.auth-page,.auth-page__intro,.auth-page__panel,.auth-card,.auth-google,.auth-field,.auth-submit,.auth-form label,.auth-divider,.auth-feedback,.theme-toggle)");
+  it("mantém a diretoria e o formulário de interesse com superfícies e contraste próprios no escuro", () => {
+    expect(themeStyles).toContain('html[data-theme="dark"] .management-section');
+    expect(themeStyles).toContain('html[data-theme="dark"] .people-carousel__arrow');
+    expect(themeStyles).toContain('html[data-theme="dark"] .membership-form');
+    expect(themeStyles).toContain('html[data-theme="dark"] .membership-form :is(input:not([type=checkbox]),textarea)');
+    expect(themeStyles).toContain('html[data-theme="dark"] .site-footer');
+    expect(memberInterestStyles).toContain(".membership-form");
+  });
+
+  it("cobre as superfícies exclusivas de eventos e das telas operacionais do ERP", () => {
+    expect(themeStyles).toContain('html[data-theme="dark"] .events-page');
+    expect(themeStyles).toContain('html[data-theme="dark"] :is(.crm-activities-page,.erp-integration-page)');
+    expect(themeStyles).toContain(".crm-expectation-panel,.crm-timeline-panel,.erp-kpi,.erp-card,.crm-timeline-item");
+    expect(themeStyles).toContain(".crm-expectation-form,.crm-filterbar,.crm-state-pill");
+  });
+
+  it("limita a transição global à troca manual e a desativa para redução de movimento", () => {
+    expect(themeStyles).toContain("html.is-theme-transitioning body,html.is-theme-transitioning body *");
+    expect(themeStyles).toContain("transition:background-color .22s var(--ease-out),color .18s var(--ease-out),border-color .18s var(--ease-out),box-shadow .22s var(--ease-out)");
     expect(themeStyles).toContain("@media(prefers-reduced-motion:reduce)");
     expect(themeStyles).toContain("transition:none");
   });

@@ -381,3 +381,4 @@
 - [x] Verificar o fluxo de autenticação Google OAuth no login compacto, incluindo o redirecionamento e o retorno seguro à aplicação
 - [x] Implementar modo escuro acessível, persistente e coerente para a página de login, mantendo o modo claro como alternativa do usuário
 - [x] Refinar a paleta escura do login com tons institucionais FSA e adicionar transição curta de tema, respeitando redução de movimento
+- [x] Auditar e corrigir a aplicação de modo claro, escuro, contraste e transição de tema em todas as rotas, com prioridade para diretoria, formulário de interesse e rodapé da landing
