@@ -7,6 +7,7 @@ describe("contrato de composição do login", () => {
   it("centraliza o cartão e usa unidades seguras de viewport no desktop", () => {
     expect(authStyles).toContain(".auth-page__panel{display:grid;min-height:100vh;min-height:100dvh;place-items:center");
     expect(authStyles).toContain(".auth-page{min-height:100vh;min-height:100dvh;display:grid");
+    expect(authStyles).toContain(".auth-page__intro{position:relative;align-self:start;display:flex;min-height:100vh;min-height:100dvh");
   });
 
   it("reduz a composição do painel visual em telas compactas", () => {
