@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./auth.css";
+import "./auth-captcha.css";
 import "./theme.css";
 import "./store.css";
 import "./cms.css";

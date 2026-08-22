@@ -389,3 +389,4 @@
 - [x] Executar uma validação controlada de entrega do alerta WCAG no canal Slack configurado no GitHub Actions
 - [x] Auditar e corrigir rate limiting, CORS, minimização de PII, JWT, enumeração de usuários, clickjacking, SQL Injection e IDOR com testes de regressão
 - [x] Revalidar tentativas de autenticação, CORS e tokens; repetir a suíte automatizada e registrar o roteiro de ativação CAPTCHA do Supabase
+- [ ] Implementar, testar em desenvolvimento e ativar controladamente Cloudflare Turnstile nos fluxos de autenticação por senha do Supabase
