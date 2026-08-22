@@ -6,6 +6,7 @@ const themeStyles = readFileSync(resolve(process.cwd(), "src/app/theme.css"), "u
 const globalStyles = readFileSync(resolve(process.cwd(), "src/app/globals.css"), "utf8");
 const mobileOverflowStyles = readFileSync(resolve(process.cwd(), "src/app/mobile-overflow.css"), "utf8");
 const memberInterestStyles = readFileSync(resolve(process.cwd(), "src/app/member-interest.css"), "utf8");
+const resetPasswordStyles = readFileSync(resolve(process.cwd(), "src/app/redefinir-senha/reset-password.module.css"), "utf8");
 
 describe("proteção visual da loja no tema escuro", () => {
   it("mantém a raiz e os blocos essenciais da vitrine explicitamente visíveis", () => {
@@ -71,6 +72,15 @@ describe("proteção visual da loja no tema escuro", () => {
     expect(themeStyles).toContain('html[data-theme="dark"] .membership-form :is(input:not([type=checkbox]),textarea)');
     expect(themeStyles).toContain('html[data-theme="dark"] .site-footer');
     expect(memberInterestStyles).toContain(".membership-form");
+    expect(memberInterestStyles).toContain(".membership-form :is(input:not([type=checkbox]),textarea):focus-visible");
+    expect(memberInterestStyles).toContain(".membership-form__interests input:focus-visible+span");
+  });
+
+  it("alinha a redefinição de senha aos tokens escuros de autenticação", () => {
+    expect(resetPasswordStyles).toContain(':global(html[data-theme="dark"]) .panel');
+    expect(resetPasswordStyles).toContain("linear-gradient(145deg, #061a3d 0%, #04142e 100%)");
+    expect(resetPasswordStyles).toContain(".auth-card--reset .auth-field:has(input:focus-visible)");
+    expect(resetPasswordStyles).toContain("box-shadow: 0 0 0 2px rgba(255, 210, 63, 0.72)");
   });
 
   it("cobre as superfícies exclusivas de eventos e das telas operacionais do ERP", () => {
