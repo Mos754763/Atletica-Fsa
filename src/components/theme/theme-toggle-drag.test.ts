@@ -26,4 +26,11 @@ describe("controle de tema arrastável", () => {
     expect(component).toContain("? { x: window.innerWidth - toggleWidth - TOGGLE_MARGIN, y: TOGGLE_MARGIN }");
     expect(component).toContain("setSafePosition(storedPosition ?? initialPosition)");
   });
+
+  it("aplica transição somente quando o usuário troca o tema e respeita redução de movimento", () => {
+    expect(component).toContain('window.matchMedia("(prefers-reduced-motion: reduce)").matches');
+    expect(component).toContain('root.classList.add("is-theme-transitioning")');
+    expect(component).toContain('root.classList.remove("is-theme-transitioning")');
+    expect(component).toContain("}, 280)");
+  });
 });

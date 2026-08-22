@@ -380,3 +380,4 @@
 - [x] Ajustar a posição e a escala do mascote no hero móvel para que não avance sobre a frase descritiva institucional
 - [x] Verificar o fluxo de autenticação Google OAuth no login compacto, incluindo o redirecionamento e o retorno seguro à aplicação
 - [x] Implementar modo escuro acessível, persistente e coerente para a página de login, mantendo o modo claro como alternativa do usuário
+- [x] Refinar a paleta escura do login com tons institucionais FSA e adicionar transição curta de tema, respeitando redução de movimento

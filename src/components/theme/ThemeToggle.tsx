@@ -88,9 +88,21 @@ export function ThemeToggle() {
 
   function toggleTheme() {
     const nextTheme: ThemeMode = theme === "dark" ? "light" : "dark";
-    applyTheme(nextTheme);
-    window.localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
-    setTheme(nextTheme);
+    const root = document.documentElement;
+    const applyNextTheme = () => {
+      applyTheme(nextTheme);
+      window.localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+      setTheme(nextTheme);
+    };
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      applyNextTheme();
+      return;
+    }
+
+    root.classList.add("is-theme-transitioning");
+    applyNextTheme();
+    window.setTimeout(() => { root.classList.remove("is-theme-transitioning"); }, 280);
   }
 
   function handlePointerDown(event: ReactPointerEvent<HTMLButtonElement>) {

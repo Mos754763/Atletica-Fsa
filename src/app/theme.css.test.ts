@@ -54,10 +54,18 @@ describe("proteção visual da loja no tema escuro", () => {
   });
 
   it("define superfícies próprias, legíveis e focáveis para o login no modo escuro", () => {
-    expect(themeStyles).toContain('html[data-theme="dark"] .auth-page { --auth-panel:#0c1525;');
+    expect(themeStyles).toContain('html[data-theme="dark"] .auth-page { --auth-panel:#061a3d;');
+    expect(themeStyles).toContain("--auth-card:#0d294f");
+    expect(themeStyles).toContain("--auth-accent:#ffd23f");
     expect(themeStyles).toContain('html[data-theme="dark"] .auth-page .auth-card');
     expect(themeStyles).toContain('html[data-theme="dark"] .auth-page .auth-google');
     expect(themeStyles).toContain('html[data-theme="dark"] .auth-page .auth-field:has(input:focus-visible)');
     expect(themeStyles).toContain("border-color:#ffd23f");
+  });
+
+  it("limita a transição de tema à troca manual e desativa a animação para redução de movimento", () => {
+    expect(themeStyles).toContain("html.is-theme-transitioning :is(.auth-page,.auth-page__intro,.auth-page__panel,.auth-card,.auth-google,.auth-field,.auth-submit,.auth-form label,.auth-divider,.auth-feedback,.theme-toggle)");
+    expect(themeStyles).toContain("@media(prefers-reduced-motion:reduce)");
+    expect(themeStyles).toContain("transition:none");
   });
 });
