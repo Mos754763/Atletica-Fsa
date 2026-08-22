@@ -76,3 +76,20 @@ Com as verificações anteriores da landing, setores, loja e eventos, a auditori
 Em 22 de agosto de 2026, uma prévia local do build de produção confirmou a atualização solicitada para o login: o retrato do coelho passou a ser servido por `institutional/fsa-rabbit-mascot-transparent.png`, com canal alfa e sem o antigo círculo verde. A composição foi reduzida para uma altura de viewport no desktop; logo, manchete, texto de apoio, mascote integral e todos os controles de autenticação permaneceram visíveis sem rolagem vertical. Em telas menores, a página volta a permitir altura automática para que nenhum campo, retorno de erro ou ação seja ocultado.
 
 A implantação de produção `dpl_5psnpKbcxsfn7VZtuo7fopLmJfXP` (commit `73f58c5`) foi aprovada pela CI e confirmou a composição completa no URL de implantação. A segunda leitura estabilizada no domínio principal `https://atleticafsa.site/login` confirmou a mesma composição: mascote integral com fundo transparente, cartão completo no primeiro viewport e `Pixels below viewport: 0` na inspeção desktop. Portanto, não houve regressão de cache, rolagem ou enquadramento no domínio público.
+
+## Inspeção responsiva móvel do login
+
+Foram capturados os viewports de **390 × 844 px** e **360 × 800 px** após a conclusão da animação de entrada. Em ambos os formatos, a marca, os elementos decorativos, o título, a descrição e o mascote ficaram proporcionais e dentro das bordas. O cartão de acesso permaneceu centralizado, com largura consistente e sem corte horizontal. A rolagem vertical em celular é intencional: ela mantém todos os controles de autenticação acessíveis quando a altura disponível é menor que a composição completa.
+
+| Verificação | 390 × 844 px | 360 × 800 px |
+| --- | --- | --- |
+| Marca, título e descrição | Alinhados e legíveis | Alinhados e legíveis |
+| Mascote transparente | Integral e sem vazamento lateral | Integral e sem vazamento lateral |
+| Cartão de acesso | Centralizado, sem corte horizontal | Centralizado, sem corte horizontal |
+| Ponto preventivo | Acionador de tema próximo à borda do cartão | Acionador de tema sobre a área textual inferior do cartão |
+
+O único ajuste preventivo pendente é reposicionar o ponto inicial do acionador móvel de tema para uma zona vazia. Isso preserva a possibilidade de o usuário movê-lo, sem sobrepor texto ou controles do fluxo de acesso.
+
+Após a primeira tentativa de reposicionamento por media query, as capturas locais atualizadas de 390 × 844 px e 360 × 800 px demonstraram que o acionador continuou obedecendo uma coordenada controlada pelo componente e permaneceu junto ao cartão. Portanto, a correção deve ser aplicada na origem dessa coordenada, não apenas no CSS; a largura, a tipografia, o mascote e o cartão continuam alinhados e sem corte horizontal.
+
+A correção foi então aplicada no componente `ThemeToggle`: em viewport de até 640 px, a posição inicial passa a ser o canto superior direito do hero, enquanto uma coordenada que o usuário já tenha arrastado continua preservada. As capturas finais em 390 × 844 px e 360 × 800 px confirmaram que o acionador permanece em área decorativa livre, sem sobrepor texto, mascote, campos ou o botão de Google. O login manteve alinhamento, legibilidade e ausência de corte horizontal nas duas larguras validadas.

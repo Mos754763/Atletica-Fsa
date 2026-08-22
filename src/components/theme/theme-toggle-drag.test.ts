@@ -20,4 +20,10 @@ describe("controle de tema arrastável", () => {
     expect(styles).toContain('.theme-toggle[data-positioned="true"]');
     expect(styles).toContain('.theme-toggle[data-dragging="true"]');
   });
+
+  it("abre em uma área livre no topo em mobile sem sobrescrever uma posição já arrastada", () => {
+    expect(component).toContain('window.matchMedia("(max-width: 640px)").matches');
+    expect(component).toContain("? { x: window.innerWidth - toggleWidth - TOGGLE_MARGIN, y: TOGGLE_MARGIN }");
+    expect(component).toContain("setSafePosition(storedPosition ?? initialPosition)");
+  });
 });

@@ -68,10 +68,13 @@ export function ThemeToggle() {
 
     const bounds = buttonRef.current?.getBoundingClientRect();
     const storedPosition = parseThemeTogglePosition(window.localStorage.getItem(THEME_TOGGLE_POSITION_STORAGE_KEY));
-    setSafePosition(storedPosition ?? {
-      x: window.innerWidth - Math.max(bounds?.width ?? 104, 44) - TOGGLE_MARGIN,
-      y: window.innerHeight - Math.max(bounds?.height ?? 42, 42) - TOGGLE_MARGIN,
-    });
+    const toggleWidth = Math.max(bounds?.width ?? 104, 44);
+    const toggleHeight = Math.max(bounds?.height ?? 42, 42);
+    const isMobileViewport = window.matchMedia("(max-width: 640px)").matches;
+    const initialPosition = isMobileViewport
+      ? { x: window.innerWidth - toggleWidth - TOGGLE_MARGIN, y: TOGGLE_MARGIN }
+      : { x: window.innerWidth - toggleWidth - TOGGLE_MARGIN, y: window.innerHeight - toggleHeight - TOGGLE_MARGIN };
+    setSafePosition(storedPosition ?? initialPosition);
 
     function keepToggleVisible() {
       if (positionRef.current) {

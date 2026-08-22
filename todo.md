@@ -375,3 +375,4 @@
 - [x] Substituir o fundo verde do retrato do mascote por transparência real e referenciar somente o asset institucional transparente no login e ERP
 - [x] Compactar a composição desktop de login para caber no primeiro viewport, sem rolagem vertical desnecessária e sem reduzir a usabilidade em telas menores
 - [x] Adicionar animação sutil e acessível de entrada ao mascote no carregamento da página de login
+- [x] Testar a responsividade móvel da página de login e corrigir qualquer desalinhamento, corte ou sobreposição identificado
