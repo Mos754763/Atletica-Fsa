@@ -42,4 +42,31 @@ Na repetição com a página estabilizada em `https://atleticafsa.site/loja`, o 
 
 Em `https://atleticafsa.site/eventos`, a identidade visual de agenda foi renderizada por completo: marca FSA, tipografia, ícone de ingresso e tratamento de fundo apareceram sem imagem quebrada. A rota apresenta corretamente o estado vazio informado — não há eventos publicados —, portanto não existem imagens de capa de evento para auditar nesse momento.
 
-Na inspeção da rota `/login`, o asset de hero geral estava disponível, porém o recorte circular com `object-position: 77% center` privilegiava o disco amarelo em vez de mostrar o coelho. O Storage institucional contém o arquivo dedicado `catalog-assets/institutional/fsa-rabbit-mascot.png`; ele será usado na composição de autenticação para manter o mascote visível sem gerar, alterar ou recortar a arte original.
+Na inspeção inicial da rota `/login`, o asset de hero geral estava disponível, porém o recorte circular com `object-position: 77% center` privilegiava o disco amarelo em vez de mostrar o coelho. O Storage institucional contém o arquivo dedicado `catalog-assets/institutional/fsa-rabbit-mascot.png`; ele será usado na composição de autenticação para manter o mascote visível sem gerar, alterar ou recortar a arte original.
+
+## Revalidação do login após a correção do mascote
+
+O arquivo dedicado `fsa-rabbit-mascot.png` foi conferido diretamente no Storage público: respondeu HTTP 200, declarou `image/png` e mostrou o coelho com tapa-olho e uniforme FSA completo, sem distorção. A primeira substituição do asset foi publicada no commit `d41efa326c3c6498f3a32af448d26a901706ac0e`, mas a inspeção de produção identificou que a coluna visual do login era esticada pela altura do formulário e posicionava o mascote abaixo da dobra.
+
+A correção subsequente definiu a coluna institucional com `align-self: start`, preservando a altura do viewport e a posição absoluta do círculo. A validação visual da implantação `dpl_AbWgcH6r583QobBH2YAW4iG6TKBK`, estado `READY`, confirmou o mascote dedicado visível dentro do primeiro viewport do login, com o rosto, o tapa-olho e as orelhas enquadrados no círculo. A identidade de fundo, o disco amarelo, a tipografia e todos os controles de autenticação permaneceram legíveis e funcionais na mesma captura.
+
+| Verificação | Resultado |
+| --- | --- |
+| Asset do mascote | URL institucional pública disponível, HTTP 200 e composição vertical íntegra. |
+| Login em produção | Mascote visível no primeiro viewport; não há mais exibição apenas do disco amarelo. |
+| Controles de autenticação | Google, e-mail, senha, criação de conta, redefinição de senha e alternância de tema presentes. |
+| Implantação avaliada | `dpl_AbWgcH6r583QobBH2YAW4iG6TKBK`, Production, commit `474b927bb755167b29e69c1877defe0624d5debb`. |
+
+## Verificação das rotas operacionais e de recuperação
+
+A rota autenticada `https://atleticafsa.site/erp` redirecionou corretamente para `/admin` e exibiu o mascote retrato completo no cabeçalho do painel, em modo escuro. A arte permaneceu proporcional, sem corte ou imagem quebrada, e não interferiu com o atalho de conta, KPIs, navegação lateral ou cartões de módulos. Essa evidência confirma que a atualização do componente compartilhado preservou o uso no ERP.
+
+A rota pública `https://atleticafsa.site/redefinir-senha` apresentou sua composição própria de acesso protegido: marca FSA, tratamento visual azul/amarelo e formulário de nova senha com confirmação. A tela não usa uma imagem de mascote e não apresentou imagem ausente, distorcida ou sobreposta; os campos e o CTA permaneceram legíveis no primeiro viewport.
+
+| Rota | Resultado visual final | Observação |
+| --- | --- | --- |
+| `/login` | Aprovada | Retrato oficial do coelho no primeiro viewport, com os controles de autenticação preservados. |
+| `/erp` → `/admin` | Aprovada | Mascote completo e proporcional no cabeçalho operacional; nenhum impacto observado na navegação ou nos indicadores. |
+| `/redefinir-senha` | Aprovada | Não utiliza mascote; fundo, marca, campos e CTA renderizados sem quebra de mídia. |
+
+Com as verificações anteriores da landing, setores, loja e eventos, a auditoria de imagens das rotas relevantes foi concluída. As otimizações aplicadas limitaram-se a formatos e referências estáveis de Storage; nenhum preço, estoque, evento, cadastro comercial ou configuração de `PAYMENTS_ENABLED` foi alterado.
