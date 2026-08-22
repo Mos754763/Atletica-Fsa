@@ -376,6 +376,7 @@
 - [x] Compactar a composição desktop de login para caber no primeiro viewport, sem rolagem vertical desnecessária e sem reduzir a usabilidade em telas menores
 - [x] Adicionar animação sutil e acessível de entrada ao mascote no carregamento da página de login
 - [x] Testar a responsividade móvel da página de login e corrigir qualquer desalinhamento, corte ou sobreposição identificado
-- [ ] Ajustar a posição e a escala do mascote no hero móvel para que não avance sobre a frase descritiva institucional
+- [x] Ajustar a posição e a escala do mascote no hero móvel para que não avance sobre a frase descritiva institucional
 - [x] Ajustar a posição e a escala do mascote no hero móvel para que não avance sobre a frase descritiva institucional
 - [x] Verificar o fluxo de autenticação Google OAuth no login compacto, incluindo o redirecionamento e o retorno seguro à aplicação
+- [x] Implementar modo escuro acessível, persistente e coerente para a página de login, mantendo o modo claro como alternativa do usuário

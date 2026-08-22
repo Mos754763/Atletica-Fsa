@@ -52,4 +52,12 @@ describe("proteção visual da loja no tema escuro", () => {
     expect(themeStyles).toContain(".theme-toggle[data-positioned=\"true\"] { right:auto; bottom:auto; }");
     expect(themeStyles).toContain("touch-action:none");
   });
+
+  it("define superfícies próprias, legíveis e focáveis para o login no modo escuro", () => {
+    expect(themeStyles).toContain('html[data-theme="dark"] .auth-page { --auth-panel:#0c1525;');
+    expect(themeStyles).toContain('html[data-theme="dark"] .auth-page .auth-card');
+    expect(themeStyles).toContain('html[data-theme="dark"] .auth-page .auth-google');
+    expect(themeStyles).toContain('html[data-theme="dark"] .auth-page .auth-field:has(input:focus-visible)');
+    expect(themeStyles).toContain("border-color:#ffd23f");
+  });
 });

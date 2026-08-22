@@ -40,4 +40,9 @@ describe("contrato de composição do login", () => {
     expect(experienceStyles).toContain(".auth-page--experience .auth-card{position:relative;padding:clamp(20px,2.4vw,28px)}");
     expect(experienceStyles).not.toContain(".auth-page--experience .auth-card{position:relative;padding:6px}");
   });
+
+  it("preserva a geometria do login quando o tema escuro é selecionado", () => {
+    expect(authStyles).toContain(".auth-page{height:100vh;height:100dvh;min-height:0;display:grid");
+    expect(authStyles).toContain("@media(max-width:780px){.auth-page{height:auto;min-height:100svh;overflow:visible;grid-template-columns:1fr}");
+  });
 });
