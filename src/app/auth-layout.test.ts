@@ -16,8 +16,10 @@ describe("contrato de composição do login", () => {
     expect(authStyles).toContain("@media(max-width:780px){.auth-page{grid-template-columns:1fr}");
     expect(authStyles).toContain(".auth-page__panel{min-height:auto;padding:38px 20px 52px}");
     expect(authStyles).toContain(".auth-page{height:auto;min-height:100svh;overflow:visible;grid-template-columns:1fr}");
+    expect(authStyles).toContain(".auth-page__intro>p:not(.eyebrow){max-width:calc(100% - clamp(124px,34vw,170px));margin-top:18px;font-size:14px}");
     expect(authStyles).toContain(".auth-page__mascot{right:clamp(16px,5vw,28px)!important;bottom:12px!important;width:clamp(108px,29vw,154px)!important;height:clamp(150px,36vw,210px)!important;min-height:0}");
-    expect(authStyles).toContain("@media(max-width:420px){.auth-page__intro{min-height:288px;padding:96px 20px 126px}.auth-page__mascot{right:14px!important;bottom:8px!important;width:clamp(96px,28vw,124px)!important;height:clamp(132px,34vw,170px)!important}");
+    expect(authStyles).toContain("@media(max-width:420px){.auth-page__intro{min-height:288px;padding:96px 20px 126px}.auth-page__mascot{right:14px!important;bottom:0!important;width:clamp(96px,28vw,124px)!important;height:clamp(132px,34vw,170px)!important}");
+    expect(authStyles).toContain(".auth-page__intro>p:not(.eyebrow){max-width:calc(100% - 130px);font-size:13px}");
     expect(authStyles).toContain("@media(max-width:420px){.auth-page__intro{min-height:288px;padding:96px 20px 126px}");
   });
 
