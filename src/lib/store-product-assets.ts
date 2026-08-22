@@ -1,9 +1,11 @@
+const catalogAssetsBaseUrl = "https://tbxihkzuyzszrfxqmleq.supabase.co/storage/v1/object/public/catalog-assets/optimized/products";
+
 export const fsaStoreAssets = {
-  camiseta: "/manus-storage/atletica-fsa-produto-camiseta_e311f6b9.png",
-  copo: "/manus-storage/atletica-fsa-produto-copo_1d782280.png",
-  moletom: "/manus-storage/atletica-fsa-produto-moletom_55d0ab13.png",
-  chaveiro: "/manus-storage/atletica-fsa-produto-chaveiro_37b43413.png",
-  adesivos: "/manus-storage/atletica-fsa-produto-adesivos_7d26c6e1.png",
+  camiseta: `${catalogAssetsBaseUrl}/camiseta-oficial-fsa.webp`,
+  copo: `${catalogAssetsBaseUrl}/copo-fsa.webp`,
+  moletom: `${catalogAssetsBaseUrl}/moletom-titular-fsa.webp`,
+  chaveiro: `${catalogAssetsBaseUrl}/chaveiro-coelho-fsa.webp`,
+  adesivos: `${catalogAssetsBaseUrl}/figurinhas-fsa.webp`,
 } as const;
 
 export function resolveFsaProductImage(productName: string, fallback: string | null) {
