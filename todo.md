@@ -374,3 +374,4 @@
 - [x] Auditar a exibição, disponibilidade e peso das imagens em todas as rotas relevantes, aplicando apenas otimizações seguras sem regressão visual
 - [x] Substituir o fundo verde do retrato do mascote por transparência real e referenciar somente o asset institucional transparente no login e ERP
 - [x] Compactar a composição desktop de login para caber no primeiro viewport, sem rolagem vertical desnecessária e sem reduzir a usabilidade em telas menores
+- [x] Adicionar animação sutil e acessível de entrada ao mascote no carregamento da página de login

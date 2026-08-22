@@ -28,6 +28,12 @@ describe("contrato de composição do login", () => {
     expect(authStyles).toContain("@media(max-height:760px) and (min-width:781px)");
   });
 
+  it("anima a entrada do mascote somente quando a preferência do usuário permite movimento", () => {
+    expect(authStyles).toContain("@media(prefers-reduced-motion:no-preference){.auth-page__mascot{will-change:transform,opacity;animation:auth-mascot-enter .56s var(--ease-out) .1s both}");
+    expect(authStyles).toContain("@keyframes auth-mascot-enter{from{opacity:0;transform:translate3d(0,18px,0) scale(.96)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}");
+    expect(authStyles).toContain("@media(prefers-reduced-motion:reduce){.auth-page__mascot{animation:none}}");
+  });
+
   it("não deixa a camada decorativa remover o respiro interno do cartão compacto", () => {
     expect(experienceStyles).toContain(".auth-page--experience .auth-card{position:relative;padding:clamp(20px,2.4vw,28px)}");
     expect(experienceStyles).not.toContain(".auth-page--experience .auth-card{position:relative;padding:6px}");

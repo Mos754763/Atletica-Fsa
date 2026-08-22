@@ -7,6 +7,7 @@
 .auth-page__mascot::before{position:absolute;z-index:-1;inset:11% 8% 8%;border:1px solid rgba(255,210,63,.46);border-radius:50%;background:radial-gradient(circle at 50% 48%,rgba(255,210,63,.12),rgba(255,210,63,0) 66%);content:""}
 .auth-page__mascot .rabbit-mascot__generated{display:block;width:100%;height:100%;max-height:none;object-fit:contain!important;object-position:center bottom!important}
 .auth-page__mascot .rabbit-mascot__fallback{width:100%;height:100%;background:transparent}.auth-page__mascot .rabbit-mascot__tag{display:none}
+@media(prefers-reduced-motion:no-preference){.auth-page__mascot{will-change:transform,opacity;animation:auth-mascot-enter .56s var(--ease-out) .1s both}@keyframes auth-mascot-enter{from{opacity:0;transform:translate3d(0,18px,0) scale(.96)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}}@media(prefers-reduced-motion:reduce){.auth-page__mascot{animation:none}}
 @media(max-height:760px) and (min-width:781px){.auth-page__mascot{right:clamp(0px,1vw,16px)!important;bottom:8px!important;width:clamp(178px,19vw,270px)!important;height:clamp(244px,34vh,370px)!important}}
 @media(max-width:780px){.auth-page__mascot{right:clamp(12px,4vw,24px)!important;bottom:16px!important;width:clamp(112px,30vw,160px)!important}}
 @media(max-width:420px){.auth-page__mascot{right:12px!important;bottom:12px!important;width:clamp(112px,32vw,136px)!important}}
