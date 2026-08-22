@@ -70,3 +70,7 @@ A rota pública `https://atleticafsa.site/redefinir-senha` apresentou sua compos
 | `/redefinir-senha` | Aprovada | Não utiliza mascote; fundo, marca, campos e CTA renderizados sem quebra de mídia. |
 
 Com as verificações anteriores da landing, setores, loja e eventos, a auditoria de imagens das rotas relevantes foi concluída. As otimizações aplicadas limitaram-se a formatos e referências estáveis de Storage; nenhum preço, estoque, evento, cadastro comercial ou configuração de `PAYMENTS_ENABLED` foi alterado.
+
+## Ajuste posterior de composição do login
+
+Em 22 de agosto de 2026, uma prévia local do build de produção confirmou a atualização solicitada para o login: o retrato do coelho passou a ser servido por `institutional/fsa-rabbit-mascot-transparent.png`, com canal alfa e sem o antigo círculo verde. A composição foi reduzida para uma altura de viewport no desktop; logo, manchete, texto de apoio, mascote integral e todos os controles de autenticação permaneceram visíveis sem rolagem vertical. Em telas menores, a página volta a permitir altura automática para que nenhum campo, retorno de erro ou ação seja ocultado.

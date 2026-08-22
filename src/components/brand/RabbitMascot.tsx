@@ -4,7 +4,7 @@ import { useState } from "react";
 import { institutionalAsset } from "@/lib/institutional-assets";
 
 type RabbitMascotProps = { className?: string; compact?: boolean };
-const mascotAssetUrl = institutionalAsset("fsa-rabbit-mascot.png");
+const mascotAssetUrl = institutionalAsset("fsa-rabbit-mascot-transparent.png");
 
 export function RabbitMascot({ className = "", compact = false }: RabbitMascotProps) {
   const [imageUnavailable, setImageUnavailable] = useState(false);

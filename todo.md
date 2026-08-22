@@ -372,3 +372,5 @@
 - [ ] Rotacionar `SYMPLA_API_TOKEN` no portal do provedor e atualizar Vercel em Production e Preview, com nova sincronização controlada
 - [x] Executar smoke test pós-merge da PR #23 nas rotas públicas e operacionais essenciais em Production
 - [x] Auditar a exibição, disponibilidade e peso das imagens em todas as rotas relevantes, aplicando apenas otimizações seguras sem regressão visual
+- [ ] Substituir o fundo verde do retrato do mascote por transparência real e referenciar somente o asset institucional transparente no login e ERP
+- [ ] Compactar a composição desktop de login para caber no primeiro viewport, sem rolagem vertical desnecessária e sem reduzir a usabilidade em telas menores
