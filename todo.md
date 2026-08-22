@@ -390,3 +390,4 @@
 - [x] Auditar e corrigir rate limiting, CORS, minimização de PII, JWT, enumeração de usuários, clickjacking, SQL Injection e IDOR com testes de regressão
 - [x] Revalidar tentativas de autenticação, CORS e tokens; repetir a suíte automatizada e registrar o roteiro de ativação CAPTCHA do Supabase
 - [ ] Implementar, testar em desenvolvimento e ativar controladamente Cloudflare Turnstile nos fluxos de autenticação por senha do Supabase
+- [ ] Diagnosticar e corrigir o estado Troubleshoot reproduzido do widget Turnstile no login de produção antes de concluir a ativação

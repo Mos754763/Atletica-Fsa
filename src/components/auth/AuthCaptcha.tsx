@@ -10,7 +10,7 @@ type TurnstileApi = {
       theme: "light" | "dark" | "auto";
       callback: (token: string) => void;
       "expired-callback": () => void;
-      "error-callback": () => void;
+      "error-callback": (errorCode?: string) => void;
     },
   ) => string;
   remove: (widgetId: string) => void;
@@ -25,6 +25,10 @@ declare global {
 
 const TURNSTILE_SCRIPT_ID = "cloudflare-turnstile-api";
 const TURNSTILE_SCRIPT_URL = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+
+function getPublicTurnstileErrorCode(errorCode?: string) {
+  return typeof errorCode === "string" && /^\d{6}$/.test(errorCode) ? errorCode : null;
+}
 
 function loadTurnstile() {
   if (typeof window === "undefined") return Promise.reject(new Error("Turnstile indisponível fora do navegador."));
@@ -60,6 +64,7 @@ export function AuthCaptcha({ onTokenChange, resetKey }: AuthCaptchaProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [errorCode, setErrorCode] = useState<string | null>(null);
 
   useEffect(() => {
     if (!siteKey || !containerRef.current) return;
@@ -68,6 +73,7 @@ export function AuthCaptcha({ onTokenChange, resetKey }: AuthCaptchaProps) {
     let turnstile: TurnstileApi | undefined;
     onTokenChange(null);
     setStatus("loading");
+    setErrorCode(null);
 
     void loadTurnstile()
       .then((api) => {
@@ -80,16 +86,19 @@ export function AuthCaptcha({ onTokenChange, resetKey }: AuthCaptchaProps) {
             if (!active) return;
             onTokenChange(token);
             setStatus("ready");
+            setErrorCode(null);
           },
           "expired-callback": () => {
             if (!active) return;
             onTokenChange(null);
             setStatus("error");
+            setErrorCode(null);
           },
-          "error-callback": () => {
+          "error-callback": (turnstileErrorCode) => {
             if (!active) return;
             onTokenChange(null);
             setStatus("error");
+            setErrorCode(getPublicTurnstileErrorCode(turnstileErrorCode));
           },
         });
       })
@@ -97,6 +106,7 @@ export function AuthCaptcha({ onTokenChange, resetKey }: AuthCaptchaProps) {
         if (!active) return;
         onTokenChange(null);
         setStatus("error");
+        setErrorCode(null);
       });
 
     return () => {
@@ -111,6 +121,7 @@ export function AuthCaptcha({ onTokenChange, resetKey }: AuthCaptchaProps) {
       window.turnstile.reset(widgetIdRef.current);
       onTokenChange(null);
       setStatus("loading");
+      setErrorCode(null);
     }
   }, [onTokenChange, resetKey]);
 
@@ -119,11 +130,19 @@ export function AuthCaptcha({ onTokenChange, resetKey }: AuthCaptchaProps) {
   return (
     <section className="auth-captcha" aria-describedby="auth-captcha-help">
       <p id="auth-captcha-help" className="auth-captcha__label">Verificação de segurança</p>
-      <div ref={containerRef} className="auth-captcha__widget" />
+      <div
+        ref={containerRef}
+        className="auth-captcha__widget"
+        data-turnstile-error-code={errorCode ?? undefined}
+      />
       <p className="auth-captcha__status" role="status" aria-live="polite">
         {status === "loading" && "Conclua a verificação para continuar."}
         {status === "ready" && "Verificação concluída."}
-        {status === "error" && "A verificação expirou ou não pôde ser concluída. Tente novamente."}
+        {status === "error" && (
+          errorCode
+            ? `A verificação não pôde ser concluída. Código técnico: ${errorCode}. Tente novamente.`
+            : "A verificação expirou ou não pôde ser concluída. Tente novamente."
+        )}
       </p>
     </section>
   );

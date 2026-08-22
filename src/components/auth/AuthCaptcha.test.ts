@@ -24,11 +24,19 @@ describe("contrato do componente AuthCaptcha", () => {
     expect(captchaSource).toContain("turnstile.remove(widgetIdRef.current)");
   });
 
+  it("preserva apenas códigos técnicos de seis dígitos para diagnóstico sem registrar tokens", () => {
+    expect(captchaSource).toContain("function getPublicTurnstileErrorCode");
+    expect(captchaSource).toContain("/^\\d{6}$/.test(errorCode)");
+    expect(captchaSource).toContain("data-turnstile-error-code={errorCode ?? undefined}");
+    expect(captchaSource).not.toContain("console.");
+  });
+
   it("expõe estado acessível para carregamento, sucesso e recuperação", () => {
     expect(captchaSource).toContain('role="status"');
     expect(captchaSource).toContain('aria-live="polite"');
     expect(captchaSource).toContain("Conclua a verificação para continuar.");
     expect(captchaSource).toContain("Verificação concluída.");
     expect(captchaSource).toContain("A verificação expirou ou não pôde ser concluída. Tente novamente.");
+    expect(captchaSource).toContain("Código técnico: ${errorCode}");
   });
 });

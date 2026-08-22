@@ -15,6 +15,12 @@ Nenhuma Secret Key foi registrada neste repositório, em arquivos de ambiente, e
 
 Em 22 de agosto de 2026, a configuração foi concluída em **Authentication → Attack Protection**: o controle `Enable Captcha protection` está habilitado, o provedor selecionado é `Turnstile by Cloudflare` e a Secret Key permanece mascarada no campo protegido. O usuário salvou a alteração diretamente no painel; uma nova leitura confirmou o estado persistido sem revelar a credencial.
 
+Após o deploy do commit de integração, o formulário `/login` em produção exibiu a área de verificação, porém o widget apresentou o estado `Troubleshoot` e a aplicação exibiu o feedback de erro. A revisão do editor do Cloudflare confirmou que os hostnames configurados permanecem exatamente `atleticafsa.site` e `www.atleticafsa.site`, ambos correspondentes ao domínio de produção. O diagnóstico continua aberto para identificar a causa sem expor chaves.
+
+Em 22 de agosto de 2026, a falha foi reproduzida também em janela privada. A documentação do Cloudflare classifica `Troubleshoot` como um estado genérico de erro do desafio; os códigos específicos devem ser recebidos no primeiro parâmetro do callback de erro. O script oficial em `https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit` respondeu normalmente ao teste de rede. A documentação também exige liberar `challenges.cloudflare.com` caso uma Content Security Policy restrinja recursos, e confirma que a configuração de hostname raiz autoriza os subdomínios correspondentes. Fontes: https://developers.cloudflare.com/turnstile/concepts/widget/ ; https://developers.cloudflare.com/turnstile/troubleshooting/client-side-errors/ ; https://developers.cloudflare.com/turnstile/troubleshooting/client-side-errors/error-codes/ ; https://developers.cloudflare.com/turnstile/additional-configuration/hostname-management/.
+
+Uma nova inspeção do login publicado confirmou que o componente preserva a mensagem pública genérica e bloqueia o envio sem token. O iframe não expôs o código específico de erro na árvore acessível, portanto a próxima correção incluirá telemetria técnica limitada ao console do navegador, sem revelar o código na interface, para identificar a classe de falha documentada pelo Cloudflare.
+
 ## Ordem de ativação segura
 
 1. Criar o widget com os dois hostnames acima e modo Managed.
