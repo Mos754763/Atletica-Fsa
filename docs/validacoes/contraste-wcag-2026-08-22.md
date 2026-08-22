@@ -31,3 +31,9 @@ A suíte de contraste passou integralmente. Os contratos são executados junto d
 | Testes automatizados | **258 aprovados**, 3 ignorados |
 | TypeScript | Aprovado |
 | Build de produção | Aprovado |
+
+## Proteção no GitHub Actions
+
+O workflow `Continuous Integration` agora tem uma etapa explícita chamada **WCAG contrast**. Ela executa `pnpm test:wcag-contrast` depois da verificação de tipos e antes da suíte completa. Como o workflow é disparado por `pull_request` direcionado à `main` e por `push` na `main`, qualquer Pull Request só poderá concluir a integração contínua quando os contratos de contraste forem aprovados.
+
+Após a integração da etapa, a execução local passou com **260 testes aprovados** e 3 ignorados, além de TypeScript e build de produção aprovados.

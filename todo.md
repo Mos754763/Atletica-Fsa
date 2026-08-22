@@ -384,3 +384,4 @@
 - [x] Auditar e corrigir a aplicação de modo claro, escuro, contraste e transição de tema em todas as rotas, com prioridade para diretoria, formulário de interesse e rodapé da landing
 - [x] Auditar o contraste das telas de login, criação de conta e redefinição de senha, além da responsividade móvel escura do formulário de interesse da Atlética
 - [x] Criar testes automatizados de contraste WCAG nas rotas e auditar botões de redes sociais e rodapé no modo escuro
+- [x] Executar a verificação automatizada de contraste WCAG explicitamente no GitHub Actions para Pull Requests e branch principal

@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Typecheck, tests and production build
+    name: Typecheck, WCAG contrast, tests and production build
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -39,6 +39,9 @@ jobs:
 
       - name: Typecheck
         run: pnpm typecheck
+
+      - name: WCAG contrast
+        run: pnpm test:wcag-contrast
 
       - name: Test
         run: pnpm test
