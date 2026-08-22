@@ -385,3 +385,5 @@
 - [x] Auditar o contraste das telas de login, criação de conta e redefinição de senha, além da responsividade móvel escura do formulário de interesse da Atlética
 - [x] Criar testes automatizados de contraste WCAG nas rotas e auditar botões de redes sociais e rodapé no modo escuro
 - [x] Executar a verificação automatizada de contraste WCAG explicitamente no GitHub Actions para Pull Requests e branch principal
+- [ ] Configurar alerta automático para falhas da etapa WCAG contrast no CI e ampliar testes para navegação por teclado e leitores de tela
+- [ ] Executar uma validação controlada de entrega do alerta WCAG no canal Slack configurado no GitHub Actions

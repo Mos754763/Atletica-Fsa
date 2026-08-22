@@ -7,6 +7,13 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      test_wcag_slack_alert:
+        description: Envia uma notificação de teste ao Slack sem forçar falha dos contratos WCAG
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -17,7 +24,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Typecheck, WCAG contrast, tests and production build
+    name: Typecheck, WCAG accessibility, tests and production build
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -41,7 +48,39 @@ jobs:
         run: pnpm typecheck
 
       - name: WCAG contrast
+        id: wcag_contrast
+        continue-on-error: true
         run: pnpm test:wcag-contrast
+
+      - name: WCAG keyboard and screen reader semantics
+        id: wcag_a11y
+        continue-on-error: true
+        run: pnpm test:wcag-a11y
+
+      - name: Notify Slack about WCAG failure
+        if: ${{ always() && (steps.wcag_contrast.outcome == 'failure' || steps.wcag_a11y.outcome == 'failure' || inputs.test_wcag_slack_alert == true) }}
+        env:
+          CI_SLACK_WEBHOOK_URL: ${{ secrets.CI_SLACK_WEBHOOK_URL }}
+          CI_WCAG_CONTRAST_OUTCOME: ${{ steps.wcag_contrast.outcome }}
+          CI_WCAG_A11Y_OUTCOME: ${{ steps.wcag_a11y.outcome }}
+          CI_WCAG_ALERT_MODE: ${{ inputs.test_wcag_slack_alert == true && 'teste controlado' || 'falha detectada' }}
+          CI_REPOSITORY: ${{ github.repository }}
+          CI_REF: ${{ github.ref_name }}
+          CI_SHA: ${{ github.sha }}
+          CI_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$CI_SLACK_WEBHOOK_URL" ]; then
+            echo "::warning::CI_SLACK_WEBHOOK_URL não configurado; o alerta Slack foi ignorado."
+            exit 0
+          fi
+          payload="$(node -e 'console.log(JSON.stringify({text: `:warning: *ATLETICA FSA · Alerta de acessibilidade WCAG no CI*\n*Modo:* ${process.env.CI_WCAG_ALERT_MODE}\n*Repositório:* ${process.env.CI_REPOSITORY}\n*Branch:* ${process.env.CI_REF}\n*Commit:* ${process.env.CI_SHA.slice(0, 7)}\n*Contraste:* ${process.env.CI_WCAG_CONTRAST_OUTCOME}\n*Teclado e leitores de tela:* ${process.env.CI_WCAG_A11Y_OUTCOME}\n*Execução:* ${process.env.CI_RUN_URL}`}))')"
+          curl --fail-with-body --retry 2 --retry-delay 2 --max-time 10 \
+            -X POST -H 'content-type: application/json' --data "$payload" "$CI_SLACK_WEBHOOK_URL" \
+            || echo "::warning::Não foi possível entregar o alerta WCAG ao Slack."
+
+      - name: Fail CI after WCAG notification
+        if: ${{ steps.wcag_contrast.outcome == 'failure' || steps.wcag_a11y.outcome == 'failure' }}
+        run: exit 1
 
       - name: Test
         run: pnpm test

@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:wcag-contrast": "vitest run src/app/wcag-contrast.test.ts",
+    "test:wcag-a11y": "vitest run src/app/wcag-a11y.test.ts",
     "test:slack-webhook": "RUN_LIVE_SLACK_WEBHOOK_TEST=true vitest run src/lib/integrations/slack-webhook.secret.test.ts",
     "test:point-resilience": "vitest run src/lib/payments/point-resilience.test.ts",
     "test:integration:qr-concurrency": "RUN_QR_CONCURRENCY_TESTS=true node scripts/test-qr-concurrency.mjs",
