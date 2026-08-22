@@ -387,3 +387,4 @@
 - [x] Executar a verificação automatizada de contraste WCAG explicitamente no GitHub Actions para Pull Requests e branch principal
 - [x] Configurar alerta automático para falhas da etapa WCAG contrast no CI e ampliar testes para navegação por teclado e leitores de tela
 - [x] Executar uma validação controlada de entrega do alerta WCAG no canal Slack configurado no GitHub Actions
+- [x] Auditar e corrigir rate limiting, CORS, minimização de PII, JWT, enumeração de usuários, clickjacking, SQL Injection e IDOR com testes de regressão

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { env } from "@/lib/env";
+import { isAuthorizedCronRequest } from "@/lib/api/cron-auth";
 import { createServiceClient } from "@/lib/supabase/server";
 import { processEmailOutbox, sendTransactionalEmail } from "@/lib/email/transactional";
 import { formatEventDate } from "@/lib/events";
@@ -8,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const authorization = request.headers.get("authorization");
-  if (!env.cronSecret || authorization !== `Bearer ${env.cronSecret}`) return NextResponse.json({ error: "Não autorizado." }, { status: 401 });
+  if (!isAuthorizedCronRequest(authorization, env.cronSecret)) return NextResponse.json({ error: "Não autorizado." }, { status: 401 });
   const startedAt = Date.now();
   const supabase = createServiceClient();
   try {

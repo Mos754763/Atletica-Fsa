@@ -15,4 +15,12 @@ describe("contrato de autenticação Google do login", () => {
     expect(loginFormSource).toContain("buildMfaRedirectPath(nextPath)");
     expect(loginFormSource).toContain("redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(mfaRedirectPath())}`");
   });
+
+  it("não expõe mensagens textuais do provedor de autenticação", () => {
+    expect(loginFormSource).not.toContain("authError.message");
+    expect(loginFormSource).toContain("function authFailureMessage(mode: AuthMode)");
+    expect(loginFormSource).toContain("Não foi possível entrar com essas credenciais.");
+    expect(loginFormSource).toContain("Não foi possível concluir o cadastro agora.");
+    expect(loginFormSource).toContain("Não foi possível iniciar a autenticação com Google.");
+  });
 });

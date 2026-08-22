@@ -29,7 +29,8 @@ export function PasswordResetForm() {
       if (updateError) throw updateError;
       setCompleted(true);
     } catch (updateError) {
-      setError(updateError instanceof Error ? updateError.message : "Não foi possível atualizar a senha. Solicite um novo link de recuperação.");
+      console.error("[auth] password-reset-update-failure", { kind: updateError instanceof Error ? updateError.name : "unknown" });
+      setError("Não foi possível atualizar a senha. Solicite um novo link de recuperação.");
     } finally {
       setBusy(false);
     }

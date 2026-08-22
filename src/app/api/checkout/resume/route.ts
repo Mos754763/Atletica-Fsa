@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   if (!availability.available) return NextResponse.json({ error: availability.message, code: availability.code }, { status: 503 });
   const auth = await getApiProfile(request);
   if ("error" in auth) return auth.error;
-  const parsed = bodySchema.safeParse(await request.json());
+  const parsed = bodySchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Pedido inválido." }, { status: 400 });
 
   const { data: order, error } = await auth.supabase
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
   });
   const preference = await response.json() as { init_point?: string; message?: string };
   if (!response.ok || !preference.init_point) {
-    return NextResponse.json({ error: preference.message ?? "Não foi possível retomar o pagamento. Tente criar um novo pedido." }, { status: 502 });
+    return NextResponse.json({ error: "Não foi possível retomar o pagamento. Tente criar um novo pedido." }, { status: 502 });
   }
   return NextResponse.json({ checkoutUrl: preference.init_point, orderId: order.id });
 }

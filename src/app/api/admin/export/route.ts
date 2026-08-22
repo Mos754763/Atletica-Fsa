@@ -13,9 +13,16 @@ const querySchema = z.object({
   period: z.coerce.number().int().refine((value) => [7, 30, 90].includes(value)).default(30),
 });
 type ExportRow = Record<string, string | number>;
+const privateDownloadHeaders = {
+  "Cache-Control": "private, no-store, max-age=0",
+  Pragma: "no-cache",
+  Expires: "0",
+  "X-Content-Type-Options": "nosniff",
+};
 
 function safeFileName(value: string) { return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9_-]/gi, "-").toLowerCase(); }
-function csvCell(value: string | number) { const text = String(value); return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text; }
+function spreadsheetText(value: string | number) { const text = String(value); return /^[=+\-@]/.test(text) ? `'${text}` : text; }
+function csvCell(value: string | number) { const text = spreadsheetText(value); return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text; }
 function csvBody(rows: ExportRow[]) { const headers = Object.keys(rows[0] ?? {}); return [headers.join(","), ...rows.map((row) => headers.map((header) => csvCell(row[header] ?? "")).join(","))].join("\n"); }
 function labelFromKey(value: string) { return value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()); }
 function xmlCell(value: string | number) { return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&apos;"); }
@@ -58,7 +65,7 @@ function xlsxBody(rows: ExportRow[]) {
 async function loadRows(dataset: z.infer<typeof querySchema>["dataset"], period: number, supabase: Awaited<ReturnType<typeof getApiProfile>> extends infer Result ? Result extends { supabase: infer Client } ? Client : never : never) {
   const since = new Date(); since.setDate(since.getDate() - period); const sinceIso = since.toISOString();
   if (dataset === "clientes") {
-    const { data, error } = await supabase.from("profiles").select("display_name,email,role,created_at").order("created_at", { ascending: false });
+    const { data, error } = await supabase.from("profiles").select("display_name,email,role,created_at").gte("created_at", sinceIso).order("created_at", { ascending: false });
     if (error) throw error;
     return (data ?? []).map((profile) => ({ Nome: profile.display_name ?? "Não informado", "E-mail": profile.email ?? "Não informado", Papel: labelFromKey(profile.role), Cadastro: new Date(profile.created_at).toLocaleString("pt-BR") }));
   }
@@ -115,8 +122,8 @@ export async function GET(request: Request) {
   if (!parsed.success) return NextResponse.json({ error: "Parâmetros de exportação inválidos." }, { status: 400 });
   try {
     const { dataset, format, period } = parsed.data; const rows = await loadRows(dataset, period, auth.supabase); const title = `${labelFromKey(dataset)}-${period}-dias`; const filename = safeFileName(`atletica-fsa-${title}`);
-    if (format === "csv") return new NextResponse(csvBody(rows), { headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": `attachment; filename="${filename}.csv"` } });
-    if (format === "xlsx") { const output = xlsxBody(rows); return new NextResponse(output, { headers: { "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Content-Disposition": `attachment; filename="${filename}.xlsx"` } }); }
-    const output = await pdfBody(labelFromKey(dataset), rows); const body = output.buffer.slice(output.byteOffset, output.byteOffset + output.byteLength) as ArrayBuffer; return new NextResponse(body, { headers: { "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="${filename}.pdf"` } });
+    if (format === "csv") return new NextResponse(csvBody(rows), { headers: { ...privateDownloadHeaders, "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": `attachment; filename="${filename}.csv"` } });
+    if (format === "xlsx") { const output = xlsxBody(rows); return new NextResponse(output, { headers: { ...privateDownloadHeaders, "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Content-Disposition": `attachment; filename="${filename}.xlsx"` } }); }
+    const output = await pdfBody(labelFromKey(dataset), rows); const body = output.buffer.slice(output.byteOffset, output.byteOffset + output.byteLength) as ArrayBuffer; return new NextResponse(body, { headers: { ...privateDownloadHeaders, "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="${filename}.pdf"` } });
   } catch { return NextResponse.json({ error: "Não foi possível preparar a exportação solicitada." }, { status: 500 }); }
 }

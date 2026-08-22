@@ -9,6 +9,12 @@ import { resolveSafeRedirectPath } from "@/lib/auth/redirect-path";
 
 type AuthMode = "login" | "signup" | "recovery";
 
+function authFailureMessage(mode: AuthMode) {
+  if (mode === "login") return "Não foi possível entrar com essas credenciais. Verifique os dados e tente novamente.";
+  if (mode === "signup") return "Não foi possível concluir o cadastro agora. Tente novamente em alguns instantes.";
+  return "Não foi possível enviar o link de recuperação agora. Tente novamente em alguns instantes.";
+}
+
 export function LoginForm() {
   const [mode, setMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
@@ -32,7 +38,8 @@ export function LoginForm() {
       });
       if (oauthError) throw oauthError;
     } catch (authError) {
-      setError(authError instanceof Error ? authError.message : "Não foi possível iniciar o login com Google.");
+      console.error("[auth] google-oauth-start-failure", { kind: authError instanceof Error ? authError.name : "unknown" });
+      setError("Não foi possível iniciar a autenticação com Google. Tente novamente em alguns instantes.");
       setBusy(false);
     }
   }
@@ -73,7 +80,8 @@ export function LoginForm() {
       }
       setMessage("Conta criada. Confira seu e-mail para confirmar o acesso.");
     } catch (authError) {
-      setError(authError instanceof Error ? authError.message : "Não foi possível concluir a autenticação.");
+      console.error("[auth] credential-flow-failure", { mode, kind: authError instanceof Error ? authError.name : "unknown" });
+      setError(authFailureMessage(mode));
     } finally {
       setBusy(false);
     }
