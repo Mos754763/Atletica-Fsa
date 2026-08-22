@@ -378,3 +378,4 @@
 - [x] Testar a responsividade móvel da página de login e corrigir qualquer desalinhamento, corte ou sobreposição identificado
 - [ ] Ajustar a posição e a escala do mascote no hero móvel para que não avance sobre a frase descritiva institucional
 - [x] Ajustar a posição e a escala do mascote no hero móvel para que não avance sobre a frase descritiva institucional
+- [x] Verificar o fluxo de autenticação Google OAuth no login compacto, incluindo o redirecionamento e o retorno seguro à aplicação
