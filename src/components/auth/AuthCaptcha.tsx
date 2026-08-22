@@ -10,7 +10,7 @@ type TurnstileApi = {
       theme: "light" | "dark" | "auto";
       callback: (token: string) => void;
       "expired-callback": () => void;
-      "error-callback": (errorCode?: string) => void;
+      "error-callback": (errorCode?: string | number) => void;
     },
   ) => string;
   remove: (widgetId: string) => void;
@@ -26,8 +26,9 @@ declare global {
 const TURNSTILE_SCRIPT_ID = "cloudflare-turnstile-api";
 const TURNSTILE_SCRIPT_URL = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 
-function getPublicTurnstileErrorCode(errorCode?: string) {
-  return typeof errorCode === "string" && /^\d{6}$/.test(errorCode) ? errorCode : null;
+function getPublicTurnstileErrorCode(errorCode?: string | number) {
+  const candidate = typeof errorCode === "number" ? String(errorCode) : errorCode;
+  return typeof candidate === "string" && /^\d{6}$/.test(candidate) ? candidate : null;
 }
 
 function loadTurnstile() {

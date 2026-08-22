@@ -26,7 +26,8 @@ describe("contrato do componente AuthCaptcha", () => {
 
   it("preserva apenas códigos técnicos de seis dígitos para diagnóstico sem registrar tokens", () => {
     expect(captchaSource).toContain("function getPublicTurnstileErrorCode");
-    expect(captchaSource).toContain("/^\\d{6}$/.test(errorCode)");
+    expect(captchaSource).toContain('typeof errorCode === "number" ? String(errorCode) : errorCode');
+    expect(captchaSource).toContain("/^\\d{6}$/.test(candidate)");
     expect(captchaSource).toContain("data-turnstile-error-code={errorCode ?? undefined}");
     expect(captchaSource).not.toContain("console.");
   });
