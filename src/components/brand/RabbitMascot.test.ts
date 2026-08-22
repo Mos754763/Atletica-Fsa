@@ -6,7 +6,8 @@ const erpMascotStyles = readFileSync(new URL("../../app/erp-mascot.css", import.
 
 describe("mascote institucional do ERP", () => {
   it("usa um asset institucional público validado em vez do caminho indisponível", () => {
-    expect(rabbitMascot).toContain('institutionalAsset("fsa-hero-gestao-2026.png")');
+    expect(rabbitMascot).toContain('institutionalAsset("fsa-rabbit-mascot.png")');
+    expect(rabbitMascot).not.toContain('institutionalAsset("fsa-hero-gestao-2026.png")');
     expect(rabbitMascot).not.toContain("fsa-mascot-alpha_2021fade.png");
   });
 

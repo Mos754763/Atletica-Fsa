@@ -20,7 +20,7 @@ describe("contrato de composição do login", () => {
   it("usa no login o mesmo enquadramento circular do mascote institucional no hero", () => {
     expect(authStyles).toContain(".auth-page__mascot{position:absolute!important;z-index:3!important;right:clamp(0px,1.6vw,22px)!important");
     expect(authStyles).toContain("width:clamp(250px,26vw,405px)!important;min-height:0!important;aspect-ratio:1!important;overflow:hidden!important;border-radius:50%!important;background:#061c48");
-    expect(authStyles).toContain(".auth-page__mascot .rabbit-mascot__generated{display:block;width:100%;height:100%;max-height:none;object-fit:cover!important;object-position:right center!important}");
+    expect(authStyles).toContain(".auth-page__mascot .rabbit-mascot__generated{display:block;width:100%;height:100%;max-height:none;object-fit:cover!important;object-position:center top!important}");
     expect(authStyles).toContain("@media(max-height:760px) and (min-width:781px)");
   });
 });
