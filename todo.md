@@ -402,3 +402,8 @@
 - [ ] Validar login, recuperação de senha, Google OAuth e entrega de e-mail com dados QA e autorização reversível em homologação
 - [ ] Preparar PRs, evidências de homologação e solicitações de aprovação separadas para quaisquer mudanças sensíveis de Production
 - [ ] Executar a rotação dos segredos externos por provedor após confirmação explícita e validar cada ambiente de forma reversível
+- [x] Confirmar o alias `homolog.atleticafsa.site` no Preview da branch `fix/sector-cards-composition` antes de configurar ou validar o Turnstile de Homologação
+- [x] Criar widget Turnstile de Homologação em modo gerenciado, restrito a `homolog.atleticafsa.site`, sem alterar o widget de Production
+- [ ] Configurar de forma segura a sitekey pública na Vercel Preview e o segredo correspondente no CAPTCHA do Supabase de Homologação
+- [x] Mover o alias `homolog.atleticafsa.site` para o Preview READY da branch `fix/turnstile-e2e-remediation` antes da validação E2E
+- [ ] Editar a sobreposição Preview já existente de `NEXT_PUBLIC_TURNSTILE_SITE_KEY` para a branch `fix/turnstile-e2e-remediation`, sem criar variável duplicada ou alterar Production
