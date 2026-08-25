@@ -393,3 +393,12 @@
 - [ ] Diagnosticar e corrigir o estado Troubleshoot reproduzido do widget Turnstile no login de produção antes de concluir a ativação
 - [x] Reorganizar os cards de setores da landing para enquadrar corretamente as fotos, padronizar a composição e validar desktop e mobile
 - [x] Diagnosticar a falha de deploy Vercel da PR de cards de setores e corrigir somente a causa comprovada
+- [x] Revalidar os testes da PR #29, confirmar o ambiente de destino e promover somente após autorização explícita compatível
+- [ ] Executar a remediação pós-auditoria em ordem de risco, preservando Production e pagamentos até aprovações específicas
+- [x] Preparar a rotação segura de credenciais historicamente expostas, sem registrar valores em código, tickets ou relatórios
+- [ ] Diagnosticar o Turnstile `400020` em branch isolada e homologação, preservando a proteção antirrobô em Production
+- [ ] Criar cobertura Playwright versionada para jornadas públicas, autenticação QA e autorização administrativa em Preview controlado
+- [ ] Adicionar gates de CI para E2E de Preview e auditoria de dependências de produção, com política explícita de falha
+- [ ] Validar login, recuperação de senha, Google OAuth e entrega de e-mail com dados QA e autorização reversível em homologação
+- [ ] Preparar PRs, evidências de homologação e solicitações de aprovação separadas para quaisquer mudanças sensíveis de Production
+- [ ] Executar a rotação dos segredos externos por provedor após confirmação explícita e validar cada ambiente de forma reversível
