@@ -392,4 +392,4 @@
 - [ ] Implementar, testar em desenvolvimento e ativar controladamente Cloudflare Turnstile nos fluxos de autenticação por senha do Supabase
 - [ ] Diagnosticar e corrigir o estado Troubleshoot reproduzido do widget Turnstile no login de produção antes de concluir a ativação
 - [x] Reorganizar os cards de setores da landing para enquadrar corretamente as fotos, padronizar a composição e validar desktop e mobile
-- [ ] Diagnosticar a falha de deploy Vercel da PR de cards de setores e corrigir somente a causa comprovada
+- [x] Diagnosticar a falha de deploy Vercel da PR de cards de setores e corrigir somente a causa comprovada
