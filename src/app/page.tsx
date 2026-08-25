@@ -28,11 +28,11 @@ const storeArtwork = institutionalAsset("fsa-store-pattern.png");
 const eventArtwork = institutionalAsset("fsa-events-pattern.png");
 
 const sectors = [
-  { number: "01", name: "Suprimentos", copy: "Tudo para a torcida chegar junto.", image: institutionalAsset("atletica-fsa-setor-suprimentos.webp") },
-  { number: "02", name: "Eventos", copy: "Experiências que viram história.", image: institutionalAsset("atletica-fsa-setor-eventos.webp") },
-  { number: "03", name: "Sociais", copy: "A conexão que move a FSA.", image: institutionalAsset("atletica-fsa-setor-social.webp") },
-  { number: "04", name: "Marketing", copy: "Orgulho que ganha voz.", image: institutionalAsset("atletica-fsa-setor-marketing.webp") },
-  { number: "05", name: "Esportes", copy: "Raça dentro e fora da quadra.", image: institutionalAsset("atletica-fsa-setor-esportes.webp") },
+  { number: "01", name: "Suprimentos", copy: "Tudo para a torcida chegar junto.", image: institutionalAsset("atletica-fsa-setor-suprimentos.webp"), imagePosition: "50% 50%" },
+  { number: "02", name: "Eventos", copy: "Experiências que viram história.", image: institutionalAsset("atletica-fsa-setor-eventos.webp"), imagePosition: "50% 48%" },
+  { number: "03", name: "Sociais", copy: "A conexão que move a FSA.", image: institutionalAsset("atletica-fsa-setor-social.webp"), imagePosition: "58% 72%" },
+  { number: "04", name: "Marketing", copy: "Orgulho que ganha voz.", image: institutionalAsset("atletica-fsa-setor-marketing.webp"), imagePosition: "74% 42%" },
+  { number: "05", name: "Esportes", copy: "Raça dentro e fora da quadra.", image: institutionalAsset("atletica-fsa-setor-esportes.webp"), imagePosition: "62% 50%" },
 ];
 
 const capabilities = [
@@ -108,8 +108,8 @@ export default async function HomePage() {
         <div className="sector-grid">
           {sectors.map((sector, index) => (
             <MotionCard className="sector-card motion-card" delay={index * 0.05} key={sector.number}>
-              <div className="sector-card__photo" aria-hidden="true"><img src={sector.image} alt="" loading="lazy" decoding="async" /></div>
-              <div className="sector-card__content"><span>{sector.number}</span><ArrowDownRight size={24} /><h3>{sector.name}</h3><p>{sector.copy}</p></div>
+              <div className="sector-card__photo" aria-hidden="true"><img src={sector.image} alt="" loading="lazy" decoding="async" style={{ objectPosition: sector.imagePosition }} /></div>
+              <div className="sector-card__content"><span>{sector.number}</span><ArrowDownRight size={24} /><div className="sector-card__copy"><h3>{sector.name}</h3><p>{sector.copy}</p></div></div>
             </MotionCard>
           ))}
         </div>
