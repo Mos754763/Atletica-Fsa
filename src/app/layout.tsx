@@ -19,6 +19,7 @@ import "./motion.css";
 import "./mobile-overflow.css";
 import "./experience.css";
 import "./depth-surfaces.css";
+import "./sector-cards.css";
 import { ExperienceChrome } from "@/components/fx/ExperienceChrome";
 import { FrontendFx } from "@/components/fx/FrontendFx";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
