@@ -404,6 +404,25 @@
 - [ ] Executar a rotação dos segredos externos por provedor após confirmação explícita e validar cada ambiente de forma reversível
 - [x] Confirmar o alias `homolog.atleticafsa.site` no Preview da branch `fix/sector-cards-composition` antes de configurar ou validar o Turnstile de Homologação
 - [x] Criar widget Turnstile de Homologação em modo gerenciado, restrito a `homolog.atleticafsa.site`, sem alterar o widget de Production
-- [ ] Configurar de forma segura a sitekey pública na Vercel Preview e o segredo correspondente no CAPTCHA do Supabase de Homologação
+- [x] Configurar a sitekey pública do widget de Homologação exclusivamente no Preview QA da Vercel, sem alterar Production
+- [x] Configurar e validar o segredo correspondente no CAPTCHA do Supabase de Homologação, sem alterar Production
 - [x] Mover o alias `homolog.atleticafsa.site` para o Preview READY da branch `fix/turnstile-e2e-remediation` antes da validação E2E
-- [ ] Editar a sobreposição Preview já existente de `NEXT_PUBLIC_TURNSTILE_SITE_KEY` para a branch `fix/turnstile-e2e-remediation`, sem criar variável duplicada ou alterar Production
+- [x] Associar temporariamente o alias e a sobreposição Turnstile ao Preview elegível `audit/homologation-functional-20260820`, sem alterar Production
+- [x] Restaurar uma referência remota QA elegível para `audit/homologation-functional-20260820` antes de reapontar o alias ou salvar configurações de Homologação
+- [x] Disparar um novo Preview QA a partir da referência restaurada para que a Vercel reconheça a branch no seletor de sobreposição
+- [x] Auditar o redeploy mais recente de Production, confirmando commit, alvo e escopos antes de qualquer nova alteração externa
+- [x] Auditar o redeploy mais recente de Production, confirmando commit, alvo e escopos antes de qualquer nova alteração externa
+- [x] Rotacionar o segredo exposto do widget Turnstile de Homologação, preservando modo Managed, sem pre-clearance e hostname exclusivo
+- [x] Configurar o novo segredo rotacionado somente no CAPTCHA do Supabase de Homologação e confirmar URLs autorizadas
+- [x] Registrar evidência sanitizada da rotação e da configuração de Homologação sem expor sitekeys, tokens ou segredos
+- [x] Rotacionar o segredo originalmente exposto do widget Turnstile de Homologação, mantendo o escopo exclusivo do ambiente QA
+- [x] Após a janela de segurança do provedor, rotacionar novamente o segredo de Homologação que foi exibido pelo diálogo do provedor e usar somente a substituição não exposta no Supabase QA
+- [x] Substituir a Site URL legada do Supabase de Homologação por `https://homolog.atleticafsa.site` e adicionar o callback canônico aos Redirect URLs autorizados
+- [x] Executar uma rotação manual final do segredo Turnstile de Homologação, transferindo-o diretamente ao Supabase QA sem acessar a página de segredo por automação
+- [x] Impedir novas inspeções automatizadas da página de segredo do CAPTCHA até que a rotação manual final seja concluída e validada apenas por comportamento externo
+- [ ] Obter evidência de console e rede sem erros relevantes, além de renderização mobile, no Preview QA protegido por SSO sem expor segredos
+- [ ] Definir um mecanismo autorizado para o Playwright alcançar o Preview QA protegido, sem remover a proteção Vercel nem reutilizar segredos de bypass
+- [x] Adicionar configuração Playwright versionada com projetos desktop e mobile, servidor local controlado e artefatos apenas em falha
+- [x] Criar cenários E2E públicos e não transacionais para landing, loja, eventos, login e proteção de acesso de rotas privadas
+- [x] Inserir gates de `pnpm audit --prod` e Playwright no CI com upload de relatório de falha sem expor segredos
+- [x] Corrigir a sobreposição do controle flutuante de tema sobre o botão do carrinho na loja, comprovada em desktop e mobile pela suíte E2E

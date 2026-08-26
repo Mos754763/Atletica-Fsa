@@ -12,6 +12,7 @@ import {
 
 const TOGGLE_MARGIN = 16;
 const DRAG_THRESHOLD = 4;
+const MOBILE_HEADER_SAFE_AREA = 72;
 
 type DragSession = {
   pointerId: number;
@@ -44,12 +45,16 @@ export function ThemeToggle() {
 
   function getSafePosition(candidate: ThemeTogglePosition) {
     const bounds = buttonRef.current?.getBoundingClientRect();
-    return clampThemeTogglePosition(
+    const clampedPosition = clampThemeTogglePosition(
       candidate,
       { width: window.innerWidth, height: window.innerHeight },
       { width: Math.max(bounds?.width ?? 104, 44), height: Math.max(bounds?.height ?? 42, 42) },
       TOGGLE_MARGIN,
     );
+    const isMobileViewport = window.matchMedia("(max-width: 640px)").matches;
+    return isMobileViewport
+      ? { ...clampedPosition, y: Math.max(MOBILE_HEADER_SAFE_AREA, clampedPosition.y) }
+      : clampedPosition;
   }
 
   function setSafePosition(candidate: ThemeTogglePosition, persist = false) {
@@ -72,7 +77,7 @@ export function ThemeToggle() {
     const toggleHeight = Math.max(bounds?.height ?? 42, 42);
     const isMobileViewport = window.matchMedia("(max-width: 640px)").matches;
     const initialPosition = isMobileViewport
-      ? { x: window.innerWidth - toggleWidth - TOGGLE_MARGIN, y: TOGGLE_MARGIN }
+      ? { x: window.innerWidth - toggleWidth - TOGGLE_MARGIN, y: MOBILE_HEADER_SAFE_AREA }
       : { x: window.innerWidth - toggleWidth - TOGGLE_MARGIN, y: window.innerHeight - toggleHeight - TOGGLE_MARGIN };
     setSafePosition(storedPosition ?? initialPosition);
 
