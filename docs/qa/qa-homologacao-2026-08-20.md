@@ -20,7 +20,15 @@ O roteiro recusa explicitamente Production e exige `QA_ENVIRONMENT=homologation`
 
 O script aceita o segredo oficial `VERCEL_AUTOMATION_BYPASS_SECRET` em ambiente de execução (ou o nome legado `QA_VERCEL_PROTECTION_BYPASS_SECRET`) e o envia somente nos cabeçalhos `x-vercel-protection-bypass` e `x-vercel-set-bypass-cookie`; ele não grava nem imprime o valor. Essa variável deve existir apenas no executor seguro de QA/CI e não deve ser versionada, copiada para Production ou reutilizada como segredo de cron.
 
+Como alternativa para uma execução manual e temporária, o roteiro também aceita `QA_VERCEL_SHARE_URL`. Esse valor deve conter uma URL de compartilhamento temporária emitida pela Vercel para o **mesmo Preview** de `QA_BASE_URL`. Antes das sondagens, o roteiro troca a URL por um cookie efêmero em memória; não imprime, persiste, inclui no relatório nem envia a URL às rotas do aplicativo. O valor deve ser fornecido somente no processo atual e descartado imediatamente após a execução. O comando reproduzível é `pnpm qa:homologation`, com `QA_ENVIRONMENT=homologation`, `QA_BASE_URL` e **um** dos dois mecanismos de acesso temporário configurados no ambiente do processo.
+
 Em 20/08/2026, o acesso temporário de compartilhamento e o fetch autenticado da Vercel ainda retornaram redirecionamento SSO para requisições HTTP sem uma sessão de automação. Assim, os smoke tests remotos diretos permanecem corretamente classificados como **não executados por bloqueio de proteção**, não como aprovação nem falha de aplicação. O próximo pré-requisito é gerar o *Protection Bypass for Automation* no painel da Vercel e disponibilizá-lo exclusivamente ao executor de QA como `VERCEL_AUTOMATION_BYPASS_SECRET`.[1]
+
+### Execução aprovada com acesso temporário
+
+Em 20/08/2026, o novo modo temporário foi executado contra o Preview isolado `atletica-ler3q83aj-moises-faustino-rodrigues-s-projects.vercel.app`. A URL temporária emitida pela Vercel foi usada exclusivamente em memória para obter o cookie da sessão de Preview e foi descartada ao encerrar o processo. O relatório do roteiro foi aprovado integralmente em modo somente leitura: landing, loja, eventos, login, redefinição de senha e configuração pública retornaram HTTP 200; `/admin` retornou HTTP 307 para `/login`; e `/api/cron/integration-health` retornou HTTP 401 sem acionar o cron.
+
+Na mesma revisão, a validação completa local aprovou **57 arquivos de teste** com **193 testes aprovados** e **3 ignorados intencionalmente**, além de `pnpm typecheck` e `pnpm build`. Essa suíte cobre os contratos de catálogo, eventos, ODS, pedidos, Mercado Pago, Sympla, Slack, cron, permissões e demais integrações sem realizar pagamentos, escrita remota, envios de e-mail ou alterações em dados produtivos.
 
 ### Reconfirmação segura de ambiente
 

@@ -30,7 +30,7 @@ type CustomerOrder = {
 const statusLabel: Record<CustomerOrder["status"], string> = { aguardando_pagamento: "Aguardando pagamento", pago: "Pagamento confirmado", em_preparo: "Em preparo", pronto: "Pronto para retirada", entregue: "Retirado", cancelado: "Cancelado" };
 
 export default async function OrdersPage() {
-  const { profile } = await requireRole(["admin", "cozinha", "caixa", "cliente"]);
+  const { profile } = await requireRole(["admin", "backoffice", "caixa", "cliente"]);
   const supabase = createServiceClient();
   const { data } = await supabase.from("orders").select("id,order_number,status,fulfillment,total_cents,created_at,payment_expires_at,mercado_pago_preference_id,pickup_qr_token,pickup_qr_expires_at,pickup_location,pickup_instructions,pickup_deadline_at,picked_up_at,order_items(product_name,variant_name,quantity,line_total_cents)").eq("customer_id", profile.id).order("created_at", { ascending: false });
   const orders = (data ?? []) as CustomerOrder[];

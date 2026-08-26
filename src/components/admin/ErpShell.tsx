@@ -3,32 +3,40 @@
 import { useEffect, useState } from "react";
 import { ErpSidebar } from "@/components/admin/ErpSidebar";
 import { ErpMotionWorkspace } from "@/components/admin/ErpMotionWorkspace";
-import type { UserRole } from "@/types/domain";
+import type { UserRoles } from "@/types/domain";
 
-const STORAGE_KEY = "fsa-erp-sidebar-collapsed";
+export const ERP_SIDEBAR_STORAGE_KEY = "fsa-erp-sidebar-collapsed";
+
+export function readErpSidebarCollapsed(value: string | null) {
+  return value === "true";
+}
+
+export function persistErpSidebarCollapsed(storage: Pick<Storage, "setItem">, collapsed: boolean) {
+  storage.setItem(ERP_SIDEBAR_STORAGE_KEY, String(collapsed));
+}
 
 type ErpShellProps = {
   children: React.ReactNode;
   displayName: string;
-  role: UserRole;
+  roles: UserRoles;
   isPresident: boolean;
   canAccessBuilder: boolean;
 };
 
-export function ErpShell({ children, displayName, role, isPresident, canAccessBuilder }: ErpShellProps) {
+export function ErpShell({ children, displayName, roles, isPresident, canAccessBuilder }: ErpShellProps) {
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-    setCollapsed(window.localStorage.getItem(STORAGE_KEY) === "true");
+    setCollapsed(readErpSidebarCollapsed(window.localStorage.getItem(ERP_SIDEBAR_STORAGE_KEY)));
   }, []);
 
   function handleCollapsedChange(nextValue: boolean) {
     setCollapsed(nextValue);
-    window.localStorage.setItem(STORAGE_KEY, String(nextValue));
+    persistErpSidebarCollapsed(window.localStorage, nextValue);
   }
 
   return <div className={`erp-shell${collapsed ? " is-collapsed" : ""}`}>
-    <ErpSidebar displayName={displayName} role={role} isPresident={isPresident} canAccessBuilder={canAccessBuilder} collapsed={collapsed} onCollapsedChange={handleCollapsedChange} />
+    <ErpSidebar displayName={displayName} roles={roles} isPresident={isPresident} canAccessBuilder={canAccessBuilder} collapsed={collapsed} onCollapsedChange={handleCollapsedChange} />
     <ErpMotionWorkspace>{children}</ErpMotionWorkspace>
   </div>;
 }

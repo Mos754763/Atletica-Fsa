@@ -28,11 +28,11 @@ const storeArtwork = institutionalAsset("fsa-store-pattern.png");
 const eventArtwork = institutionalAsset("fsa-events-pattern.png");
 
 const sectors = [
-  { number: "01", name: "Suprimentos", copy: "Tudo para a torcida chegar junto.", image: "/manus-storage/atletica-fsa-setor-suprimentos_2318c314.png" },
-  { number: "02", name: "Eventos", copy: "Experiências que viram história.", image: "/manus-storage/atletica-fsa-setor-eventos_eaeefbad.png" },
-  { number: "03", name: "Sociais", copy: "A conexão que move a FSA.", image: "/manus-storage/atletica-fsa-setor-social_a88e0697.png" },
-  { number: "04", name: "Marketing", copy: "Orgulho que ganha voz.", image: "/manus-storage/atletica-fsa-setor-marketing_4ea365e4.png" },
-  { number: "05", name: "Esportes", copy: "Raça dentro e fora da quadra.", image: "/manus-storage/atletica-fsa-setor-esportes_cc4b3956.png" },
+  { number: "01", name: "Suprimentos", copy: "Tudo para a torcida chegar junto.", image: institutionalAsset("atletica-fsa-setor-suprimentos.webp"), imagePosition: "50% 50%" },
+  { number: "02", name: "Eventos", copy: "Experiências que viram história.", image: institutionalAsset("atletica-fsa-setor-eventos.webp"), imagePosition: "50% 48%" },
+  { number: "03", name: "Sociais", copy: "A conexão que move a FSA.", image: institutionalAsset("atletica-fsa-setor-social.webp"), imagePosition: "58% 72%" },
+  { number: "04", name: "Marketing", copy: "Orgulho que ganha voz.", image: institutionalAsset("atletica-fsa-setor-marketing.webp"), imagePosition: "74% 42%" },
+  { number: "05", name: "Esportes", copy: "Raça dentro e fora da quadra.", image: institutionalAsset("atletica-fsa-setor-esportes.webp"), imagePosition: "62% 50%" },
 ];
 
 const capabilities = [
@@ -108,8 +108,8 @@ export default async function HomePage() {
         <div className="sector-grid">
           {sectors.map((sector, index) => (
             <MotionCard className="sector-card motion-card" delay={index * 0.05} key={sector.number}>
-              <div className="sector-card__photo" aria-hidden="true"><img src={sector.image} alt="" loading="lazy" /></div>
-              <div className="sector-card__content"><span>{sector.number}</span><ArrowDownRight size={24} /><h3>{sector.name}</h3><p>{sector.copy}</p></div>
+              <div className="sector-card__photo" aria-hidden="true"><img src={sector.image} alt="" loading="lazy" decoding="async" style={{ objectPosition: sector.imagePosition }} /></div>
+              <div className="sector-card__content"><span>{sector.number}</span><ArrowDownRight size={24} /><div className="sector-card__copy"><h3>{sector.name}</h3><p>{sector.copy}</p></div></div>
             </MotionCard>
           ))}
         </div>
@@ -119,7 +119,7 @@ export default async function HomePage() {
         <div className="page-width">
           <MotionReveal className="management-heading motion-reveal">
             <SectionTitle eyebrow="GESTÃO 2026" title="Quem move a FSA." copy="Conheça os rostos da gestão que transforma organização, torcida e experiências em movimento." />
-            <div className="management-heading__actions"><img className="management-section__seal" src={institutionalAsset("gestao-2026/selo-e-mascote.webp")} alt="Selo oficial da ATLETICA FSA" /><a href={instagramUrl} target="_blank" rel="noreferrer" className="text-link management-heading__link"><Instagram size={18} /> Ver no Instagram <ArrowRight size={18} /></a></div>
+            <div className="management-heading__actions"><img className="management-section__seal" src={institutionalAsset("gestao-2026/selo-e-mascote.webp")} alt="Selo oficial da ATLETICA FSA" loading="lazy" decoding="async" /><a href={instagramUrl} target="_blank" rel="noreferrer" className="text-link management-heading__link"><Instagram size={18} /> Ver no Instagram <ArrowRight size={18} /></a></div>
           </MotionReveal>
           <ManagementCarousel people={management} />
         </div>
@@ -135,7 +135,7 @@ export default async function HomePage() {
           <div className="product-grid">
             {products.map((product, index) => (
               <MotionCard className="product-card motion-card" delay={index * 0.07} key={product.id}>
-                <div className="product-art">{product.imageUrl ? <img className="product-art__image" src={product.imageUrl} alt={`${product.name} da ATLETICA FSA`} /> : <span className="product-art__fallback">FSA</span>}</div>
+                <div className="product-art">{product.imageUrl ? <img className="product-art__image" src={product.imageUrl} alt={`${product.name} da ATLETICA FSA`} loading="lazy" decoding="async" /> : <span className="product-art__fallback">FSA</span>}</div>
                 <div className="product-card__meta"><span>{product.category?.name ?? "Produtos FSA"}</span><MotionButton label={`Adicionar ${product.name} ao carrinho`}><ShoppingBag size={17} /></MotionButton></div>
                 <h3>{product.name}</h3><strong>{formatBRL(product.priceCents)}</strong>
               </MotionCard>
@@ -146,7 +146,7 @@ export default async function HomePage() {
       </section>
 
       <section className="event-section page-width" id="eventos">
-        <MotionReveal className="event-poster event-poster--official motion-reveal"><img src={eventArtwork} alt="Arte institucional de eventos da ATLETICA FSA" /><span className="event-poster__top">NOITE<br />FSA</span><span className="event-poster__date">EM<br />BREVE</span></MotionReveal>
+        <MotionReveal className="event-poster event-poster--official motion-reveal"><img src={eventArtwork} alt="Arte institucional de eventos da ATLETICA FSA" loading="lazy" decoding="async" /><span className="event-poster__top">NOITE<br />FSA</span><span className="event-poster__date">EM<br />BREVE</span></MotionReveal>
         <MotionReveal className="event-copy motion-reveal" delay={0.08}>
           <p className="eyebrow eyebrow--blue"><span /> AGENDA FSA</p>
           <h2>O próximo capítulo começa com a gente.</h2>

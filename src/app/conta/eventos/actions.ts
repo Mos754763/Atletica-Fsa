@@ -9,7 +9,7 @@ import { getCheckoutAvailability } from "@/lib/payments/checkout-availability";
 const idSchema = z.string().uuid();
 
 export async function startEventCheckout(formData: FormData) {
-  const { supabase, userId, profile } = await requireRole(["admin", "cozinha", "caixa", "cliente"]);
+  const { supabase, userId, profile } = await requireRole(["admin", "backoffice", "caixa", "cliente"]);
   const registrationId = idSchema.parse(formData.get("registrationId"));
   const availability = getCheckoutAvailability({ paymentsEnabled: env.paymentsEnabled, mercadoPagoAccessToken: env.mercadoPagoAccessToken });
   if (!availability.available) redirect(`/conta/eventos?pagamento=indisponivel&registro=${registrationId}`);
@@ -23,7 +23,7 @@ export async function startEventCheckout(formData: FormData) {
 }
 
 export async function transferEventTicket(formData: FormData) {
-  const { supabase } = await requireRole(["admin", "cozinha", "caixa", "cliente"]);
+  const { supabase } = await requireRole(["admin", "backoffice", "caixa", "cliente"]);
   const ticketId = idSchema.parse(formData.get("ticketId"));
   const email = z.string().trim().email().max(254).parse(formData.get("recipientEmail"));
   const { error } = await supabase.rpc("transfer_event_ticket", { p_ticket_id: ticketId, p_recipient_email: email });

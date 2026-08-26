@@ -2,6 +2,12 @@ import { describe, expect, it } from "vitest";
 import { fsaStoreAssets, resolveFsaProductImage } from "./store-product-assets";
 
 describe("resolveFsaProductImage", () => {
+  it("usa URLs públicas estáveis e otimizadas para os fallbacks institucionais", () => {
+    for (const url of Object.values(fsaStoreAssets)) {
+      expect(url).toMatch(/^https:\/\/tbxihkzuyzszrfxqmleq\.supabase\.co\/storage\/v1\/object\/public\/catalog-assets\/optimized\/products\/.+\.webp$/);
+    }
+  });
+
   it("prioriza a foto administrada no CMS, mesmo para produtos com nome institucional", () => {
     expect(resolveFsaProductImage("Camiseta Oficial FSA", "https://cdn.example.com/camiseta-real.webp"))
       .toBe("https://cdn.example.com/camiseta-real.webp");

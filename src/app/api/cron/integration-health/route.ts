@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { env } from "@/lib/env";
+import { isAuthorizedCronRequest } from "@/lib/api/cron-auth";
 import { classifyCronRouteHealth, classifyIntegrationHealth, formatHealthMetrics, healthAlertDedupeKey, latestCronRouteHeartbeatsBefore, shouldSendRecovery, type CronRouteHeartbeat, type IntegrationHealthMetrics, type IntegrationHealthStatus } from "@/lib/integrations/integration-health";
 import { sendSymplaHealthSlackAlert } from "@/lib/integrations/slack-alerts";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -46,7 +47,7 @@ async function deliverHealthAlert(input: {
 }
 
 export async function GET(request: Request) {
-  if (!env.cronSecret || request.headers.get("authorization") !== `Bearer ${env.cronSecret}`) return NextResponse.json({ error: "Não autorizado." }, { status: 401 });
+  if (!isAuthorizedCronRequest(request.headers.get("authorization"), env.cronSecret)) return NextResponse.json({ error: "Não autorizado." }, { status: 401 });
   const startedAt = new Date();
   const supabase = createServiceClient();
   try {

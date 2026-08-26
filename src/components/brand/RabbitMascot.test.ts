@@ -5,8 +5,10 @@ const rabbitMascot = readFileSync(new URL("./RabbitMascot.tsx", import.meta.url)
 const erpMascotStyles = readFileSync(new URL("../../app/erp-mascot.css", import.meta.url), "utf8");
 
 describe("mascote institucional do ERP", () => {
-  it("usa um asset institucional público validado em vez do caminho indisponível", () => {
-    expect(rabbitMascot).toContain('institutionalAsset("fsa-hero-gestao-2026.png")');
+  it("usa o retrato institucional com transparência real em vez do caminho indisponível", () => {
+    expect(rabbitMascot).toContain('institutionalAsset("fsa-rabbit-mascot-transparent.png")');
+    expect(rabbitMascot).not.toContain('institutionalAsset("fsa-rabbit-mascot.png")');
+    expect(rabbitMascot).not.toContain('institutionalAsset("fsa-hero-gestao-2026.png")');
     expect(rabbitMascot).not.toContain("fsa-mascot-alpha_2021fade.png");
   });
 

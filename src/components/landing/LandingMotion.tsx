@@ -108,7 +108,7 @@ export function HeroMotion({ artwork, fallbackArtwork }: { artwork: string; fall
       <span className="hero__outline hero__outline--one">FSA</span>
       <span className="hero__outline hero__outline--two">FSA</span>
       <motion.div className="hero__mascot-viewport" style={reducedMotion ? undefined : { y: artworkY, rotateX: smoothTiltX, rotateY: smoothTiltY, transformPerspective: 1100 }} initial={false} animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }} transition={{ ...MOTION_SPRING, delay: 0.18 }}>
-        <img className="hero__official-art" src={artworkSource} alt="Mascote institucional da ATLETICA FSA para a gestão 2026" onError={() => { if (fallbackArtwork && artworkSource !== fallbackArtwork) setArtworkSource(fallbackArtwork); }} />
+        <img className="hero__official-art" src={artworkSource} alt="Mascote institucional da ATLETICA FSA para a gestão 2026" fetchPriority="high" decoding="async" onError={() => { if (fallbackArtwork && artworkSource !== fallbackArtwork) setArtworkSource(fallbackArtwork); }} />
       </motion.div>
       <motion.div className="hero__badge" style={reducedMotion ? undefined : { y: badgeY }} initial={reducedMotion ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ ...MOTION_SPRING, delay: 0.34 }}><strong>2026</strong><span>GESTÃO<br />FSA</span></motion.div>
     </div>
@@ -119,7 +119,7 @@ export function ParallaxArtwork({ src, className }: { src: string; className: st
   const reducedMotion = useReducedMotion();
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [260, 1700], [0, -48]);
-  return <motion.img className={className} src={src} alt="" aria-hidden="true" style={reducedMotion ? undefined : { y }} />;
+  return <motion.img className={className} src={src} alt="" aria-hidden="true" loading="lazy" decoding="async" style={reducedMotion ? undefined : { y }} />;
 }
 
 export function HighlightParallax({ children }: { children: ReactNode }) {

@@ -1,0 +1,4 @@
+.auth-captcha{display:grid;gap:8px;padding:12px;border:1px solid rgba(11,61,145,.14);border-radius:12px;background:rgba(248,251,255,.76)}
+.auth-captcha__label{margin:0;color:var(--blue-ink);font:700 12px 'DM Sans',sans-serif}.auth-captcha__widget{min-height:65px;overflow:hidden}.auth-captcha__status{min-height:16px;margin:0;color:var(--muted);font-size:11px;line-height:1.35}.auth-captcha__status:not(:empty){padding-top:1px}
+[data-theme="dark"] .auth-captcha{border-color:rgba(255,210,63,.28);background:rgba(4,17,44,.68)}[data-theme="dark"] .auth-captcha__label{color:var(--white)}[data-theme="dark"] .auth-captcha__status{color:rgba(255,255,255,.74)}
+@media(max-width:420px){.auth-captcha{padding:10px}.auth-captcha__widget{transform:scale(.92);transform-origin:left top;margin-bottom:-5px}}

@@ -52,7 +52,7 @@ function parseProduct(formData: FormData) {
 }
 
 export async function createCategory(formData: FormData) {
-  const { supabase } = await requireRole(["admin", "caixa"]);
+  const { supabase } = await requireRole(["admin"]);
   const { name } = categorySchema.parse({ name: formData.get("name") });
   const baseSlug = slugify(name);
   const slug = `${baseSlug}-${Math.random().toString(36).slice(2, 6)}`;
@@ -62,7 +62,7 @@ export async function createCategory(formData: FormData) {
 }
 
 export async function createProduct(formData: FormData) {
-  const { supabase, userId } = await requireRole(["admin", "caixa"]);
+  const { supabase, userId } = await requireRole(["admin"]);
   const values = parseProduct(formData);
   const imageFile = formData.get("imageFile");
   const slug = `${slugify(values.name)}-${Math.random().toString(36).slice(2, 7)}`;
@@ -93,7 +93,7 @@ export async function createProduct(formData: FormData) {
 }
 
 export async function updateProduct(formData: FormData) {
-  const { supabase } = await requireRole(["admin", "caixa"]);
+  const { supabase } = await requireRole(["admin"]);
   const productId = productIdSchema.parse(formData.get("productId"));
   const values = parseProduct(formData);
   const { error } = await supabase.rpc("update_catalog_product", {
@@ -112,7 +112,7 @@ export async function updateProduct(formData: FormData) {
 }
 
 export async function addProductImage(formData: FormData) {
-  const { supabase } = await requireRole(["admin", "caixa"]);
+  const { supabase } = await requireRole(["admin"]);
   const productId = productIdSchema.parse(formData.get("productId"));
   const externalUrl = z.string().url().optional().or(z.literal("")).parse(formData.get("imageUrl") || "");
   const imageFile = formData.get("imageFile");
@@ -136,7 +136,7 @@ export async function addProductImage(formData: FormData) {
 }
 
 export async function setPrimaryProductImage(formData: FormData) {
-  const { supabase } = await requireRole(["admin", "caixa"]);
+  const { supabase } = await requireRole(["admin"]);
   const productId = productIdSchema.parse(formData.get("productId"));
   const imageId = productImageIdSchema.parse(formData.get("imageId"));
   const { data: images, error: imagesError } = await supabase.from("product_images").select("id").eq("product_id", productId).order("sort_order");
@@ -148,7 +148,7 @@ export async function setPrimaryProductImage(formData: FormData) {
 }
 
 export async function deleteProductImage(formData: FormData) {
-  const { supabase } = await requireRole(["admin", "caixa"]);
+  const { supabase } = await requireRole(["admin"]);
   const productId = productIdSchema.parse(formData.get("productId"));
   const imageId = productImageIdSchema.parse(formData.get("imageId"));
   const { data: image, error: imageError } = await supabase.from("product_images").select("storage_key,storage_provider").eq("id", imageId).eq("product_id", productId).maybeSingle();
@@ -160,7 +160,7 @@ export async function deleteProductImage(formData: FormData) {
 }
 
 export async function deleteProduct(formData: FormData) {
-  const { supabase } = await requireRole(["admin", "caixa"]);
+  const { supabase } = await requireRole(["admin"]);
   const productId = productIdSchema.parse(formData.get("productId"));
   if (formData.get("confirmDelete") !== "excluir") throw new Error("Confirme a exclusão do produto antes de continuar.");
   const { data: images, error: imagesError } = await supabase.from("product_images").select("storage_key,storage_provider").eq("product_id", productId);
@@ -172,7 +172,7 @@ export async function deleteProduct(formData: FormData) {
 }
 
 export async function createVariant(formData: FormData) {
-  const { supabase, userId } = await requireRole(["admin", "caixa"]);
+  const { supabase, userId } = await requireRole(["admin"]);
   const rawPrice = formData.get("priceBrl");
   const values = variantSchema.parse({ productId: formData.get("productId"), name: formData.get("name") || undefined, color: formData.get("color") || undefined, size: formData.get("size") || undefined, sku: formData.get("sku") || undefined, priceCents: rawPrice ? priceInCents(rawPrice) : undefined, stockQuantity: formData.get("stockQuantity"), notes: formData.get("notes") || undefined });
   const name = values.name || [values.color && `Cor ${values.color}`, values.size && `Tamanho ${values.size}`].filter(Boolean).join(" · ");
@@ -186,7 +186,7 @@ export async function createVariant(formData: FormData) {
 }
 
 export async function createSalesBatch(formData: FormData) {
-  const { supabase, userId } = await requireRole(["admin", "caixa"]);
+  const { supabase, userId } = await requireRole(["admin"]);
   const rawPrice = formData.get("priceBrl");
   const values = salesBatchSchema.parse({ productId: formData.get("productId"), variantId: formData.get("variantId") || undefined, name: formData.get("name"), priceCents: rawPrice ? priceInCents(rawPrice) : undefined, minimumQuantity: formData.get("minimumQuantity") || undefined, targetQuantity: formData.get("targetQuantity") || undefined, opensAt: formData.get("opensAt") || undefined, closesAt: formData.get("closesAt") || undefined, instructions: formData.get("instructions") || undefined });
   const opensAt = values.opensAt ? new Date(values.opensAt).toISOString() : null;

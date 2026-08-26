@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { PointerAura } from "@/components/landing/LandingMotion";
+import { BackofficeParticles } from "@/components/admin/BackofficeParticles";
 import { MOTION_SPRING } from "@/lib/motion-config";
 
 export function ErpMotionWorkspace({ children }: { children: ReactNode }) {
@@ -19,7 +20,8 @@ export function ErpMotionWorkspace({ children }: { children: ReactNode }) {
       transition={reducedMotion ? { duration: 0 } : { ...MOTION_SPRING, duration: 0.42 }}
     >
       <PointerAura />
-      {children}
+      <BackofficeParticles />
+      <div className="erp-motion-workspace__content">{children}</div>
     </motion.div>
   );
 }

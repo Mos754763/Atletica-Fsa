@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { CalendarDays, PackageCheck, Shield, ShieldCheck, ShoppingBag } from "lucide-react";
 import { FsaWordmark } from "@/components/brand/FsaWordmark";
 import { SignOutButton } from "@/components/auth/SignOutButton";
-import { roleLabel } from "@/lib/auth/roles";
+import { canAccessRoles, normalizeRoles, roleLabels } from "@/lib/auth/roles";
 import { createServerAuthClient } from "@/lib/supabase/server-auth";
 import type { UserRole } from "@/types/domain";
 
@@ -16,7 +16,8 @@ export default async function AccountPage() {
   if (!userId) redirect("/login");
 
   const { data: profile } = await supabase.from("profiles").select("display_name, email, role").eq("id", userId).single();
-  const role = (profile?.role ?? "cliente") as UserRole;
+  const { data: assignedRoles } = await supabase.rpc("current_user_roles");
+  const roles = normalizeRoles((assignedRoles ?? []) as UserRole[], (profile?.role ?? "cliente") as UserRole);
   const name = profile?.display_name || profile?.email?.split("@")[0] || "Torcida FSA";
 
   return (
@@ -25,7 +26,7 @@ export default async function AccountPage() {
       <section className="account-hero">
         <p className="eyebrow">MINHA CONTA</p>
         <h1>Oi, {name}.</h1>
-        <p className="account-hero__copy"><span className="role-pill"><Shield size={14} /> {roleLabel(role)}</span><span>Sua área FSA está pronta para acompanhar pedidos e eventos.</span></p>
+        <p className="account-hero__copy"><span className="role-pill"><Shield size={14} /> {roleLabels(roles).join(" · ")}</span><span>Sua área FSA está pronta para acompanhar pedidos e eventos.</span></p>
       </section>
       <section className="account-links" aria-label="Atalhos da conta">
         <Link href="/loja"><ShoppingBag size={23} /><span><strong>Loja FSA</strong><small>Produtos e pedidos</small></span></Link>
@@ -33,10 +34,10 @@ export default async function AccountPage() {
         <Link href="/conta/pedidos"><PackageCheck size={23} /><span><strong>Meus pedidos</strong><small>Acompanhar retiradas</small></span></Link>
         <Link href="/conta/seguranca"><ShieldCheck size={23} /><span><strong>Segurança</strong><small>Senha e autenticação</small></span></Link>
       </section>
-      {(role === "admin" || role === "caixa" || role === "cozinha") && (
+      {canAccessRoles(roles, ["admin", "caixa", "backoffice"]) && (
         <nav className="account-admin-actions" aria-label="Atalhos operacionais">
-          <Link className="account-admin-link" href="/erp">{role === "cozinha" ? "Abrir backoffice" : "Abrir ERP"}</Link>
-          {(role === "admin" || role === "cozinha") && <Link className="account-admin-link" href="/ods">Abrir ODS</Link>}
+          <Link className="account-admin-link" href="/erp">{canAccessRoles(roles, ["admin", "caixa"]) ? "Abrir ERP" : "Abrir backoffice"}</Link>
+          {canAccessRoles(roles, ["admin", "backoffice", "caixa"]) && <Link className="account-admin-link" href="/ods">Abrir ODS</Link>}
         </nav>
       )}
     </main>

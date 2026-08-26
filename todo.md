@@ -305,8 +305,9 @@
 - [x] Diagnosticar e corrigir a exceção de servidor que impede o carregamento da landing em produção após a migração de novos membros
 - [x] Corrigir avisos do Autoprefixer substituindo valores flex incompatíveis e medir o impacto no build de produção
 - [x] Preparar e executar cadastro de membro controlado em homologação, com validação de triagem e descarte seguro do registro de teste
-- [ ] Verificar com uma conta de QA os fluxos autenticados prioritários de pedidos, eventos, ODS, integrações e automações em homologação, sem pagamentos nem dados produtivos
-- [ ] Executar e documentar o roteiro automatizado de QA em homologação para rotas públicas, contratos críticos, autorização, catálogo, eventos, ODS e integrações
+- [x] Verificar com uma conta de QA os fluxos autenticados prioritários de pedidos, eventos, ODS, integrações e automações em homologação, sem pagamentos nem dados produtivos
+- [x] Executar e documentar o roteiro automatizado de QA em homologação para rotas públicas, contratos críticos, autorização, catálogo, eventos, ODS e integrações
+- [x] Permitir que o roteiro de smoke de homologação use acesso temporário autorizado do Preview sem registrar tokens, cookies ou segredos
 - [x] Permitir execução autenticada do smoke QA contra Preview protegido sem expor ou versionar segredo de bypass da Vercel
 - [x] Revisar a proximidade do menu contextual flutuante com o primeiro cartão na loja móvel, sem reduzir o acesso ao carrinho ou às rotas de retorno
 - [x] Configurar no Preview Vercel as variáveis Supabase exclusivas de homologação e confirmar que nenhuma variável de produção será usada no teste de membro
@@ -351,3 +352,58 @@
 - [ ] Selecionar provedor SMS e validar telefone/MFA por SMS em homologação com CAPTCHA, limites e orçamento aprovados
 - [x] Executar auditoria integral de escopo, código, rotas, dados, RLS, multitenancy, integrações, variáveis, CI/CD e documentação sem alterar produção
 - [x] Especificar requisitos pendentes, testes, edge cases, plano corretivo e governança de branches, pull requests e CI/CD
+- [x] Produzir relatório detalhado e atualizado de todas as pendências remanescentes, com prioridade, bloqueios e critérios de aceite
+- [x] Preparar identidades e uma matriz autenticada de QA para validar em homologação os fluxos prioritários por papel, sem pagamentos ou dados produtivos
+- [x] Corrigir o mapeamento do papel operacional de backoffice na matriz de QA após a rejeição do enum `user_role` em homologação
+- [x] Corrigir a autorização de rota do catálogo administrativo, que foi acessível diretamente pelo papel Caixa no Preview de homologação, e cobrir a regressão por testes
+- [x] Permitir atribuições cumulativas de papéis por usuário, com migração segura, RLS, administração presidencial e cobertura de regressão em homologação
+- [x] Renomear tecnicamente o papel `cozinha` para `backoffice`, com migração compatível de enum, RLS, atribuições existentes, interface e testes em homologação e Production
+- [x] Corrigir com urgência a sidebar retrátil do ERP, preservando largura do conteúdo, navegação por teclado, persistência e responsividade desktop/mobile
+- [x] Tornar o controle de modo escuro do ERP arrastável, persistente e não obstrutivo ao conteúdo
+- [x] Aprimorar a área de Pessoas do ERP com tabela operacional detalhada, cantos levemente arredondados, conteúdo sem cortes e partículas interativas acessíveis nos temas claro e escuro
+- [x] Executar auditoria de paridade entre homologação e Production, corrigir lacunas comprovadas em homologação e promover lotes validados com evidências, rollback e gates de segurança
+- [x] Investigar o estado crítico da rota `/api/cron/integration-health` em homologação e Production, comprovar a limitação de cron em preview e recuperar os batimentos de Production com alerta de recuperação deduplicado
+- [x] Investigar e reprocessar de forma auditável as dead letters Sympla abertas, validando a causa, a deduplicação e o encerramento seguro antes de qualquer mudança em Production
+- [x] Explicar e reconciliar a diferença comprovada de uma tabela pública entre homologação (47) e Production (48), com migration versionada somente se necessária
+- [x] Atualizar a credencial ou o escopo efetivo da API Sympla em Production, pois duas dead letters abertas comprovam resposta HTTP 403 na busca de eventos; validar com sincronização controlada antes de reprocessar registros
+- [x] Corrigir a identificação visual da página de integrações Sympla para refletir corretamente Production ou homologação, sem apresentar limites de homologação no domínio produtivo
+- [x] Criar, testar em homologação e aplicar com autorização final em Production a migração reversível de remoção de `public.table_name`, comprovadamente vazia e não referenciada
+- [ ] Rotacionar `CRON_SECRET` em Vercel para Production e Preview após a validação, com novo deployment e teste autenticado de rota cron
+- [ ] Rotacionar `SYMPLA_API_TOKEN` no portal do provedor e atualizar Vercel em Production e Preview, com nova sincronização controlada
+- [x] Executar smoke test pós-merge da PR #23 nas rotas públicas e operacionais essenciais em Production
+- [x] Auditar a exibição, disponibilidade e peso das imagens em todas as rotas relevantes, aplicando apenas otimizações seguras sem regressão visual
+- [x] Substituir o fundo verde do retrato do mascote por transparência real e referenciar somente o asset institucional transparente no login e ERP
+- [x] Compactar a composição desktop de login para caber no primeiro viewport, sem rolagem vertical desnecessária e sem reduzir a usabilidade em telas menores
+- [x] Adicionar animação sutil e acessível de entrada ao mascote no carregamento da página de login
+- [x] Testar a responsividade móvel da página de login e corrigir qualquer desalinhamento, corte ou sobreposição identificado
+- [x] Ajustar a posição e a escala do mascote no hero móvel para que não avance sobre a frase descritiva institucional
+- [x] Ajustar a posição e a escala do mascote no hero móvel para que não avance sobre a frase descritiva institucional
+- [x] Verificar o fluxo de autenticação Google OAuth no login compacto, incluindo o redirecionamento e o retorno seguro à aplicação
+- [x] Implementar modo escuro acessível, persistente e coerente para a página de login, mantendo o modo claro como alternativa do usuário
+- [x] Refinar a paleta escura do login com tons institucionais FSA e adicionar transição curta de tema, respeitando redução de movimento
+- [x] Auditar e corrigir a aplicação de modo claro, escuro, contraste e transição de tema em todas as rotas, com prioridade para diretoria, formulário de interesse e rodapé da landing
+- [x] Auditar o contraste das telas de login, criação de conta e redefinição de senha, além da responsividade móvel escura do formulário de interesse da Atlética
+- [x] Criar testes automatizados de contraste WCAG nas rotas e auditar botões de redes sociais e rodapé no modo escuro
+- [x] Executar a verificação automatizada de contraste WCAG explicitamente no GitHub Actions para Pull Requests e branch principal
+- [x] Configurar alerta automático para falhas da etapa WCAG contrast no CI e ampliar testes para navegação por teclado e leitores de tela
+- [x] Executar uma validação controlada de entrega do alerta WCAG no canal Slack configurado no GitHub Actions
+- [x] Auditar e corrigir rate limiting, CORS, minimização de PII, JWT, enumeração de usuários, clickjacking, SQL Injection e IDOR com testes de regressão
+- [x] Revalidar tentativas de autenticação, CORS e tokens; repetir a suíte automatizada e registrar o roteiro de ativação CAPTCHA do Supabase
+- [ ] Implementar, testar em desenvolvimento e ativar controladamente Cloudflare Turnstile nos fluxos de autenticação por senha do Supabase
+- [ ] Diagnosticar e corrigir o estado Troubleshoot reproduzido do widget Turnstile no login de produção antes de concluir a ativação
+- [x] Reorganizar os cards de setores da landing para enquadrar corretamente as fotos, padronizar a composição e validar desktop e mobile
+- [x] Diagnosticar a falha de deploy Vercel da PR de cards de setores e corrigir somente a causa comprovada
+- [x] Revalidar os testes da PR #29, confirmar o ambiente de destino e promover somente após autorização explícita compatível
+- [ ] Executar a remediação pós-auditoria em ordem de risco, preservando Production e pagamentos até aprovações específicas
+- [x] Preparar a rotação segura de credenciais historicamente expostas, sem registrar valores em código, tickets ou relatórios
+- [ ] Diagnosticar o Turnstile `400020` em branch isolada e homologação, preservando a proteção antirrobô em Production
+- [ ] Criar cobertura Playwright versionada para jornadas públicas, autenticação QA e autorização administrativa em Preview controlado
+- [ ] Adicionar gates de CI para E2E de Preview e auditoria de dependências de produção, com política explícita de falha
+- [ ] Validar login, recuperação de senha, Google OAuth e entrega de e-mail com dados QA e autorização reversível em homologação
+- [ ] Preparar PRs, evidências de homologação e solicitações de aprovação separadas para quaisquer mudanças sensíveis de Production
+- [ ] Executar a rotação dos segredos externos por provedor após confirmação explícita e validar cada ambiente de forma reversível
+- [x] Confirmar o alias `homolog.atleticafsa.site` no Preview da branch `fix/sector-cards-composition` antes de configurar ou validar o Turnstile de Homologação
+- [x] Criar widget Turnstile de Homologação em modo gerenciado, restrito a `homolog.atleticafsa.site`, sem alterar o widget de Production
+- [ ] Configurar de forma segura a sitekey pública na Vercel Preview e o segredo correspondente no CAPTCHA do Supabase de Homologação
+- [x] Mover o alias `homolog.atleticafsa.site` para o Preview READY da branch `fix/turnstile-e2e-remediation` antes da validação E2E
+- [ ] Editar a sobreposição Preview já existente de `NEXT_PUBLIC_TURNSTILE_SITE_KEY` para a branch `fix/turnstile-e2e-remediation`, sem criar variável duplicada ou alterar Production

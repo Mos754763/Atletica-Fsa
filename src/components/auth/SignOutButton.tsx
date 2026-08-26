@@ -11,17 +11,23 @@ export function SignOutButton() {
 
   async function signOut() {
     setBusy(true);
+    const supabase = createClient();
+    let remoteSignOutFailed = false;
 
     try {
       const timeout = new Promise<never>((_, reject) => {
         window.setTimeout(() => reject(new Error("sign_out_timeout")), SIGN_OUT_TIMEOUT_MS);
       });
 
-      await Promise.race([createClient().auth.signOut(), timeout]);
-    } catch {
-      // A navegação abaixo é intencional: o usuário nunca deve ficar preso na tela
-      // caso a rede ou a limpeza de sessão remota demorem mais do que o aceitável.
+      const result = await Promise.race([supabase.auth.signOut({ scope: "global" }), timeout]);
+      if (result.error) throw result.error;
+    } catch (signOutError) {
+      remoteSignOutFailed = true;
+      console.error("[auth] remote-sign-out-failure", { kind: signOutError instanceof Error ? signOutError.name : "unknown" });
     } finally {
+      if (remoteSignOutFailed) {
+        await supabase.auth.signOut({ scope: "local" }).catch(() => undefined);
+      }
       window.location.replace("/");
     }
   }

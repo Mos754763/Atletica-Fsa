@@ -34,13 +34,12 @@ export function MfaLoginChallenge({ nextPath }: MfaLoginChallengeProps) {
         }
 
         const totpFactor = factors?.totp?.[0];
-        if (!totpFactor) {
-          throw new Error("Esta conta exige um segundo fator, mas não possui um aplicativo autenticador disponível. Contate a Presidência para recuperar o acesso.");
-        }
+        if (!totpFactor) throw new Error("mfa-factor-unavailable");
 
         if (active) setFactorId(totpFactor.id);
       } catch (challengeError) {
-        if (active) setError(challengeError instanceof Error ? challengeError.message : "Não foi possível preparar a verificação em duas etapas.");
+        console.error("[auth] mfa-challenge-setup-failure", { kind: challengeError instanceof Error ? challengeError.name : "unknown" });
+        if (active) setError("Não foi possível preparar a verificação em duas etapas. Entre novamente ou contate a Presidência para recuperar o acesso.");
       } finally {
         if (active) setBusy(false);
       }
@@ -62,7 +61,8 @@ export function MfaLoginChallenge({ nextPath }: MfaLoginChallengeProps) {
       if (verifyError) throw verifyError;
       window.location.assign(nextPath);
     } catch (verifyError) {
-      setError(verifyError instanceof Error ? verifyError.message : "O código não pôde ser validado. Tente novamente.");
+      console.error("[auth] mfa-challenge-verify-failure", { kind: verifyError instanceof Error ? verifyError.name : "unknown" });
+      setError("O código não pôde ser validado. Confira o aplicativo autenticador e tente novamente.");
     } finally {
       setBusy(false);
     }
