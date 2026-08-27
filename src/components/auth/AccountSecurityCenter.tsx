@@ -1,7 +1,8 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CheckCircle2, ChevronLeft, KeyRound, LoaderCircle, MonitorCheck, ShieldCheck, ShieldOff, Smartphone, TriangleAlert } from "lucide-react";
 import { formatMfaFactorType } from "@/lib/auth/mfa-assurance";
 import { getBrowserClient } from "@/lib/supabase/client";
@@ -30,6 +31,7 @@ const providerLabel: Record<string, string> = {
 };
 
 export function AccountSecurityCenter() {
+  const router = useRouter();
   const [factors, setFactors] = useState<FactorSummary[]>([]);
   const [providers, setProviders] = useState<string[]>([]);
   const [aal, setAal] = useState<string | null>(null);
@@ -46,7 +48,7 @@ export function AccountSecurityCenter() {
   const verifiedFactors = factors.filter((factor) => factor.status === "verified");
   const providerCount = Math.max(providers.length, 1);
 
-  async function refreshSecurityState() {
+  const refreshSecurityState = useCallback(async () => {
     setLoading(true);
     try {
       const supabase = await getBrowserClient();
@@ -59,7 +61,7 @@ export function AccountSecurityCenter() {
       if (assuranceError) throw assuranceError;
       if (userError) throw userError;
       if (!userData.user) {
-        window.location.assign("/login?next=%2Fconta%2Fseguranca");
+        router.replace("/login?next=%2Fconta%2Fseguranca");
         return;
       }
 
@@ -78,12 +80,12 @@ export function AccountSecurityCenter() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [router]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => { void refreshSecurityState(); }, 0);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [refreshSecurityState]);
 
   async function beginTotpEnrollment() {
     setBusyAction("enroll-totp");

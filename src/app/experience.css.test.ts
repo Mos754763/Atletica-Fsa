@@ -9,6 +9,7 @@ const homePage = readFileSync(resolve(process.cwd(), "src/app/page.tsx"), "utf8"
 const landingMotion = readFileSync(resolve(process.cwd(), "src/components/landing/LandingMotion.tsx"), "utf8");
 const globalStyles = readFileSync(resolve(process.cwd(), "src/app/globals.css"), "utf8");
 const storefront = readFileSync(resolve(process.cwd(), "src/components/store/Storefront.tsx"), "utf8");
+const accountSecurityCenter = readFileSync(resolve(process.cwd(), "src/components/auth/AccountSecurityCenter.tsx"), "utf8");
 const loginPage = readFileSync(resolve(process.cwd(), "src/app/login/page.tsx"), "utf8");
 const resetPasswordPage = readFileSync(resolve(process.cwd(), "src/app/redefinir-senha/page.tsx"), "utf8");
 const eventsPage = readFileSync(resolve(process.cwd(), "src/app/eventos/page.tsx"), "utf8");
@@ -71,6 +72,15 @@ describe("experiência pública interativa", () => {
     expect(storefront).toContain("cartCloseButtonRef.current?.focus()");
     expect(storefront).toContain("cartTriggerRef.current?.focus()");
     expect(storefront).toContain('event.key === "Escape"');
+  });
+
+  it("usa roteamento interno sem recarregar a página nos fluxos de loja e segurança", () => {
+    expect(storefront).toContain('import { useRouter } from "next/navigation"');
+    expect(storefront).toContain('router.push("/login?next=/loja")');
+    expect(storefront).not.toContain('window.location.assign("/login?next=/loja")');
+    expect(accountSecurityCenter).toContain('import { useRouter } from "next/navigation"');
+    expect(accountSecurityCenter).toContain('router.replace("/login?next=%2Fconta%2Fseguranca")');
+    expect(accountSecurityCenter).not.toContain('window.location.assign("/login?next=%2Fconta%2Fseguranca")');
   });
 
   it("mantém a interação de produto baseada em transformações e a desativa em toque ou movimento reduzido", () => {
