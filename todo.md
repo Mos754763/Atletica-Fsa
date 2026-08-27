@@ -398,7 +398,7 @@
 - [x] Preparar a rotação segura de credenciais historicamente expostas, sem registrar valores em código, tickets ou relatórios
 - [ ] Diagnosticar o Turnstile `400020` em branch isolada e homologação, preservando a proteção antirrobô em Production
 - [ ] Criar cobertura Playwright versionada para jornadas públicas, autenticação QA e autorização administrativa em Preview controlado
-- [ ] Adicionar gates de CI para E2E de Preview e auditoria de dependências de produção, com política explícita de falha
+- [x] Adicionar gates de CI para E2E de Preview e auditoria de dependências de produção, com política explícita de falha
 - [ ] Validar login, recuperação de senha, Google OAuth e entrega de e-mail com dados QA e autorização reversível em homologação
 - [ ] Preparar PRs, evidências de homologação e solicitações de aprovação separadas para quaisquer mudanças sensíveis de Production
 - [ ] Executar a rotação dos segredos externos por provedor após confirmação explícita e validar cada ambiente de forma reversível
@@ -428,11 +428,11 @@
 - [x] Corrigir a sobreposição do controle flutuante de tema sobre o botão do carrinho na loja, comprovada em desktop e mobile pela suíte E2E
 - [x] Diagnosticar e corrigir o logout que permanece em “Saindo...” após login QA em Homologação
 - [x] Adicionar testes unitários de regressão para garantir que o logout encerra a sessão local ou redireciona ao estado público após falha ou timeout
-- [ ] Revalidar o logout em Homologação após o novo Preview QA incorporar a correção, criando e encerrando somente uma sessão QA temporária autorizada
+- [x] Revalidar o logout em Homologação após o novo Preview QA incorporar a correção, criando e encerrando somente uma sessão QA temporária autorizada
 - [x] Remover a entrada duplicada de `@playwright/test` do manifesto para eliminar o aviso do Vite e manter o lockfile determinístico
 - [x] Remover a dependência local desnecessária de FFmpeg na execução Playwright com Chromium do sistema, preservando trace e screenshot em falha
 - [x] Declarar o comportamento de scroll suave no elemento raiz para eliminar o aviso do Next durante transições de rota E2E
 - [x] Disparar e verificar uma recuperação de senha controlada para a caixa QA autorizada exclusivamente em Homologação
-- [ ] Validar login por e-mail e senha com a conta QA autorizada exclusivamente em Homologação, sem registrar a senha
-- [ ] Registrar evidência sanitizada dos resultados autenticados QA sem conservar sessão, senha, token ou conteúdo de e-mail
+- [x] Validar login por e-mail e senha com a conta QA autorizada exclusivamente em Homologação, sem registrar a senha
+- [x] Registrar evidência sanitizada dos resultados autenticados QA sem conservar sessão, senha, token ou conteúdo de e-mail
 - [x] Restaurar as referências estáveis de `next-env.d.ts` para não versionar caminhos transitórios gerados por `next dev`
