@@ -2,7 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
-import { useEffect, useState, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useState, type KeyboardEvent } from "react";
 
 type Person = { name: string; role: string; image: string };
 type ManagementCarouselProps = { people: Person[] };
@@ -22,7 +22,7 @@ export function ManagementCarousel({ people }: ManagementCarouselProps) {
   const [isPaused, setPaused] = useState(false);
   const active = people[activeIndex];
 
-  const move = (direction: 1 | -1) => setActiveIndex((current) => (current + direction + people.length) % people.length);
+  const move = useCallback((direction: 1 | -1) => setActiveIndex((current) => (current + direction + people.length) % people.length), [people.length]);
   const select = (index: number) => setActiveIndex(index);
   const focusTab = (index: number) => {
     select(index);
@@ -44,7 +44,7 @@ export function ManagementCarousel({ people }: ManagementCarouselProps) {
     if (reducedMotion || isPaused || people.length < 2) return;
     const timer = window.setInterval(() => move(1), 5600);
     return () => window.clearInterval(timer);
-  }, [activeIndex, isPaused, people.length, reducedMotion]);
+  }, [activeIndex, isPaused, move, people.length, reducedMotion]);
 
   if (!active) return null;
 

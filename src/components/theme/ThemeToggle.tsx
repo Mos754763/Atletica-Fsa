@@ -1,7 +1,7 @@
 "use client";
 
 import { GripVertical, Moon, Sun } from "lucide-react";
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { resolveThemePreference, THEME_STORAGE_KEY, type ThemeMode } from "@/lib/theme";
 import {
   clampThemeTogglePosition,
@@ -43,7 +43,7 @@ export function ThemeToggle() {
   const dragRef = useRef<DragSession | null>(null);
   const suppressClickRef = useRef(false);
 
-  function getSafePosition(candidate: ThemeTogglePosition) {
+  const getSafePosition = useCallback((candidate: ThemeTogglePosition) => {
     const bounds = buttonRef.current?.getBoundingClientRect();
     const clampedPosition = clampThemeTogglePosition(
       candidate,
@@ -55,16 +55,16 @@ export function ThemeToggle() {
     return isMobileViewport
       ? { ...clampedPosition, y: Math.max(MOBILE_HEADER_SAFE_AREA, clampedPosition.y) }
       : clampedPosition;
-  }
+  }, []);
 
-  function setSafePosition(candidate: ThemeTogglePosition, persist = false) {
+  const setSafePosition = useCallback((candidate: ThemeTogglePosition, persist = false) => {
     const nextPosition = getSafePosition(candidate);
     positionRef.current = nextPosition;
     setPosition(nextPosition);
     if (persist) {
       window.localStorage.setItem(THEME_TOGGLE_POSITION_STORAGE_KEY, JSON.stringify(nextPosition));
     }
-  }
+  }, [getSafePosition]);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -94,7 +94,7 @@ export function ThemeToggle() {
       window.cancelAnimationFrame(frame);
       window.removeEventListener("resize", keepToggleVisible);
     };
-  }, []);
+  }, [setSafePosition]);
 
   function toggleTheme() {
     const nextTheme: ThemeMode = theme === "dark" ? "light" : "dark";

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, Eye, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { formatBRL } from "@/lib/format";
@@ -18,6 +19,7 @@ const PREORDER_CART_LIMIT = 20;
 const storeMascotArtwork = institutionalAsset("fsa-hero-gestao-2026.png");
 
 export function Storefront({ products }: StorefrontProps) {
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState("todos");
   const [isCartOpen, setCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(null);
@@ -92,7 +94,7 @@ export function Storefront({ products }: StorefrontProps) {
     setCheckingOut(true); setPaymentNotice(null);
     try {
       const supabase = await getBrowserClient(); const { data } = await supabase.auth.getSession();
-      if (!data.session?.access_token) { window.location.assign("/login?next=/loja"); return; }
+      if (!data.session?.access_token) { router.push("/login?next=/loja"); return; }
       const response = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${data.session.access_token}` }, body: JSON.stringify({ fulfillment, items: cart.map((item) => ({ productId: item.productId, variantId: item.variantId ?? undefined, salesBatchId: item.salesBatchId ?? undefined, quantity: item.quantity })) }) });
       const body = await response.json() as { checkoutUrl?: string; error?: string };
       if (!response.ok || !body.checkoutUrl) throw new Error(body.error ?? "Não foi possível iniciar o checkout.");

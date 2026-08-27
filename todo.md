@@ -445,6 +445,11 @@
 - [x] Corrigir o script `lint` incompatível com Next.js 16 e incluí-lo como gate verificável de qualidade sem introduzir dependências inseguras
 - [x] Confirmar que os blocos verticais vazios observados na captura integral eram artefato de `whileInView` sem rolagem; a inspeção após scroll demonstrou conteúdo corretamente renderizado, sem correção necessária
 - [x] Isolar falhas de automação e enfileiramento de e-mail da resposta de liquidação do webhook Mercado Pago e cobrir o encadeamento aprovado/duplicado/falha com testes
-- [ ] Esclarecer o rótulo operacional da sincronização Sympla, que importa e espelha eventos no banco apesar do campo `read_only`, sem alterar a direção unidirecional da integração
+- [x] Esclarecer o rótulo operacional da sincronização Sympla, que importa e espelha eventos no banco apesar do campo `read_only`, sem alterar a direção unidirecional da integração
 - [x] Isolar falhas de automação e notificação da resposta de transição de status no ODS e cobrir o cenário de notificação rejeitada após RPC bem-sucedida
 - [x] Atualizar o contrato de experiência visual para refletir a inicialização segura da arte da landing e restaurar a aprovação da suíte unitária completa
+- [x] Corrigir as dependências de efeito sinalizadas em `ManagementCarousel` e `ThemeToggle`, preservando movimento, preferência persistida e acessibilidade
+- [x] Substituir a navegação interna imperativa da loja pelo roteamento de cliente do Next.js e cobrir a interação sem alterar checkout ou carrinho
+- [ ] Planejar migração segura das imagens remotas para o componente otimizado do Next.js, após inventário de domínios e avaliação de custo/impacto de otimização
+- [x] Substituir a navegação interna imperativa do centro de segurança pelo roteamento de cliente do Next.js, mantendo o redirecionamento de logout resiliente
+- [x] Estabilizar a função de atualização do centro de segurança para eliminar a dependência de efeito remanescente sem alterar MFA, senha ou sessão
