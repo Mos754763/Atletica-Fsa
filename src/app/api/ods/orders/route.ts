@@ -7,6 +7,7 @@ import { sendOrderStatusEmail } from "@/lib/email/transactional";
 import { createAuthenticatedServerClient } from "@/lib/supabase/server";
 import { canAccessRoles } from "@/lib/auth/roles";
 import type { OrderState } from "@/types/domain";
+import { runPostSettlementEffect } from "@/lib/payments/post-settlement-effects";
 
 const visibleStates: OrderState[] = ["aguardando_pagamento", "pago", "em_preparo", "pronto"];
 const orderStateSchema = z.enum(["criado", "aguardando_pagamento", "pago", "em_preparo", "pronto", "entregue", "cancelado"]);
@@ -63,7 +64,7 @@ export async function PATCH(request: Request) {
     const { error } = await operationalClient.rpc("advance_ods_order", { p_order_id: order.id, p_next_status: body.status });
     if (error) return operationalFailure("advance_ods_order", error.code);
   }
-  await sendOrderStatusEmail({ to: order.customer_email, profileId: order.customer_id, orderId: order.id, orderNumber: order.order_number, status: body.status });
+  await runPostSettlementEffect("order_status_notification", () => sendOrderStatusEmail({ to: order.customer_email, profileId: order.customer_id, orderId: order.id, orderNumber: order.order_number, status: body.status }));
   return NextResponse.json({ ok: true });
 }
 

@@ -6,6 +6,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { sendOrderStatusEmail, sendRegistrationEmail } from "@/lib/email/transactional";
 import { canMoveOrderStatus } from "@/lib/orders/workflow";
 import { getMercadoPagoSignatureDataId, isMercadoPagoPointTopic, resolveMercadoPagoWebhookTopic } from "@/lib/payments/mercado-pago-webhook-routing";
+import { runPostSettlementEffect } from "@/lib/payments/post-settlement-effects";
 
 export async function POST(request: Request) {
   const url = new URL(request.url); const payload = await request.json().catch(() => ({})); const notificationId = String(payload?.data?.id ?? url.searchParams.get("data.id") ?? "");
@@ -59,7 +60,7 @@ export async function POST(request: Request) {
     const { data: settledRows, error: settlementError } = await supabase.rpc("settle_paid_event_ticket", { p_registration_id: registration.id, p_provider_reference: String(payment.id), p_amount_cents: Math.round((payment.transaction_amount ?? 0) * 100), p_provider_payload: payment });
     if (settlementError) { await finishEvent("failed", "event_settlement_error"); return NextResponse.json({ error: "Não foi possível emitir o ingresso." }, { status: 500 }); }
     const settled = Array.isArray(settledRows) ? settledRows[0] : settledRows;
-    if (settled?.transitioned) await sendRegistrationEmail({ to: registration.attendee_email, profileId: registration.customer_id, registrationId: registration.id, eventTitle: (registration.events as { title?: string } | null)?.title ?? "Evento FSA", checkInCode: registration.check_in_code, pendingPayment: false });
+    if (settled?.transitioned) await runPostSettlementEffect("registration_notification", () => sendRegistrationEmail({ to: registration.attendee_email, profileId: registration.customer_id, registrationId: registration.id, eventTitle: (registration.events as { title?: string } | null)?.title ?? "Evento FSA", checkInCode: registration.check_in_code, pendingPayment: false }));
     await finishEvent("succeeded"); return NextResponse.json({ ok: true, status: settled?.final_status ?? registration.status });
   }
   const orderId = externalReference;
@@ -76,7 +77,7 @@ export async function POST(request: Request) {
     const settlement = Array.isArray(settlementRows) ? settlementRows[0] : settlementRows;
     if (!settlement) { await finishEvent("failed", "missing_settlement_result"); return NextResponse.json({ error: "Liquidação do pedido não retornou resultado." }, { status: 500 }); }
     if (settlement.transitioned && settlement.final_status === "pago") {
-      await sendOrderStatusEmail({ to: order.customer_email, profileId: order.customer_id, orderId: order.id, orderNumber: order.order_number, status: "pago" });
+      await runPostSettlementEffect("order_status_notification", () => sendOrderStatusEmail({ to: order.customer_email, profileId: order.customer_id, orderId: order.id, orderNumber: order.order_number, status: "pago" }));
     }
     await finishEvent("succeeded", settlement.failure_reason ?? undefined); return NextResponse.json({ ok: true, status: settlement.final_status, requiresManualRefund: settlement.failure_reason === "stock_unavailable" || settlement.failure_reason === "missing_product_reference" });
   }
@@ -89,7 +90,7 @@ export async function POST(request: Request) {
       .maybeSingle();
     if (transitioned) {
       await supabase.from("order_status_history").insert({ order_id: order.id, status: orderStatus, note: `Atualização recebida pelo Mercado Pago: ${payment.status}` });
-      await sendOrderStatusEmail({ to: order.customer_email, profileId: order.customer_id, orderId: order.id, orderNumber: order.order_number, status: orderStatus });
+      await runPostSettlementEffect("order_status_notification", () => sendOrderStatusEmail({ to: order.customer_email, profileId: order.customer_id, orderId: order.id, orderNumber: order.order_number, status: orderStatus }));
     }
   }
   await finishEvent("succeeded"); return NextResponse.json({ ok: true });

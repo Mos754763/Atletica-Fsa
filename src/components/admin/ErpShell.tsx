@@ -27,7 +27,10 @@ export function ErpShell({ children, displayName, roles, isPresident, canAccessB
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-    setCollapsed(readErpSidebarCollapsed(window.localStorage.getItem(ERP_SIDEBAR_STORAGE_KEY)));
+    const frame = window.requestAnimationFrame(() => {
+      setCollapsed(readErpSidebarCollapsed(window.localStorage.getItem(ERP_SIDEBAR_STORAGE_KEY)));
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   function handleCollapsedChange(nextValue: boolean) {

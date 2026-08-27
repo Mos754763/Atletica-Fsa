@@ -67,19 +67,21 @@ export function ThemeToggle() {
   }
 
   useEffect(() => {
-    const resolvedTheme = readTheme();
-    applyTheme(resolvedTheme);
-    setTheme(resolvedTheme);
+    const frame = window.requestAnimationFrame(() => {
+      const resolvedTheme = readTheme();
+      applyTheme(resolvedTheme);
+      setTheme(resolvedTheme);
 
-    const bounds = buttonRef.current?.getBoundingClientRect();
-    const storedPosition = parseThemeTogglePosition(window.localStorage.getItem(THEME_TOGGLE_POSITION_STORAGE_KEY));
-    const toggleWidth = Math.max(bounds?.width ?? 104, 44);
-    const toggleHeight = Math.max(bounds?.height ?? 42, 42);
-    const isMobileViewport = window.matchMedia("(max-width: 640px)").matches;
-    const initialPosition = isMobileViewport
-      ? { x: window.innerWidth - toggleWidth - TOGGLE_MARGIN, y: MOBILE_HEADER_SAFE_AREA }
-      : { x: window.innerWidth - toggleWidth - TOGGLE_MARGIN, y: window.innerHeight - toggleHeight - TOGGLE_MARGIN };
-    setSafePosition(storedPosition ?? initialPosition);
+      const bounds = buttonRef.current?.getBoundingClientRect();
+      const storedPosition = parseThemeTogglePosition(window.localStorage.getItem(THEME_TOGGLE_POSITION_STORAGE_KEY));
+      const toggleWidth = Math.max(bounds?.width ?? 104, 44);
+      const toggleHeight = Math.max(bounds?.height ?? 42, 42);
+      const isMobileViewport = window.matchMedia("(max-width: 640px)").matches;
+      const initialPosition = isMobileViewport
+        ? { x: window.innerWidth - toggleWidth - TOGGLE_MARGIN, y: MOBILE_HEADER_SAFE_AREA }
+        : { x: window.innerWidth - toggleWidth - TOGGLE_MARGIN, y: window.innerHeight - toggleHeight - TOGGLE_MARGIN };
+      setSafePosition(storedPosition ?? initialPosition);
+    });
 
     function keepToggleVisible() {
       if (positionRef.current) {
@@ -88,7 +90,10 @@ export function ThemeToggle() {
     }
 
     window.addEventListener("resize", keepToggleVisible);
-    return () => window.removeEventListener("resize", keepToggleVisible);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", keepToggleVisible);
+    };
   }, []);
 
   function toggleTheme() {

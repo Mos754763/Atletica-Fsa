@@ -50,6 +50,9 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Lint
+        run: pnpm lint
+
       - name: WCAG contrast
         id: wcag_contrast
         continue-on-error: true
