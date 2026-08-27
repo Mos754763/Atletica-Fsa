@@ -426,3 +426,13 @@
 - [x] Criar cenários E2E públicos e não transacionais para landing, loja, eventos, login e proteção de acesso de rotas privadas
 - [x] Inserir gates de `pnpm audit --prod` e Playwright no CI com upload de relatório de falha sem expor segredos
 - [x] Corrigir a sobreposição do controle flutuante de tema sobre o botão do carrinho na loja, comprovada em desktop e mobile pela suíte E2E
+- [x] Diagnosticar e corrigir o logout que permanece em “Saindo...” após login QA em Homologação
+- [x] Adicionar testes unitários de regressão para garantir que o logout encerra a sessão local ou redireciona ao estado público após falha ou timeout
+- [ ] Revalidar o logout em Homologação após o novo Preview QA incorporar a correção, criando e encerrando somente uma sessão QA temporária autorizada
+- [x] Remover a entrada duplicada de `@playwright/test` do manifesto para eliminar o aviso do Vite e manter o lockfile determinístico
+- [x] Remover a dependência local desnecessária de FFmpeg na execução Playwright com Chromium do sistema, preservando trace e screenshot em falha
+- [x] Declarar o comportamento de scroll suave no elemento raiz para eliminar o aviso do Next durante transições de rota E2E
+- [x] Disparar e verificar uma recuperação de senha controlada para a caixa QA autorizada exclusivamente em Homologação
+- [ ] Validar login por e-mail e senha com a conta QA autorizada exclusivamente em Homologação, sem registrar a senha
+- [ ] Registrar evidência sanitizada dos resultados autenticados QA sem conservar sessão, senha, token ou conteúdo de e-mail
+- [x] Restaurar as referências estáveis de `next-env.d.ts` para não versionar caminhos transitórios gerados por `next dev`
