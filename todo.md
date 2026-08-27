@@ -458,3 +458,6 @@
 - [x] Registrar a limitação atual da proteção de `main`: a tentativa autorizada foi recusada por requisito de GitHub Pro para repositório privado, sem alterar visibilidade ou proteções existentes
 - [x] Configurar e validar Turnstile exclusivamente em Production: widget segregado, hostnames oficiais, sitekey apenas no ambiente Production, segredo registrado manualmente no Supabase e validação visual pública
 - [x] Confirmar que `NEXT_PUBLIC_TURNSTILE_SITE_KEY` permaneça pública por desenho no ambiente Production e que nenhum segredo Turnstile seja criado, renomeado ou exposto no frontend
+- [ ] Consultar novamente os agrupamentos de erro de runtime de Production e registrar apenas evidências sanitizadas
+- [ ] Documentar alternativas de governança de `main` viáveis no plano GitHub atual, sem tornar o repositório público, contratar planos ou enfraquecer o fluxo de revisão
+- [ ] Corrigir o fallback visual da tela de recuperação de senha no modo escuro para exibir o mascote institucional em vez do círculo neutro, preservando acessibilidade e responsividade
