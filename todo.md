@@ -441,7 +441,7 @@
 - [x] Restaurar as referências estáveis de `next-env.d.ts` para não versionar caminhos transitórios gerados por `next dev`
 - [x] Integrar a PR #30 aprovada em `main` após CI concluído e confirmar o deployment Git READY, sem alterar configurações de Production
 - [x] Confirmar o estado pós-merge do CI/E2E e documentar o roteiro de autorização, configuração e validação do Turnstile em Production
-- [ ] Executar auditoria integral não destrutiva pós-merge de rotas, testes, CI/CD, UI, banco, RLS, integrações, automações e dependências, corrigindo somente achados comprovados sem efeito externo
+- [x] Executar auditoria integral não destrutiva pós-merge de rotas, testes, CI/CD, UI, banco, RLS, integrações, automações e dependências, corrigindo somente achados comprovados sem efeito externo
 - [x] Corrigir o script `lint` incompatível com Next.js 16 e incluí-lo como gate verificável de qualidade sem introduzir dependências inseguras
 - [x] Confirmar que os blocos verticais vazios observados na captura integral eram artefato de `whileInView` sem rolagem; a inspeção após scroll demonstrou conteúdo corretamente renderizado, sem correção necessária
 - [x] Isolar falhas de automação e enfileiramento de e-mail da resposta de liquidação do webhook Mercado Pago e cobrir o encadeamento aprovado/duplicado/falha com testes
