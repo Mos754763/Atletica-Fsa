@@ -435,4 +435,7 @@
 - [x] Disparar e verificar uma recuperação de senha controlada para a caixa QA autorizada exclusivamente em Homologação
 - [x] Validar login por e-mail e senha com a conta QA autorizada exclusivamente em Homologação, sem registrar a senha
 - [x] Registrar evidência sanitizada dos resultados autenticados QA sem conservar sessão, senha, token ou conteúdo de e-mail
+- [x] Corrigir o cenário E2E de rota privada para considerar o estado seguro de autenticação indisponível no CI e manter a proteção de acesso verificável
+- [x] Redirecionar rotas protegidas para login quando a configuração pública do Supabase estiver ausente, sem renderizar erro interno ou conteúdo administrativo
+- [x] Adicionar teste de regressão do helper de papel para o ambiente sem configuração Supabase
 - [x] Restaurar as referências estáveis de `next-env.d.ts` para não versionar caminhos transitórios gerados por `next dev`
