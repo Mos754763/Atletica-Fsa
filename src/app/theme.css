@@ -58,7 +58,7 @@ html[data-theme="dark"] .store-page :is(.store-nav,.store-hero,.store-filters,.s
 /* A vitrine prioriza legibilidade: os canvases decorativos ficam fora da composição escura. */
 html[data-theme="dark"] .ambient-scene,html[data-theme="dark"] .frontend-fx { display:none!important; }
 
-@media(max-width:640px){.theme-toggle{top:14px;right:13px;bottom:auto;left:auto;min-height:40px;padding:0 10px}.theme-toggle__label{display:none}.theme-toggle__grip{opacity:.7}}
+@media(max-width:640px){.theme-toggle{top:72px;right:13px;bottom:auto;left:auto;min-height:40px;padding:0 10px}.theme-toggle__label{display:none}.theme-toggle__grip{opacity:.7}}
 
 /* A landing mantém superfícies próprias no escuro para que a tipografia clara nunca fique sobre o fundo claro original. */
 html[data-theme="dark"] .management-section { color:#edf4ff; background:linear-gradient(145deg,#061833 0%,#082249 100%); }

@@ -9,6 +9,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:list": "playwright test --list",
     "test:wcag-contrast": "vitest run src/app/wcag-contrast.test.ts",
     "test:wcag-a11y": "vitest run src/app/wcag-a11y.test.ts",
     "test:slack-webhook": "RUN_LIVE_SLACK_WEBHOOK_TEST=true vitest run src/lib/integrations/slack-webhook.secret.test.ts",
@@ -17,7 +19,8 @@
     "qa:homologation": "node scripts/qa-homologation.mjs",
     "audit:catalog-media": "node scripts/audit-catalog-media.mjs",
     "seed:catalog-images": "node scripts/seed-catalog-images.mjs",
-    "diagnose:cron": "node scripts/diagnose-cron-health.mjs"
+    "diagnose:cron": "node scripts/diagnose-cron-health.mjs",
+    "audit:prod": "pnpm audit --prod"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
@@ -38,6 +41,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@playwright/test": "1.58.2",
     "@types/node": "^22.10.2",
     "@types/pdfkit": "^0.17.6",
     "@types/qrcode": "^1.5.6",

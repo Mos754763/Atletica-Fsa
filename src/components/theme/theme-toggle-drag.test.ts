@@ -23,7 +23,10 @@ describe("controle de tema arrastável", () => {
 
   it("abre em uma área livre no topo em mobile sem sobrescrever uma posição já arrastada", () => {
     expect(component).toContain('window.matchMedia("(max-width: 640px)").matches');
-    expect(component).toContain("? { x: window.innerWidth - toggleWidth - TOGGLE_MARGIN, y: TOGGLE_MARGIN }");
+    expect(component).toContain("const MOBILE_HEADER_SAFE_AREA = 72;");
+    expect(component).toContain("? { x: window.innerWidth - toggleWidth - TOGGLE_MARGIN, y: MOBILE_HEADER_SAFE_AREA }");
+    expect(component).toContain("y: Math.max(MOBILE_HEADER_SAFE_AREA, clampedPosition.y)");
+    expect(styles).toContain(".theme-toggle{top:72px");
     expect(component).toContain("setSafePosition(storedPosition ?? initialPosition)");
   });
 

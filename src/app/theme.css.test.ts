@@ -49,8 +49,8 @@ describe("proteção visual da loja no tema escuro", () => {
     expect(mobileOverflowStyles).toContain("grid-template-columns: minmax(0, 1fr);");
   });
 
-  it("posiciona inicialmente o acionador móvel de tema na área livre do hero sem remover o arrasto", () => {
-    expect(themeStyles).toContain("@media(max-width:640px){.theme-toggle{top:14px;right:13px;bottom:auto;left:auto;");
+  it("posiciona inicialmente o acionador móvel de tema abaixo da navegação sem remover o arrasto", () => {
+    expect(themeStyles).toContain("@media(max-width:640px){.theme-toggle{top:72px;right:13px;bottom:auto;left:auto;");
     expect(themeStyles).toContain(".theme-toggle[data-positioned=\"true\"] { right:auto; bottom:auto; }");
     expect(themeStyles).toContain("touch-action:none");
   });
