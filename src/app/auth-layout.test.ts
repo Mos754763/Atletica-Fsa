@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 
 const authStyles = readFileSync(new URL("./auth.css", import.meta.url), "utf8");
 const experienceStyles = readFileSync(new URL("./experience.css", import.meta.url), "utf8");
+const resetPasswordPage = readFileSync(new URL("./redefinir-senha/page.tsx", import.meta.url), "utf8");
+const resetPasswordStyles = readFileSync(new URL("./redefinir-senha/reset-password.module.css", import.meta.url), "utf8");
 
 describe("contrato de composição do login", () => {
   it("mantém o login desktop dentro do viewport e centraliza o cartão sem somar padding à altura mínima", () => {
@@ -44,5 +46,15 @@ describe("contrato de composição do login", () => {
   it("preserva a geometria do login quando o tema escuro é selecionado", () => {
     expect(authStyles).toContain(".auth-page{height:100vh;height:100dvh;min-height:0;display:grid");
     expect(authStyles).toContain("@media(max-width:780px){.auth-page{height:auto;min-height:100svh;overflow:visible;grid-template-columns:1fr}");
+  });
+
+  it("usa o mascote institucional, e não um círculo neutro, na recuperação de senha em todos os temas", () => {
+    expect(resetPasswordPage).toContain('import { RabbitMascot } from "@/components/brand/RabbitMascot";');
+    expect(resetPasswordPage).toContain('className="auth-page__mascot"');
+    expect(resetPasswordPage).toContain('auth-page__intro fx-depth-surface');
+    expect(resetPasswordStyles).toContain('.intro :global(.auth-page__mascot)');
+    expect(resetPasswordStyles).not.toContain("radial-gradient(circle at 86% 66%");
+    expect(resetPasswordStyles).not.toContain("radial-gradient(circle at 74% 30%");
+    expect(resetPasswordStyles).not.toContain("radial-gradient(circle at 89% 72%");
   });
 });

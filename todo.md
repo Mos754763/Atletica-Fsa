@@ -453,3 +453,6 @@
 - [ ] Planejar migração segura das imagens remotas para o componente otimizado do Next.js, após inventário de domínios e avaliação de custo/impacto de otimização
 - [x] Substituir a navegação interna imperativa do centro de segurança pelo roteamento de cliente do Next.js, mantendo o redirecionamento de logout resiliente
 - [x] Estabilizar a função de atualização do centro de segurança para eliminar a dependência de efeito remanescente sem alterar MFA, senha ou sessão
+- [x] Consultar novamente os agrupamentos de erro de runtime de Production e registrar apenas evidências sanitizadas
+- [x] Documentar alternativas de governança de `main` viáveis no plano GitHub atual, sem tornar o repositório público, contratar planos ou enfraquecer o fluxo de revisão
+- [x] Corrigir o fallback visual da tela de recuperação de senha no modo escuro para exibir o mascote institucional em vez do círculo neutro, preservando acessibilidade e responsividade
