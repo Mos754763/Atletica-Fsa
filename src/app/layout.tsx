@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="pt-BR" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem('fsa-theme');var m=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;var d=t==='dark'||t==='light'?t:(m?'dark':'${DEFAULT_THEME}');document.documentElement.dataset.theme=d;document.documentElement.style.colorScheme=d}catch(e){}` }} /></head>
       <body><div className="ambient-scene" aria-hidden="true"><span /><span /><span /></div><FrontendFx /><ExperienceChrome />{children}<ThemeToggle /><Analytics /><SpeedInsights /></body>
     </html>

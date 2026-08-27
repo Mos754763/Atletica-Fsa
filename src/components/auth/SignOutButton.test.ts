@@ -4,14 +4,14 @@ import { describe, expect, it } from "vitest";
 const signOutSource = readFileSync(new URL("./SignOutButton.tsx", import.meta.url), "utf8");
 
 describe("contrato de encerramento de sessão", () => {
-  it("solicita revogação global e remove a sessão local quando a chamada remota falha", () => {
-    expect(signOutSource).toContain('supabase.auth.signOut({ scope: "global" })');
-    expect(signOutSource).toContain('supabase.auth.signOut({ scope: "local" })');
-    expect(signOutSource).toContain("remoteSignOutFailed");
+  it("delega a limpeza limitada da sessão ao helper de logout do navegador", () => {
+    expect(signOutSource).toContain('import { signOutCurrentBrowserSession } from "@/lib/auth/signout"');
+    expect(signOutSource).toContain("await signOutCurrentBrowserSession");
+    expect(signOutSource).not.toContain('scope: "global"');
   });
 
-  it("não expõe a mensagem interna do provedor e redireciona após a tentativa de limpeza", () => {
-    expect(signOutSource).not.toContain("signOutError.message");
+  it("não expõe a mensagem interna do provedor e sempre direciona ao estado público", () => {
+    expect(signOutSource).not.toContain("error.message");
     expect(signOutSource).toContain('window.location.replace("/")');
   });
 });

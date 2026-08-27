@@ -17,4 +17,6 @@
 # tooling
 *.tsbuildinfo
 coverage/
+playwright-report/
+test-results/
 .DS_Store

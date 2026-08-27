@@ -24,7 +24,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Typecheck, WCAG accessibility, tests and production build
+    name: Typecheck, WCAG accessibility, tests, dependency audit and production build
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -43,6 +43,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Audit production dependencies
+        run: pnpm audit --prod
 
       - name: Typecheck
         run: pnpm typecheck
@@ -87,3 +90,41 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+  e2e-public:
+    name: Public E2E navigation and access control
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium for Playwright
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run public E2E suite
+        run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14

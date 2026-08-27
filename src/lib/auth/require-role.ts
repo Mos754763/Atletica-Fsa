@@ -1,9 +1,12 @@
 import { redirect } from "next/navigation";
 import { canAccessRoles, normalizeRoles } from "@/lib/auth/roles";
+import { hasSupabaseConfig } from "@/lib/env";
 import { createServerAuthClient } from "@/lib/supabase/server-auth";
 import type { UserRole } from "@/types/domain";
 
 export async function requireRole(allowedRoles: readonly UserRole[]) {
+  if (!hasSupabaseConfig()) redirect("/login");
+
   const supabase = await createServerAuthClient();
   const { data: claimsData } = await supabase.auth.getClaims();
   const userId = claimsData?.claims?.sub;

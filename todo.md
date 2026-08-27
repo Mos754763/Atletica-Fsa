@@ -393,3 +393,49 @@
 - [ ] Diagnosticar e corrigir o estado Troubleshoot reproduzido do widget Turnstile no login de produção antes de concluir a ativação
 - [x] Reorganizar os cards de setores da landing para enquadrar corretamente as fotos, padronizar a composição e validar desktop e mobile
 - [x] Diagnosticar a falha de deploy Vercel da PR de cards de setores e corrigir somente a causa comprovada
+- [x] Revalidar os testes da PR #29, confirmar o ambiente de destino e promover somente após autorização explícita compatível
+- [ ] Executar a remediação pós-auditoria em ordem de risco, preservando Production e pagamentos até aprovações específicas
+- [x] Preparar a rotação segura de credenciais historicamente expostas, sem registrar valores em código, tickets ou relatórios
+- [ ] Diagnosticar o Turnstile `400020` em branch isolada e homologação, preservando a proteção antirrobô em Production
+- [ ] Criar cobertura Playwright versionada para jornadas públicas, autenticação QA e autorização administrativa em Preview controlado
+- [x] Adicionar gates de CI para E2E de Preview e auditoria de dependências de produção, com política explícita de falha
+- [ ] Validar login, recuperação de senha, Google OAuth e entrega de e-mail com dados QA e autorização reversível em homologação
+- [ ] Preparar PRs, evidências de homologação e solicitações de aprovação separadas para quaisquer mudanças sensíveis de Production
+- [ ] Executar a rotação dos segredos externos por provedor após confirmação explícita e validar cada ambiente de forma reversível
+- [x] Confirmar o alias `homolog.atleticafsa.site` no Preview da branch `fix/sector-cards-composition` antes de configurar ou validar o Turnstile de Homologação
+- [x] Criar widget Turnstile de Homologação em modo gerenciado, restrito a `homolog.atleticafsa.site`, sem alterar o widget de Production
+- [x] Configurar a sitekey pública do widget de Homologação exclusivamente no Preview QA da Vercel, sem alterar Production
+- [x] Configurar e validar o segredo correspondente no CAPTCHA do Supabase de Homologação, sem alterar Production
+- [x] Mover o alias `homolog.atleticafsa.site` para o Preview READY da branch `fix/turnstile-e2e-remediation` antes da validação E2E
+- [x] Associar temporariamente o alias e a sobreposição Turnstile ao Preview elegível `audit/homologation-functional-20260820`, sem alterar Production
+- [x] Restaurar uma referência remota QA elegível para `audit/homologation-functional-20260820` antes de reapontar o alias ou salvar configurações de Homologação
+- [x] Disparar um novo Preview QA a partir da referência restaurada para que a Vercel reconheça a branch no seletor de sobreposição
+- [x] Auditar o redeploy mais recente de Production, confirmando commit, alvo e escopos antes de qualquer nova alteração externa
+- [x] Auditar o redeploy mais recente de Production, confirmando commit, alvo e escopos antes de qualquer nova alteração externa
+- [x] Rotacionar o segredo exposto do widget Turnstile de Homologação, preservando modo Managed, sem pre-clearance e hostname exclusivo
+- [x] Configurar o novo segredo rotacionado somente no CAPTCHA do Supabase de Homologação e confirmar URLs autorizadas
+- [x] Registrar evidência sanitizada da rotação e da configuração de Homologação sem expor sitekeys, tokens ou segredos
+- [x] Rotacionar o segredo originalmente exposto do widget Turnstile de Homologação, mantendo o escopo exclusivo do ambiente QA
+- [x] Após a janela de segurança do provedor, rotacionar novamente o segredo de Homologação que foi exibido pelo diálogo do provedor e usar somente a substituição não exposta no Supabase QA
+- [x] Substituir a Site URL legada do Supabase de Homologação por `https://homolog.atleticafsa.site` e adicionar o callback canônico aos Redirect URLs autorizados
+- [x] Executar uma rotação manual final do segredo Turnstile de Homologação, transferindo-o diretamente ao Supabase QA sem acessar a página de segredo por automação
+- [x] Impedir novas inspeções automatizadas da página de segredo do CAPTCHA até que a rotação manual final seja concluída e validada apenas por comportamento externo
+- [ ] Obter evidência de console e rede sem erros relevantes, além de renderização mobile, no Preview QA protegido por SSO sem expor segredos
+- [ ] Definir um mecanismo autorizado para o Playwright alcançar o Preview QA protegido, sem remover a proteção Vercel nem reutilizar segredos de bypass
+- [x] Adicionar configuração Playwright versionada com projetos desktop e mobile, servidor local controlado e artefatos apenas em falha
+- [x] Criar cenários E2E públicos e não transacionais para landing, loja, eventos, login e proteção de acesso de rotas privadas
+- [x] Inserir gates de `pnpm audit --prod` e Playwright no CI com upload de relatório de falha sem expor segredos
+- [x] Corrigir a sobreposição do controle flutuante de tema sobre o botão do carrinho na loja, comprovada em desktop e mobile pela suíte E2E
+- [x] Diagnosticar e corrigir o logout que permanece em “Saindo...” após login QA em Homologação
+- [x] Adicionar testes unitários de regressão para garantir que o logout encerra a sessão local ou redireciona ao estado público após falha ou timeout
+- [x] Revalidar o logout em Homologação após o novo Preview QA incorporar a correção, criando e encerrando somente uma sessão QA temporária autorizada
+- [x] Remover a entrada duplicada de `@playwright/test` do manifesto para eliminar o aviso do Vite e manter o lockfile determinístico
+- [x] Remover a dependência local desnecessária de FFmpeg na execução Playwright com Chromium do sistema, preservando trace e screenshot em falha
+- [x] Declarar o comportamento de scroll suave no elemento raiz para eliminar o aviso do Next durante transições de rota E2E
+- [x] Disparar e verificar uma recuperação de senha controlada para a caixa QA autorizada exclusivamente em Homologação
+- [x] Validar login por e-mail e senha com a conta QA autorizada exclusivamente em Homologação, sem registrar a senha
+- [x] Registrar evidência sanitizada dos resultados autenticados QA sem conservar sessão, senha, token ou conteúdo de e-mail
+- [x] Corrigir o cenário E2E de rota privada para considerar o estado seguro de autenticação indisponível no CI e manter a proteção de acesso verificável
+- [x] Redirecionar rotas protegidas para login quando a configuração pública do Supabase estiver ausente, sem renderizar erro interno ou conteúdo administrativo
+- [x] Adicionar teste de regressão do helper de papel para o ambiente sem configuração Supabase
+- [x] Restaurar as referências estáveis de `next-env.d.ts` para não versionar caminhos transitórios gerados por `next dev`
