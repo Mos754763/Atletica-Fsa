@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getApiProfile } from "@/lib/api/auth";
 import { createAuthenticatedServerClient } from "@/lib/supabase/server";
+import { sendOrderStatusEmail } from "@/lib/email/transactional";
 import { PATCH } from "./route";
 
 vi.mock("@/lib/api/auth", () => ({ getApiProfile: vi.fn() }));
@@ -95,5 +96,27 @@ describe("PATCH /api/ods/orders", () => {
     expect(payload).toEqual({ error: "Não foi possível concluir esta operação agora. Atualize a fila e tente novamente." });
     expect(JSON.stringify(payload)).not.toContain("orders table diagnostic");
     expect(rpc).toHaveBeenCalledWith("advance_ods_order", { p_order_id: ORDER_ID, p_next_status: "em_preparo" });
+  });
+
+  it("preserva o sucesso da transição quando a notificação pós-operação falha", async () => {
+    operationalAuth();
+    const rpc = vi.fn().mockResolvedValue({ error: null });
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    createAuthenticatedServerClientMock.mockReturnValue({ rpc } as never);
+    vi.mocked(sendOrderStatusEmail).mockRejectedValueOnce(new Error("outbox indisponível"));
+
+    const response = requireResponse(await PATCH(request({ orderId: ORDER_ID, status: "em_preparo" })));
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({ ok: true });
+    expect(rpc).toHaveBeenCalledWith("advance_ods_order", { p_order_id: ORDER_ID, p_next_status: "em_preparo" });
+    expect(sendOrderStatusEmail).toHaveBeenCalledWith({
+      to: "cliente@example.com",
+      profileId: "customer-1",
+      orderId: ORDER_ID,
+      orderNumber: 321,
+      status: "em_preparo",
+    });
+    errorSpy.mockRestore();
   });
 });

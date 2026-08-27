@@ -107,7 +107,9 @@ describe("experiência pública interativa", () => {
     expect(experienceStyles).toContain("transform:translate(-14%,-5%)");
     expect(experienceStyles).toContain("mix-blend-mode:normal");
     expect(landingMotion).toContain('className="hero__mascot-viewport"');
-    expect(landingMotion).toContain("const [artworkSource, setArtworkSource] = useState(artwork)");
+    expect(landingMotion).toContain("const [failedArtwork, setFailedArtwork] = useState<string | null>(null)");
+    expect(landingMotion).toContain("const artworkSource = failedArtwork === artwork && fallbackArtwork ? fallbackArtwork : artwork");
+    expect(landingMotion).toContain("setFailedArtwork(artwork)");
     expect(homePage).toContain('<h1>VESTE.<br />VIVE.<br /><em>VENCE.</em></h1>');
     expect(homePage).not.toContain('MotionReveal delay={0.1}><h1>VESTE.');
   });

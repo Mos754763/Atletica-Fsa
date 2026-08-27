@@ -80,7 +80,10 @@ export function AccountSecurityCenter() {
     }
   }
 
-  useEffect(() => { void refreshSecurityState(); }, []);
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void refreshSecurityState(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   async function beginTotpEnrollment() {
     setBusyAction("enroll-totp");

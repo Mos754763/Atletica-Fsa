@@ -91,7 +91,8 @@ export function MotionButton({ children, className, label }: { children: ReactNo
 
 export function HeroMotion({ artwork, fallbackArtwork }: { artwork: string; fallbackArtwork?: string }) {
   const reducedMotion = useReducedMotion();
-  const [artworkSource, setArtworkSource] = useState(artwork);
+  const [failedArtwork, setFailedArtwork] = useState<string | null>(null);
+  const artworkSource = failedArtwork === artwork && fallbackArtwork ? fallbackArtwork : artwork;
   const { scrollY } = useScroll();
   const artworkY = useTransform(scrollY, [0, 780], [0, -48]);
   const badgeY = useTransform(scrollY, [0, 780], [0, 34]);
@@ -99,7 +100,6 @@ export function HeroMotion({ artwork, fallbackArtwork }: { artwork: string; fall
   const tiltY = useMotionValue(0);
   const smoothTiltX = useSpring(tiltX, { stiffness: 135, damping: 20, mass: 0.5 });
   const smoothTiltY = useSpring(tiltY, { stiffness: 135, damping: 20, mass: 0.5 });
-  useEffect(() => setArtworkSource(artwork), [artwork]);
   return (
     <div className="hero__mascot-wrap motion-hero-art" onPointerMove={(event) => { if (reducedMotion || event.pointerType !== "mouse") return; const bounds = event.currentTarget.getBoundingClientRect(); tiltX.set(((event.clientY - (bounds.top + bounds.height / 2)) / bounds.height) * -8); tiltY.set(((event.clientX - (bounds.left + bounds.width / 2)) / bounds.width) * 10); }} onPointerLeave={() => { tiltX.set(0); tiltY.set(0); }}>
       <span className="hero__yellow-orb" />
@@ -108,7 +108,7 @@ export function HeroMotion({ artwork, fallbackArtwork }: { artwork: string; fall
       <span className="hero__outline hero__outline--one">FSA</span>
       <span className="hero__outline hero__outline--two">FSA</span>
       <motion.div className="hero__mascot-viewport" style={reducedMotion ? undefined : { y: artworkY, rotateX: smoothTiltX, rotateY: smoothTiltY, transformPerspective: 1100 }} initial={false} animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }} transition={{ ...MOTION_SPRING, delay: 0.18 }}>
-        <img className="hero__official-art" src={artworkSource} alt="Mascote institucional da ATLETICA FSA para a gestão 2026" fetchPriority="high" decoding="async" onError={() => { if (fallbackArtwork && artworkSource !== fallbackArtwork) setArtworkSource(fallbackArtwork); }} />
+        <img className="hero__official-art" src={artworkSource} alt="Mascote institucional da ATLETICA FSA para a gestão 2026" fetchPriority="high" decoding="async" onError={() => { if (fallbackArtwork && artworkSource !== fallbackArtwork) setFailedArtwork(artwork); }} />
       </motion.div>
       <motion.div className="hero__badge" style={reducedMotion ? undefined : { y: badgeY }} initial={reducedMotion ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ ...MOTION_SPRING, delay: 0.34 }}><strong>2026</strong><span>GESTÃO<br />FSA</span></motion.div>
     </div>
