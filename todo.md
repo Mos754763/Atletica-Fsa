@@ -453,3 +453,7 @@
 - [ ] Planejar migração segura das imagens remotas para o componente otimizado do Next.js, após inventário de domínios e avaliação de custo/impacto de otimização
 - [x] Substituir a navegação interna imperativa do centro de segurança pelo roteamento de cliente do Next.js, mantendo o redirecionamento de logout resiliente
 - [x] Estabilizar a função de atualização do centro de segurança para eliminar a dependência de efeito remanescente sem alterar MFA, senha ou sessão
+- [ ] Aplicar proteção de `main` com PR obrigatória, CI exigido, bloqueio de force-push e bloqueio de exclusão da branch — bloqueado no repositório privado pelo requisito de GitHub Pro; não tornar o repositório público nem contratar plano sem autorização financeira específica
+- [x] Integrar a PR #31 aprovada em `main` após reconfirmar a validade do CI e acompanhar somente o deployment de código resultante
+- [x] Registrar a limitação atual da proteção de `main`: a tentativa autorizada foi recusada por requisito de GitHub Pro para repositório privado, sem alterar visibilidade ou proteções existentes
+- [ ] Configurar e validar Turnstile exclusivamente em Production: widget segregado, hostnames oficiais, sitekey apenas no ambiente Production, segredo registrado manualmente no Supabase e validação visual pública
