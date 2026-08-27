@@ -456,3 +456,6 @@
 - [x] Consultar novamente os agrupamentos de erro de runtime de Production e registrar apenas evidências sanitizadas
 - [x] Documentar alternativas de governança de `main` viáveis no plano GitHub atual, sem tornar o repositório público, contratar planos ou enfraquecer o fluxo de revisão
 - [x] Corrigir o fallback visual da tela de recuperação de senha no modo escuro para exibir o mascote institucional em vez do círculo neutro, preservando acessibilidade e responsividade
+- [ ] Consultar o estado atual da PR #33 e os logs de runtime de Production, registrando somente evidências sanitizadas
+- [ ] Criar uma configuração `CODEOWNERS` revisável para solicitar revisão automática nas áreas críticas, sem alegar que ela impõe bloqueio técnico sem branch protection
+- [ ] Orientar a aprovação e o merge da PR #33, sem executar qualquer merge até receber confirmação explícita no momento da ação
