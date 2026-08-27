@@ -1,0 +1,40 @@
+# ATLETICA FSA — responsáveis por revisão
+#
+# CODEOWNERS solicita revisões automaticamente em pull requests que alterem
+# os caminhos abaixo. Ele não bloqueia merge sem branch protection/rulesets.
+# O responsável indicado deve manter acesso explícito de escrita ao repositório.
+
+# Responsável padrão por toda alteração não coberta abaixo.
+* @Mos754763
+
+# Protege a própria governança e a automação de entrega.
+/.github/ @Mos754763
+/.github/CODEOWNERS @Mos754763
+/.github/workflows/ @Mos754763
+
+# Dependências, scripts e configuração de build.
+/package.json @Mos754763
+/pnpm-lock.yaml @Mos754763
+/next.config.* @Mos754763
+/tsconfig.json @Mos754763
+/eslint.config.mjs @Mos754763
+
+# Superfícies de autenticação, autorização e CAPTCHA.
+/src/app/login/ @Mos754763
+/src/app/redefinir-senha/ @Mos754763
+/src/app/auth/ @Mos754763
+/src/app/api/auth/ @Mos754763
+/src/components/auth/ @Mos754763
+/src/lib/auth/ @Mos754763
+
+# Pagamentos, pedidos, ODS e integrações externas.
+/src/app/api/payments/ @Mos754763
+/src/app/api/ods/ @Mos754763
+/src/app/api/cron/ @Mos754763
+/src/app/api/integrations/ @Mos754763
+/src/lib/payments/ @Mos754763
+/src/lib/integrations/ @Mos754763
+
+# Banco, políticas e migrações.
+/supabase/ @Mos754763
+/scripts/ @Mos754763

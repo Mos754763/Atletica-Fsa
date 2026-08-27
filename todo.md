@@ -453,3 +453,4 @@
 - [ ] Planejar migração segura das imagens remotas para o componente otimizado do Next.js, após inventário de domínios e avaliação de custo/impacto de otimização
 - [x] Substituir a navegação interna imperativa do centro de segurança pelo roteamento de cliente do Next.js, mantendo o redirecionamento de logout resiliente
 - [x] Estabilizar a função de atualização do centro de segurança para eliminar a dependência de efeito remanescente sem alterar MFA, senha ou sessão
+- [x] Criar uma configuração `CODEOWNERS` revisável para solicitar revisão automática nas áreas críticas, sem alegar que ela impõe bloqueio técnico sem branch protection
