@@ -457,3 +457,4 @@
 - [x] Integrar a PR #31 aprovada em `main` após reconfirmar a validade do CI e acompanhar somente o deployment de código resultante
 - [x] Registrar a limitação atual da proteção de `main`: a tentativa autorizada foi recusada por requisito de GitHub Pro para repositório privado, sem alterar visibilidade ou proteções existentes
 - [ ] Configurar e validar Turnstile exclusivamente em Production: widget segregado, hostnames oficiais, sitekey apenas no ambiente Production, segredo registrado manualmente no Supabase e validação visual pública
+- [ ] Confirmar que `NEXT_PUBLIC_TURNSTILE_SITE_KEY` permaneça pública por desenho no ambiente Production e que nenhum segredo Turnstile seja criado, renomeado ou exposto no frontend
