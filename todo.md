@@ -459,6 +459,6 @@
 - [x] Corrigir o fallback visual da tela de recuperação de senha no modo escuro para exibir o mascote institucional em vez do círculo neutro, preservando acessibilidade e responsividade
 - [x] Consultar o estado atual da PR #33 e os logs de runtime de Production, registrando somente evidências sanitizadas
 - [x] Orientar a aprovação e o merge da PR #33 após receber confirmação explícita no momento da ação
-- [ ] Confirmar o CI do commit atual e executar o rebase-merge autorizado da PR #34 de CODEOWNERS em `main`
-- [ ] Acompanhar o deployment, o CI e os logs de runtime de Production após o merge da PR #34
-- [ ] Documentar o procedimento seguro para adicionar um segundo colaborador com revisão independente no GitHub
+- [x] Confirmar o CI do commit atual e executar o merge autorizado da PR #34 de CODEOWNERS em `main` — rebase indisponível devido ao histórico de merge da branch; merge commit aprovado explicitamente
+- [x] Acompanhar o deployment, o CI e os logs de runtime de Production após o merge da PR #34
+- [x] Documentar o procedimento seguro para adicionar um segundo colaborador com revisão independente no GitHub
