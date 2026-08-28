@@ -8,19 +8,19 @@ const codeowners = readFileSync(
 
 describe("CODEOWNERS", () => {
   it("declara um responsável padrão e protege sua própria configuração", () => {
-    expect(codeowners).toContain("* @Mos754763");
-    expect(codeowners).toContain("/.github/ @Mos754763");
-    expect(codeowners).toContain("/.github/CODEOWNERS @Mos754763");
+    expect(codeowners).toContain("* @Mos754763 @MRDSSAX");
+    expect(codeowners).toContain("/.github/ @Mos754763 @MRDSSAX");
+    expect(codeowners).toContain("/.github/CODEOWNERS @Mos754763 @MRDSSAX");
   });
 
   it("atribui revisão às superfícies operacionais e de segurança críticas", () => {
     [
-      "/.github/workflows/ @Mos754763",
-      "/src/components/auth/ @Mos754763",
-      "/src/lib/auth/ @Mos754763",
-      "/src/app/api/payments/ @Mos754763",
-      "/src/app/api/ods/ @Mos754763",
-      "/supabase/ @Mos754763",
+      "/.github/workflows/ @Mos754763 @MRDSSAX",
+      "/src/components/auth/ @Mos754763 @MRDSSAX",
+      "/src/lib/auth/ @Mos754763 @MRDSSAX",
+      "/src/app/api/payments/ @Mos754763 @MRDSSAX",
+      "/src/app/api/ods/ @Mos754763 @MRDSSAX",
+      "/supabase/ @Mos754763 @MRDSSAX",
     ].forEach((rule) => expect(codeowners).toContain(rule));
   });
 
