@@ -454,3 +454,8 @@
 - [x] Substituir a navegação interna imperativa do centro de segurança pelo roteamento de cliente do Next.js, mantendo o redirecionamento de logout resiliente
 - [x] Estabilizar a função de atualização do centro de segurança para eliminar a dependência de efeito remanescente sem alterar MFA, senha ou sessão
 - [x] Criar uma configuração `CODEOWNERS` revisável para solicitar revisão automática nas áreas críticas, sem alegar que ela impõe bloqueio técnico sem branch protection
+- [x] Consultar novamente os agrupamentos de erro de runtime de Production e registrar apenas evidências sanitizadas
+- [x] Documentar alternativas de governança de `main` viáveis no plano GitHub atual, sem tornar o repositório público, contratar planos ou enfraquecer o fluxo de revisão
+- [x] Corrigir o fallback visual da tela de recuperação de senha no modo escuro para exibir o mascote institucional em vez do círculo neutro, preservando acessibilidade e responsividade
+- [x] Consultar o estado atual da PR #33 e os logs de runtime de Production, registrando somente evidências sanitizadas
+- [x] Orientar a aprovação e o merge da PR #33 após receber confirmação explícita no momento da ação
