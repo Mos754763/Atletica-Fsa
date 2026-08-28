@@ -18,7 +18,7 @@ export async function requireAdminShell() {
     service.from("profile_role_assignments").select("role").eq("profile_id", userId),
   ]);
   const roles = normalizeRoles((assignments ?? []).map((assignment) => assignment.role as UserRole), profile.role as UserRole);
-  const isOperational = roles.some((role) => ["admin", "caixa", "cozinha"].includes(role));
+  const isOperational = roles.some((role) => ["admin", "caixa", "backoffice"].includes(role));
   const canAccessBuilder = Boolean(profile.is_president || (directorMembership?.length ?? 0) || (tableGrant?.length ?? 0));
   if (!isOperational && !canAccessBuilder) redirect("/conta?acesso=negado");
   return { userId, profile: { ...profile, role: profile.role as UserRole, roles }, canAccessBuilder };
