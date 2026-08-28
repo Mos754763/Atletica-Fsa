@@ -462,3 +462,6 @@
 - [x] Confirmar o CI do commit atual e executar o merge autorizado da PR #34 de CODEOWNERS em `main` — rebase indisponível devido ao histórico de merge da branch; merge commit aprovado explicitamente
 - [x] Acompanhar o deployment, o CI e os logs de runtime de Production após o merge da PR #34
 - [x] Documentar o procedimento seguro para adicionar um segundo colaborador com revisão independente no GitHub
+- [x] Consultar novamente os logs de runtime de Production após o merge da PR #34 e registrar evidências sanitizadas
+- [x] Listar o estado atual das pull requests abertas no repositório Atletica-Fsa
+- [ ] Atualizar `CODEOWNERS` com o nome de usuário GitHub público do novo revisor quando for informado e abrir uma pull request dedicada
