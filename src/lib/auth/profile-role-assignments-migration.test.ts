@@ -19,7 +19,8 @@ describe("migração de atribuições cumulativas", () => {
     expect(migration).toContain("create or replace function public.is_admin()");
     expect(migration).toContain("create or replace function public.is_staff()");
     expect(migration).toContain("create or replace function public.can_manage_catalog()");
-    expect(migration).toContain("when public.has_any_role(array['caixa', 'cozinha']::public.user_role[]) then 'admin'::public.user_role");
+    expect(migration).toContain("Nenhuma nova");
+    expect(migration).toContain("autorização deve depender dela: use public.has_any_role(...)");
   });
 
   it("mantém a troca de atribuições restrita à Presidência e preserva o último administrador", () => {
