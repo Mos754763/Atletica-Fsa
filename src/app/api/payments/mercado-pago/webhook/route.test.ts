@@ -52,19 +52,78 @@ describe("POST /api/payments/mercado-pago/webhook", () => {
     mocks.verifyMercadoPagoWebhook.mockReturnValue(true);
   });
 
-  it("ignora tópicos não suportados sem tratá-los como um pagamento", async () => {
-    const response = await POST(webhookRequest({ type: "subscription_preapproval", data: { id: "sub_123" } }));
+  it.each([
+    "order",
+    "orders",
+    "point_integration",
+    "shipment",
+    "shipments",
+    "shipping",
+    "envios",
+    "subscription_preapproval",
+  ])("reconhece %s como irrelevante sem consultar configuração, banco ou provedor", async (type) => {
+    env.processPaymentEvents = false;
+    env.mercadoPagoAccessToken = undefined;
+    env.mercadoPagoWebhookSecret = undefined;
+    const response = await POST(webhookRequest({ type, data: { id: "not-a-payment" } }));
 
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({ ok: true, ignored: "unsupported_topic" });
+    expect(mocks.createServiceClient).not.toHaveBeenCalled();
+    expect(mocks.fetchMercadoPagoPayment).not.toHaveBeenCalled();
+    expect(mocks.verifyMercadoPagoWebhook).not.toHaveBeenCalled();
   });
 
-  it("mantém todos os eventos indisponíveis quando o gate de processamento estiver fechado", async () => {
+  it("audita merchant_order assinado sem buscar ou liquidar pagamento", async () => {
+    const update = vi.fn().mockReturnValue({ eq: vi.fn().mockResolvedValue({ error: null }) });
+    const rpc = vi.fn().mockResolvedValue({ data: { event_id: "merchant-event-1", claimed: true }, error: null });
+    mocks.createServiceClient.mockReturnValue({ rpc, from: vi.fn(() => ({ update })) });
+
+    const response = await POST(webhookRequest({ type: "merchant_order", data: { id: "merchant-123" } }));
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({ ok: true, ignored: "merchant_order_not_enabled" });
+    expect(rpc).toHaveBeenCalledWith("claim_payment_webhook_event", expect.objectContaining({ p_payment_reference: "merchant-123" }));
+    expect(update).toHaveBeenCalledWith(expect.objectContaining({ status: "ignored", error_code: "merchant_order_not_enabled" }));
+    expect(mocks.fetchMercadoPagoPayment).not.toHaveBeenCalled();
+  });
+
+  it("rejeita merchant_order sem assinatura antes de criar auditoria", async () => {
+    mocks.verifyMercadoPagoWebhook.mockReturnValueOnce(false);
+
+    const response = await POST(webhookRequest({ type: "merchant_order", data: { id: "merchant-123" } }));
+
+    expect(response.status).toBe(401);
+    expect(mocks.createServiceClient).not.toHaveBeenCalled();
+    expect(mocks.fetchMercadoPagoPayment).not.toHaveBeenCalled();
+  });
+
+  it("audita merchant_order mesmo no drain, sem token ou gate financeiro", async () => {
+    const update = vi.fn().mockReturnValue({ eq: vi.fn().mockResolvedValue({ error: null }) });
+    const rpc = vi.fn().mockResolvedValue({ data: { event_id: "merchant-event-2", claimed: true }, error: null });
+    mocks.createServiceClient.mockReturnValue({ rpc, from: vi.fn(() => ({ update })) });
     env.processPaymentEvents = false;
-    const response = await POST(webhookRequest({ type: "order", data: { id: "ORD01TEST" } }));
+    env.mercadoPagoAccessToken = undefined;
+
+    const response = await POST(webhookRequest({ type: "merchant_order", data: { id: "merchant-456" } }));
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({ ok: true, ignored: "merchant_order_not_enabled" });
+    expect(mocks.fetchMercadoPagoPayment).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["payment events disabled", { processPaymentEvents: false }],
+    ["missing provider token", { mercadoPagoAccessToken: undefined }],
+    ["missing webhook secret", { mercadoPagoWebhookSecret: undefined }],
+  ])("returns 503 for a financial payment with %s", async (_reason, overrides) => {
+    Object.assign(env, overrides);
+
+    const response = await POST(webhookRequest({ type: "payment", data: { id: "123" } }));
 
     expect(response.status).toBe(503);
-    await expect(response.json()).resolves.toMatchObject({ code: "payment_events_disabled" });
+    expect(mocks.createServiceClient).not.toHaveBeenCalled();
+    expect(mocks.fetchMercadoPagoPayment).not.toHaveBeenCalled();
   });
 
   it("confirma pagamento aprovado com novos checkouts fechados, mesmo se a notificação falhar", async () => {
