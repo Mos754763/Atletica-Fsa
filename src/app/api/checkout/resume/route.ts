@@ -8,7 +8,7 @@ import { getCheckoutAvailability } from "@/lib/payments/checkout-availability";
 const bodySchema = z.object({ orderId: z.string().uuid() });
 
 export async function POST(request: Request) {
-  const availability = getCheckoutAvailability({ acceptNewCheckouts: env.acceptNewCheckouts, mercadoPagoAccessToken: env.mercadoPagoAccessToken });
+  const availability = getCheckoutAvailability({ acceptNewCheckouts: env.acceptNewCheckouts, processPaymentEvents: env.processPaymentEvents, mercadoPagoAccessToken: env.mercadoPagoAccessToken });
   if (!availability.available) return NextResponse.json({ error: availability.message, code: availability.code }, { status: 503 });
   const auth = await getApiProfile(request);
   if ("error" in auth) return auth.error;
