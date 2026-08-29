@@ -1,5 +1,5 @@
 export type CheckoutAvailabilityInput = {
-  paymentsEnabled: boolean;
+  acceptNewCheckouts: boolean;
   mercadoPagoAccessToken?: string;
 };
 
@@ -8,7 +8,7 @@ export type CheckoutAvailability =
   | { available: false; code: "payments_disabled" | "provider_not_configured"; message: string };
 
 export function getCheckoutAvailability(input: CheckoutAvailabilityInput): CheckoutAvailability {
-  if (!input.paymentsEnabled) {
+  if (!input.acceptNewCheckouts) {
     return {
       available: false,
       code: "payments_disabled",
