@@ -8,7 +8,7 @@ import { createAuthenticatedServerClient } from "@/lib/supabase/server";
 const bodySchema = z.object({ fulfillment: z.enum(["retirada", "consumo_local"]), items: z.array(z.object({ productId: z.string().uuid(), variantId: z.string().uuid().optional(), salesBatchId: z.string().uuid().optional(), quantity: z.number().int().positive().max(20) })).min(1).max(30) });
 
 export async function POST(request: Request) {
-  const availability = getCheckoutAvailability({ acceptNewCheckouts: env.acceptNewCheckouts, mercadoPagoAccessToken: env.mercadoPagoAccessToken });
+  const availability = getCheckoutAvailability({ acceptNewCheckouts: env.acceptNewCheckouts, processPaymentEvents: env.processPaymentEvents, mercadoPagoAccessToken: env.mercadoPagoAccessToken });
   if (!availability.available) return NextResponse.json({ error: availability.message, code: availability.code }, { status: 503 });
   const auth = await getApiProfile(request); if ("error" in auth) return auth.error;
   const parsed = bodySchema.safeParse(await request.json()); if (!parsed.success) return NextResponse.json({ error: "Carrinho inválido." }, { status: 400 });
