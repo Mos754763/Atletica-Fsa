@@ -11,7 +11,8 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("@/lib/env", () => ({
   env: {
-    paymentsEnabled: false,
+    acceptNewCheckouts: false,
+    processPaymentEvents: true,
     mercadoPagoAccessToken: "test-access-token",
     mercadoPagoWebhookSecret: "test-webhook-secret",
   },
@@ -42,7 +43,8 @@ function webhookRequest(payload: unknown, query = "") {
 describe("POST /api/payments/mercado-pago/webhook", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    env.paymentsEnabled = false;
+    env.acceptNewCheckouts = false;
+    env.processPaymentEvents = true;
     env.mercadoPagoAccessToken = "test-access-token";
     env.mercadoPagoWebhookSecret = "test-webhook-secret";
     mocks.getMercadoPagoWebhookTimestamp.mockReturnValue(Date.now());
@@ -57,15 +59,15 @@ describe("POST /api/payments/mercado-pago/webhook", () => {
     await expect(response.json()).resolves.toEqual({ ok: true, ignored: "unsupported_topic" });
   });
 
-  it("mantém eventos Point indisponíveis enquanto o gate de homologação estiver fechado", async () => {
+  it("mantém todos os eventos indisponíveis quando o gate de processamento estiver fechado", async () => {
+    env.processPaymentEvents = false;
     const response = await POST(webhookRequest({ type: "order", data: { id: "ORD01TEST" } }));
 
     expect(response.status).toBe(503);
-    await expect(response.json()).resolves.toMatchObject({ code: "payments_disabled" });
+    await expect(response.json()).resolves.toMatchObject({ code: "payment_events_disabled" });
   });
 
-  it("confirma pagamento aprovado mesmo quando a notificação pós-liquidação falha", async () => {
-    env.paymentsEnabled = true;
+  it("confirma pagamento aprovado com novos checkouts fechados, mesmo se a notificação falhar", async () => {
     const orderId = "8c3054fc-6be1-47be-86bc-654d4296d3bb";
     const update = vi.fn().mockReturnValue({ eq: vi.fn().mockResolvedValue({ error: null }) });
     const upsert = vi.fn().mockResolvedValue({ error: null });
@@ -93,7 +95,6 @@ describe("POST /api/payments/mercado-pago/webhook", () => {
   });
 
   it("reconhece um evento já reivindicado sem consultar o provedor novamente", async () => {
-    env.paymentsEnabled = true;
     const rpc = vi.fn().mockResolvedValue({ data: { event_id: "event-1", claimed: false }, error: null });
     mocks.createServiceClient.mockReturnValue({ rpc });
 
