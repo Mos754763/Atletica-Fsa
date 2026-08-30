@@ -4,7 +4,7 @@ import { ORDER_STATUS_LABEL } from "@/lib/orders/workflow";
 import type { OrderState } from "@/types/domain";
 
 type Delivery = { to: string; templateKey: string; subject: string; html: string; variables?: Record<string, string>; dedupeKey?: string; priority?: number; relatedOrderId?: string; relatedRegistrationId?: string; recipientProfileId?: string };
-type QueueResult = { sent: false; queued: boolean; reason?: "duplicate" | "recipient_missing" };
+type QueueResult = { sent: false; queued: boolean; reason?: "duplicate" | "recipient_missing" | "suppressed" };
 
 export function escapeEmailHtml(value: string) {
   return value.replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[character] ?? character);
@@ -65,6 +65,21 @@ export async function sendTransactionalEmail(delivery: Delivery) {
   const recipient = delivery.to.trim();
   if (!recipient) return { sent: false, queued: false, reason: "recipient_missing" as const } satisfies QueueResult;
   const supabase = createServiceClient();
+  const priority = delivery.priority ?? (delivery.templateKey.startsWith("order_") ? 90 : 50);
+  const { data: suppressions, error: suppressionError } = await supabase
+    .from("email_suppressions")
+    .select("reason")
+    .eq("recipient_email", recipient.toLowerCase())
+    .eq("active", true);
+  if (suppressionError) throw new Error(`Não foi possível consultar suppressions de e-mail: ${suppressionError.message}`);
+  const reasons = new Set((suppressions ?? []).map((item) => item.reason));
+  const blockedForAll = reasons.has("hard_bounce") || reasons.has("provider_suppressed");
+  const blockedForNonEssential = reasons.has("complaint") && priority < 80;
+  const suppressionReason = blockedForAll
+    ? "Destinatário bloqueado após hard bounce ou supressão do provedor."
+    : blockedForNonEssential
+      ? "Destinatário bloqueado para comunicação não essencial após complaint."
+      : null;
   const relatedKey = delivery.relatedOrderId ?? delivery.relatedRegistrationId ?? "general";
   const dedupeKey = delivery.dedupeKey ?? `${delivery.templateKey}:${recipient.toLowerCase()}:${relatedKey}`;
   const { data: template, error: templateError } = await supabase.from("email_templates").select("subject_template,html_template").eq("template_key", delivery.templateKey).is("deleted_at", null).maybeSingle();
@@ -72,9 +87,10 @@ export async function sendTransactionalEmail(delivery: Delivery) {
   const variables = delivery.variables ?? {};
   const subject = sanitizeSubject(template ? renderTemplate(template.subject_template, variables, "subject") : delivery.subject);
   const html = template ? emailFrame(subject, renderTemplate(template.html_template, variables, "html")) : delivery.html;
-  const { error } = await supabase.from("email_outbox").insert({ dedupe_key: dedupeKey, recipient_email: recipient, recipient_profile_id: delivery.recipientProfileId ?? null, template_key: delivery.templateKey, subject, html, priority: delivery.priority ?? (delivery.templateKey.startsWith("order_") ? 90 : 50), related_order_id: delivery.relatedOrderId ?? null, related_registration_id: delivery.relatedRegistrationId ?? null });
+  const { error } = await supabase.from("email_outbox").insert({ dedupe_key: dedupeKey, recipient_email: recipient, recipient_profile_id: delivery.recipientProfileId ?? null, template_key: delivery.templateKey, subject, html, priority, status: suppressionReason ? "canceled" : "pending", last_error: suppressionReason, related_order_id: delivery.relatedOrderId ?? null, related_registration_id: delivery.relatedRegistrationId ?? null });
   if (error?.code === "23505") return { sent: false, queued: false, reason: "duplicate" as const } satisfies QueueResult;
   if (error) throw new Error(`Não foi possível persistir a intenção de e-mail: ${error.message}`);
+  if (suppressionReason) return { sent: false, queued: false, reason: "suppressed" as const } satisfies QueueResult;
   return { sent: false, queued: true } satisfies QueueResult;
 }
 

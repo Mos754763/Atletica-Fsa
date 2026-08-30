@@ -34,6 +34,9 @@ function createOutboxClient(claimed: ClaimedEmail[] = [], templateResult: { data
   const templateEq = vi.fn(() => ({ is: templateIs }));
   const templateSelect = vi.fn(() => ({ eq: templateEq }));
   const outboxInsert = vi.fn().mockResolvedValue({ error: null });
+  const suppressionsEqActive = vi.fn().mockResolvedValue({ data: [], error: null });
+  const suppressionsEqRecipient = vi.fn(() => ({ eq: suppressionsEqActive }));
+  const suppressionsSelect = vi.fn(() => ({ eq: suppressionsEqRecipient }));
   const updateStatus = vi.fn().mockResolvedValue({ error: null });
   const updateId = vi.fn(() => ({ eq: updateStatus }));
   const outboxUpdate = vi.fn(() => ({ eq: updateId }));
@@ -48,12 +51,13 @@ function createOutboxClient(claimed: ClaimedEmail[] = [], templateResult: { data
     from: vi.fn((table: string) => {
       if (table === "email_templates") return { select: templateSelect };
       if (table === "email_outbox") return { insert: outboxInsert, update: outboxUpdate };
+      if (table === "email_suppressions") return { select: suppressionsSelect };
       throw new Error(`Tabela inesperada no teste: ${table}`);
     }),
     rpc,
   };
 
-  return { client, outboxInsert, outboxUpdate, rpc };
+  return { client, outboxInsert, outboxUpdate, rpc, suppressionsEqActive };
 }
 
 describe("outbox transacional de e-mails", () => {
@@ -88,7 +92,35 @@ describe("outbox transacional de e-mails", () => {
       dedupe_key: "order_status:destinatario.teste@example.com:order-123",
       recipient_email: "Destinatario.Teste@Example.com",
       priority: 90,
+      status: "pending",
     }));
+  });
+
+  it("persiste como cancelada uma comunicação não essencial após complaint", async () => {
+    const harness = createOutboxClient();
+    harness.suppressionsEqActive.mockResolvedValue({ data: [{ reason: "complaint" }], error: null });
+    createServiceClientMock.mockReturnValue(harness.client);
+
+    await expect(sendTransactionalEmail({ to: "complaint@example.com", templateKey: "event_reminder", subject: "Lembrete", html: "<p>Teste</p>" }))
+      .resolves.toEqual({ sent: false, queued: false, reason: "suppressed" });
+    expect(harness.outboxInsert).toHaveBeenCalledWith(expect.objectContaining({
+      status: "canceled",
+      last_error: expect.stringContaining("complaint"),
+    }));
+  });
+
+  it("permite mensagem operacional essencial após complaint, mas bloqueia hard bounce", async () => {
+    const complaint = createOutboxClient();
+    complaint.suppressionsEqActive.mockResolvedValue({ data: [{ reason: "complaint" }], error: null });
+    createServiceClientMock.mockReturnValue(complaint.client);
+    await expect(sendTransactionalEmail({ to: "complaint@example.com", templateKey: "order_status", subject: "Pedido", html: "<p>Teste</p>" }))
+      .resolves.toEqual({ sent: false, queued: true });
+
+    const bounce = createOutboxClient();
+    bounce.suppressionsEqActive.mockResolvedValue({ data: [{ reason: "hard_bounce" }], error: null });
+    createServiceClientMock.mockReturnValue(bounce.client);
+    await expect(sendTransactionalEmail({ to: "bounce@example.com", templateKey: "order_status", subject: "Pedido", html: "<p>Teste</p>" }))
+      .resolves.toEqual({ sent: false, queued: false, reason: "suppressed" });
   });
 
   it("trata colisão de deduplicação como resultado seguro sem reenfileirar", async () => {
