@@ -28,9 +28,17 @@ describe("webhook do Resend", () => {
     expect(verifyResendWebhookSignature({ payload, id, timestamp, signature: signature(), secret: "inseguro", now })).toBe(false);
   });
 
+  it("aceita uma das múltiplas assinaturas Svix e rejeita Base64 não canônico", () => {
+    const now = new Date("2026-08-30T01:00:00.000Z");
+    expect(verifyResendWebhookSignature({ payload, id, timestamp, signature: `v1,AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= ${signature()}`, secret, now })).toBe(true);
+    expect(verifyResendWebhookSignature({ payload, id, timestamp, signature: `${signature()}!`, secret, now })).toBe(false);
+    expect(verifyResendWebhookSignature({ payload, id, timestamp, signature: signature(), secret: `${secret}=`, now })).toBe(false);
+  });
+
   it("valida somente eventos de feedback necessários e destinatários presentes", () => {
     expect(parseResendWebhookEvent(payload)).toMatchObject({ type: "email.complained", data: { email_id: "resend-message-1" } });
     expect(parseResendWebhookEvent(JSON.stringify({ type: "email.opened", created_at: "2026-08-30T01:00:00Z", data: { email_id: "x", to: ["a@example.com"] } }))).toBeNull();
     expect(parseResendWebhookEvent(JSON.stringify({ type: "email.bounced", created_at: "inválido", data: { email_id: "x", to: [] } }))).toBeNull();
+    expect(parseResendWebhookEvent(JSON.stringify({ type: "email.bounced", created_at: "2026-08-30T01:00:00Z", data: { email_id: "x", to: ["a@example.com", "b@example.com"] } }))).toBeNull();
   });
 });

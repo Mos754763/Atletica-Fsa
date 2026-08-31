@@ -212,11 +212,12 @@ describe("outbox transacional de e-mails", () => {
     createServiceClientMock.mockReturnValue(harness.client);
     fetchMock.mockRejectedValue(new TypeError("network unavailable"));
 
-    await expect(processEmailOutbox(1)).resolves.toEqual({ processed: 1, sent: 0, failed: 1, deadLettered: 1 });
+    await expect(processEmailOutbox(1)).resolves.toEqual({ processed: 1, sent: 0, failed: 1, deadLettered: 1, suppressed: 0 });
     expect(harness.outboxUpdate).toHaveBeenCalledWith(expect.objectContaining({
       status: "failed",
       locked_at: null,
       last_error: expect.stringContaining("resultado ambíguo"),
+      next_attempt_at: "2026-08-30T00:00:00.000Z",
     }));
     expect(harness.rpc).toHaveBeenCalledTimes(2);
   });
@@ -226,17 +227,30 @@ describe("outbox transacional de e-mails", () => {
     createServiceClientMock.mockReturnValue(harness.client);
     fetchMock.mockResolvedValue({ ok: true, status: 200, text: vi.fn().mockResolvedValue(JSON.stringify({})) });
 
-    await expect(processEmailOutbox(1)).resolves.toEqual({ processed: 1, sent: 0, failed: 1, deadLettered: 1 });
-    expect(harness.outboxUpdate).toHaveBeenCalledWith(expect.objectContaining({ status: "failed", last_error: expect.stringContaining("sem retornar o identificador") }));
+    await expect(processEmailOutbox(1)).resolves.toEqual({ processed: 1, sent: 0, failed: 1, deadLettered: 1, suppressed: 0 });
+    expect(harness.outboxUpdate).toHaveBeenCalledWith(expect.objectContaining({ status: "failed", last_error: expect.stringContaining("sem retornar o identificador"), next_attempt_at: "2026-08-30T00:00:00.000Z" }));
   });
 
-  it("move HTTP ambíguo do Resend para dead letter na primeira tentativa", async () => {
-    const harness = createOutboxClient([{ id: "outbox-503", recipient_email: "outbox-test@example.com", recipient_profile_id: null, template_key: "event_reminder", related_order_id: null, related_registration_id: null, subject: "Ambígua", html: "<p>Teste</p>", attempts: 1 }]);
+  it.each([408, 409, 503])("move HTTP ambíguo %i do Resend para dead letter na primeira tentativa", async (status) => {
+    const harness = createOutboxClient([{ id: `outbox-${status}`, recipient_email: "outbox-test@example.com", recipient_profile_id: null, template_key: "event_reminder", related_order_id: null, related_registration_id: null, subject: "Ambígua", html: "<p>Teste</p>", attempts: 1 }]);
     createServiceClientMock.mockReturnValue(harness.client);
-    fetchMock.mockResolvedValue({ ok: false, status: 503, text: vi.fn().mockResolvedValue(JSON.stringify({ message: "timeout do provedor" })) });
+    fetchMock.mockResolvedValue({ ok: false, status, text: vi.fn().mockResolvedValue(JSON.stringify({ message: "timeout do provedor" })) });
 
-    await expect(processEmailOutbox(1)).resolves.toEqual({ processed: 1, sent: 0, failed: 1, deadLettered: 1 });
-    expect(harness.outboxUpdate).toHaveBeenCalledWith(expect.objectContaining({ status: "failed", last_error: "timeout do provedor" }));
+    await expect(processEmailOutbox(1)).resolves.toEqual({ processed: 1, sent: 0, failed: 1, deadLettered: 1, suppressed: 0 });
+    expect(harness.outboxUpdate).toHaveBeenCalledWith(expect.objectContaining({ status: "failed", last_error: "timeout do provedor", next_attempt_at: "2026-08-30T00:00:00.000Z" }));
+  });
+
+  it("move resposta ilegível do Resend para dead letter na primeira tentativa", async () => {
+    const harness = createOutboxClient([{ id: "outbox-unreadable", recipient_email: "outbox-test@example.com", recipient_profile_id: null, template_key: "event_reminder", related_order_id: null, related_registration_id: null, subject: "Ambígua", html: "<p>Teste</p>", attempts: 1 }]);
+    createServiceClientMock.mockReturnValue(harness.client);
+    fetchMock.mockResolvedValue({ ok: true, status: 200, text: vi.fn().mockRejectedValue(new TypeError("stream interrupted")) });
+
+    await expect(processEmailOutbox(1)).resolves.toEqual({ processed: 1, sent: 0, failed: 1, deadLettered: 1, suppressed: 0 });
+    expect(harness.outboxUpdate).toHaveBeenCalledWith(expect.objectContaining({
+      status: "failed",
+      last_error: expect.stringContaining("não pôde ser lida"),
+      next_attempt_at: "2026-08-30T00:00:00.000Z",
+    }));
   });
 
   it("move para dead letter após a quinta tentativa falha", async () => {

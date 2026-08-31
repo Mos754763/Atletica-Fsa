@@ -14,18 +14,27 @@ export type ResendWebhookEvent = {
   created_at: string;
   data: {
     email_id: string;
-    to: string[];
+    to: [string];
   };
 };
 
 const MAX_CLOCK_SKEW_SECONDS = 5 * 60;
 
+function decodeBase64(value: string) {
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(value)) return null;
+  const unpadded = value.replace(/=+$/, "");
+  if (unpadded.length % 4 === 1) return null;
+  const decoded = Buffer.from(value, "base64");
+  // Buffer tolera caracteres/padding inválidos; compare a codificação canônica
+  // para evitar que representações ambíguas sejam aceitas em material secreto.
+  if (!decoded.length || decoded.toString("base64").replace(/=+$/, "") !== unpadded) return null;
+  return decoded;
+}
+
 function decodeWebhookSecret(secret: string) {
   if (!secret.startsWith("whsec_")) return null;
-  const encoded = secret.slice("whsec_".length);
-  if (!encoded || !/^[A-Za-z0-9+/]+={0,2}$/.test(encoded)) return null;
-  const decoded = Buffer.from(encoded, "base64");
-  return decoded.length >= 16 ? decoded : null;
+  const decoded = decodeBase64(secret.slice("whsec_".length));
+  return decoded && decoded.length >= 16 ? decoded : null;
 }
 
 export function verifyResendWebhookSignature(input: {
@@ -50,8 +59,8 @@ export function verifyResendWebhookSignature(input: {
   return input.signature.split(/\s+/).some((candidate) => {
     const [version, encoded] = candidate.split(",", 2);
     if (version !== "v1" || !encoded) return false;
-    let received: Buffer;
-    try { received = Buffer.from(encoded, "base64"); } catch { return false; }
+    const received = decodeBase64(encoded);
+    if (!received) return false;
     return received.length === expected.length && timingSafeEqual(received, expected);
   });
 }
@@ -66,6 +75,6 @@ export function parseResendWebhookEvent(payload: string): ResendWebhookEvent | n
   if (!value.data || typeof value.data !== "object") return null;
   const data = value.data as { email_id?: unknown; to?: unknown };
   if (typeof data.email_id !== "string" || !data.email_id.trim()) return null;
-  if (!Array.isArray(data.to) || data.to.length < 1 || data.to.length > 50 || data.to.some((item) => typeof item !== "string" || !item.trim())) return null;
+  if (!Array.isArray(data.to) || data.to.length !== 1 || typeof data.to[0] !== "string" || !data.to[0].trim()) return null;
   return parsed as ResendWebhookEvent;
 }

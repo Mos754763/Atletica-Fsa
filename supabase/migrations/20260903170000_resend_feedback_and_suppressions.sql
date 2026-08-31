@@ -168,6 +168,12 @@ begin
     raise exception 'invalid resend webhook event';
   end if;
 
+  -- Serializa ingestão e finalização antes de qualquer escrita. Sob READ
+  -- COMMITTED, a reconciliação vê o commit da transação que liberou o lock.
+  perform pg_catalog.pg_advisory_xact_lock(
+    pg_catalog.hashtextextended('resend-message:' || p_provider_message_id, 0)
+  );
+
   insert into public.email_webhook_events (
     event_id, event_type, provider_message_id, recipient_email, occurred_at, payload
   ) values (
@@ -229,6 +235,10 @@ begin
     raise exception 'provider_message_id is required';
   end if;
 
+  perform pg_catalog.pg_advisory_xact_lock(
+    pg_catalog.hashtextextended('resend-message:' || p_provider_message_id, 0)
+  );
+
   update public.email_outbox
   set status = 'sent', sent_at = p_sent_at, provider_message_id = p_provider_message_id,
       locked_at = null, last_error = null, updated_at = now()
@@ -242,7 +252,9 @@ begin
   ) values (
     claimed.id, claimed.recipient_email, claimed.recipient_profile_id, claimed.template_key,
     claimed.related_order_id, claimed.related_registration_id, p_provider_message_id, p_sent_at, 'accepted'
-  ) on conflict do nothing;
+  );
+  -- Uma colisão deve falhar e reverter também o UPDATE da outbox. Não ocultar
+  -- violações de unicidade: isso marcaria como enviada uma outbox sem entrega.
 
   perform public.reconcile_resend_email_delivery(p_provider_message_id);
   return true;
