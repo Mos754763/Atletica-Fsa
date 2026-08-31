@@ -43,6 +43,23 @@ order by reason;
 - evento recebido antes da finalização da outbox fica `unmatched` e é reconciliado quando a entrega é gravada;
 - um evento antigo não rebaixa complaint/bounce para delivered.
 
+## Feedback que chega enquanto a mensagem está na fila
+
+O worker reconsulta as suppressions ativas de cada destinatário imediatamente antes da chamada ao Resend, usando a prioridade persistida na outbox. Assim, o bloqueio recebido depois do enqueue ou entre itens do lote também é respeitado. O endereço é normalizado com `trim().toLowerCase()` nos dois pontos.
+
+Quando o envio está bloqueado, o worker preserva a intenção com status `canceled`, libera `locked_at` e registra o motivo em `last_error`. Não chama o Resend nem cria uma entrega. O campo `processing.suppressed` contabiliza somente cancelamentos confirmados pelo banco. Falhas de consulta ou persistência impedem o envio e seguem a política de retry/dead letter existente.
+
+Verificar em homologação isolada:
+
+1. Enfileirar uma mensagem para um destinatário sintético ainda não bloqueado.
+2. Registrar feedback assinado de bloqueio antes de processar a fila.
+3. Processar a fila e confirmar `canceled`, motivo registrado e ausência de nova entrega no provedor.
+4. Repetir com feedback chegando entre dois itens de um lote para o mesmo destinatário.
+
+A regra local existente continua preservada: complaint bloqueia prioridades menores que 80; hard bounce e supressão do provedor bloqueiam todas. Essa exceção local para mensagens essenciais **não remove nem contorna** uma suppression mantida pelo Resend: o provedor pode impedir a entrega independentemente da prioridade ([documentação](https://resend.com/docs/dashboard/emails/email-suppressions)).
+
+Limite: a consulta local e a chamada HTTP ao provedor não são uma transação única. Feedback que chegar depois da consulta final ainda pode coincidir com uma requisição em andamento. A validação unitária cobre a lógica do worker com banco/provedor simulados; não substitui testes reais de concorrência e de webhook em homologação.
+
 ## Rollback sem perda
 
 1. Desabilitar apenas o webhook no painel do Resend.
