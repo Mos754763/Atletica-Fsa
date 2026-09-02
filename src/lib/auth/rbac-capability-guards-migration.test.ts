@@ -27,9 +27,10 @@ describe("correção dos guards RBAC por capacidade", () => {
     expect(migration).toContain("not public.has_any_role(array['admin', 'caixa']::public.user_role[])");
   });
 
-  it("preserva SECURITY DEFINER, search_path fixo e grants mínimos", () => {
+  it("preserva SECURITY DEFINER, search_path vazio e grants mínimos", () => {
     expect(migration.match(/security definer/g)).toHaveLength(5);
-    expect(migration.match(/set search_path = public/g)).toHaveLength(5);
+    expect(migration.match(/set search_path = ''/g)).toHaveLength(5);
+    expect(migration).not.toContain("set search_path = public");
     expect(migration).toContain("revoke all on function public.check_in_event_ticket(text) from public, anon;");
     expect(migration).toContain("grant execute on function public.check_in_event_ticket(text) to authenticated;");
   });
