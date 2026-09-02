@@ -15,14 +15,15 @@ describe("signOutCurrentBrowserSession", () => {
     vi.restoreAllMocks();
   });
 
-  it("revoga todas as sessões e redireciona ao estado público", async () => {
+  it("revoga todas as sessões, limpa o navegador atual e redireciona", async () => {
     const { client, signOut } = clientWith(async () => ({ error: null }));
     const redirect = vi.fn();
 
     await signOutCurrentBrowserSession({ client, redirect });
 
-    expect(signOut).toHaveBeenCalledTimes(1);
-    expect(signOut).toHaveBeenCalledWith({ scope: "global" });
+    expect(signOut).toHaveBeenCalledTimes(2);
+    expect(signOut).toHaveBeenNthCalledWith(1, { scope: "global" });
+    expect(signOut).toHaveBeenNthCalledWith(2, { scope: "local" });
     expect(redirect).toHaveBeenCalledTimes(1);
   });
 
@@ -39,6 +40,22 @@ describe("signOutCurrentBrowserSession", () => {
     expect(signOut).toHaveBeenNthCalledWith(2, { scope: "local" });
     expect(consoleError).toHaveBeenCalledWith("[auth] global-sign-out-failure", { kind: "Error" });
     expect(JSON.stringify(consoleError.mock.calls)).not.toContain("provider detail");
+    expect(redirect).toHaveBeenCalledTimes(1);
+  });
+
+  it("redireciona e não expõe detalhes quando a limpeza local falha", async () => {
+    const { client, signOut } = clientWith(async ({ scope }) => (
+      scope === "local" ? { error: new Error("local provider detail") } : { error: null }
+    ));
+    const redirect = vi.fn();
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    await signOutCurrentBrowserSession({ client, redirect });
+
+    expect(signOut).toHaveBeenNthCalledWith(1, { scope: "global" });
+    expect(signOut).toHaveBeenNthCalledWith(2, { scope: "local" });
+    expect(consoleError).toHaveBeenCalledWith("[auth] local-sign-out-failure", { kind: "Error" });
+    expect(JSON.stringify(consoleError.mock.calls)).not.toContain("local provider detail");
     expect(redirect).toHaveBeenCalledTimes(1);
   });
 
