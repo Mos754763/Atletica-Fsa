@@ -2,7 +2,7 @@
 
 import { LogOut } from "lucide-react";
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { getBrowserClient } from "@/lib/supabase/client";
 import { signOutCurrentBrowserSession } from "@/lib/auth/signout";
 
 export function SignOutButton() {
@@ -12,7 +12,7 @@ export function SignOutButton() {
     setBusy(true);
     try {
       await signOutCurrentBrowserSession({
-        client: createClient(),
+        client: await getBrowserClient(),
         redirect: () => window.location.replace("/"),
       });
     } catch (error) {
