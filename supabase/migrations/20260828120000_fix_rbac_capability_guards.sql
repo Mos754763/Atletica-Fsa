@@ -8,7 +8,7 @@ returns public.user_role
 language sql
 stable
 security definer
-set search_path = public
+set search_path = ''
 as $$
   select coalesce(
     (
@@ -31,7 +31,7 @@ create or replace function public.advance_ods_order(p_order_id uuid, p_next_stat
 returns table(order_id uuid, final_status public.order_status)
 language plpgsql
 security definer
-set search_path = public
+set search_path = ''
 as $$
 declare
   v_order public.orders%rowtype;
@@ -62,7 +62,7 @@ create or replace function public.confirm_order_pickup_by_qr(p_order_id uuid, p_
 returns table(order_id uuid, final_status public.order_status, already_picked_up boolean)
 language plpgsql
 security definer
-set search_path = public
+set search_path = ''
 as $$
 declare
   v_order public.orders%rowtype;
@@ -104,7 +104,7 @@ create or replace function public.renew_order_pickup_qr(p_order_id uuid)
 returns timestamptz
 language plpgsql
 security definer
-set search_path = public
+set search_path = ''
 as $$
 declare
   v_order public.orders%rowtype;
@@ -131,7 +131,7 @@ create or replace function public.check_in_event_ticket(p_check_in_code text)
 returns table(registration_id uuid, final_status public.registration_status, already_checked_in boolean)
 language plpgsql
 security definer
-set search_path = public
+set search_path = ''
 as $$
 declare
   v_registration public.event_registrations%rowtype;
