@@ -1,6 +1,6 @@
 export const SIGN_OUT_TIMEOUT_MS = 5_000;
 
-type SignOutScope = "local";
+type SignOutScope = "global" | "local";
 
 type SignOutResult = {
   error: unknown | null;
@@ -36,9 +36,8 @@ async function settleWithin<T>(operation: Promise<T>, timeoutMs: number): Promis
 }
 
 /**
- * Ends only the browser's current session. The UI must never remain blocked
- * when Auth is unavailable, so the public redirect is guaranteed after a
- * bounded local cleanup attempt.
+ * Revokes every session first. If Auth is unavailable, falls back to bounded
+ * local cleanup so a shared browser never remains visibly authenticated.
  */
 export async function signOutCurrentBrowserSession({
   client,
@@ -46,10 +45,16 @@ export async function signOutCurrentBrowserSession({
   timeoutMs = SIGN_OUT_TIMEOUT_MS,
 }: SignOutOptions) {
   try {
-    const result = await settleWithin(client.auth.signOut({ scope: "local" }), timeoutMs);
+    const result = await settleWithin(client.auth.signOut({ scope: "global" }), timeoutMs);
     if (result.error) throw result.error;
-  } catch (error) {
-    console.error("[auth] local-sign-out-failure", { kind: errorKind(error) });
+  } catch (globalError) {
+    console.error("[auth] global-sign-out-failure", { kind: errorKind(globalError) });
+    try {
+      const localResult = await settleWithin(client.auth.signOut({ scope: "local" }), timeoutMs);
+      if (localResult.error) throw localResult.error;
+    } catch (localError) {
+      console.error("[auth] local-sign-out-failure", { kind: errorKind(localError) });
+    }
   } finally {
     redirect();
   }

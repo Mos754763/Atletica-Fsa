@@ -73,21 +73,46 @@ export async function createProduct(formData: FormData) {
   }).select("id").single();
   if (error || !product) throw new Error("Não foi possível cadastrar o produto.");
 
-  let image: { publicUrl: string; storageKey: string | null; provider: string } | null = values.imageUrl ? { publicUrl: values.imageUrl, storageKey: null, provider: "external" } : null;
-  if (imageFile instanceof File && imageFile.size > 0) {
-    const uploaded = await uploadCatalogImage(imageFile, product.id);
-    image = { publicUrl: uploaded.publicUrl, storageKey: uploaded.storageKey, provider: "supabase-s3" };
-  }
-  if (image) {
-    const { error: imageError } = await supabase.from("product_images").insert({ product_id: product.id, public_url: image.publicUrl, storage_key: image.storageKey, alt_text: values.name, storage_provider: image.provider, sort_order: 0 });
-    if (imageError) {
-      if (image.provider === "supabase-s3") await deleteCatalogImages([image.storageKey]);
-      throw new Error("Produto criado, mas a foto não pôde ser associada.");
+  let uploadedStorageKey: string | null = null;
+  try {
+    let image: { publicUrl: string; storageKey: string | null; provider: string } | null = values.imageUrl
+      ? { publicUrl: values.imageUrl, storageKey: null, provider: "external" }
+      : null;
+    if (imageFile instanceof File && imageFile.size > 0) {
+      const uploaded = await uploadCatalogImage(imageFile, product.id);
+      uploadedStorageKey = uploaded.storageKey;
+      image = { publicUrl: uploaded.publicUrl, storageKey: uploaded.storageKey, provider: "supabase-s3" };
     }
-  }
-  if (values.stockQuantity > 0) {
-    const { error: inventoryError } = await supabase.from("inventory_movements").insert({ product_id: product.id, quantity_delta: values.stockQuantity, reason: "Estoque inicial", reference_type: "product", reference_id: product.id, created_by: userId });
-    if (inventoryError) throw new Error("Produto criado, mas o estoque inicial não pôde ser registrado.");
+    if (image) {
+      const { error: imageError } = await supabase.from("product_images").insert({
+        product_id: product.id, public_url: image.publicUrl, storage_key: image.storageKey,
+        alt_text: values.name, storage_provider: image.provider, sort_order: 0,
+      });
+      if (imageError) throw new Error("Não foi possível associar a foto ao produto.");
+    }
+    if (values.stockQuantity > 0) {
+      const { error: inventoryError } = await supabase.from("inventory_movements").insert({
+        product_id: product.id, quantity_delta: values.stockQuantity, reason: "Estoque inicial",
+        reference_type: "product", reference_id: product.id, created_by: userId,
+      });
+      if (inventoryError) throw new Error("Não foi possível registrar o estoque inicial.");
+    }
+  } catch (creationError) {
+    const { error: rollbackError } = await supabase.from("products").delete().eq("id", product.id);
+    if (rollbackError) {
+      console.error("[catalog] product-creation-rollback-failure", { productId: product.id });
+      throw new Error("Não foi possível concluir nem desfazer o cadastro. Atualize a página antes de tentar novamente.");
+    }
+    if (uploadedStorageKey) {
+      try {
+        await deleteCatalogImages([uploadedStorageKey]);
+      } catch (cleanupError) {
+        console.error("[catalog] product-image-cleanup-failure", {
+          kind: cleanupError instanceof Error ? cleanupError.name : "unknown",
+        });
+      }
+    }
+    throw creationError;
   }
   revalidateCatalog();
 }
