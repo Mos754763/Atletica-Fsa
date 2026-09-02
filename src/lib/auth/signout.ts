@@ -36,8 +36,9 @@ async function settleWithin<T>(operation: Promise<T>, timeoutMs: number): Promis
 }
 
 /**
- * Revokes every session first. If Auth is unavailable, falls back to bounded
- * local cleanup so a shared browser never remains visibly authenticated.
+ * Revokes every session first, then always clears the current browser storage.
+ * The explicit local pass matters because revoked access tokens can remain
+ * valid until expiry even after the global request succeeds.
  */
 export async function signOutCurrentBrowserSession({
   client,
@@ -45,10 +46,13 @@ export async function signOutCurrentBrowserSession({
   timeoutMs = SIGN_OUT_TIMEOUT_MS,
 }: SignOutOptions) {
   try {
-    const result = await settleWithin(client.auth.signOut({ scope: "global" }), timeoutMs);
-    if (result.error) throw result.error;
-  } catch (globalError) {
-    console.error("[auth] global-sign-out-failure", { kind: errorKind(globalError) });
+    try {
+      const globalResult = await settleWithin(client.auth.signOut({ scope: "global" }), timeoutMs);
+      if (globalResult.error) throw globalResult.error;
+    } catch (globalError) {
+      console.error("[auth] global-sign-out-failure", { kind: errorKind(globalError) });
+    }
+
     try {
       const localResult = await settleWithin(client.auth.signOut({ scope: "local" }), timeoutMs);
       if (localResult.error) throw localResult.error;
