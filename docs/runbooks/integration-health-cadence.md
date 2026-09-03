@@ -1,61 +1,20 @@
 # Cadência do integration health
 
-## Objetivo e fallback
+## Contrato ativo
 
-A rota `/api/cron/integration-health` verifica integrações e os heartbeats das rotas diárias. A Vercel Hobby executa essa rota diariamente às 18:00 UTC como fallback. A cadência operacional de duas horas deve ser ativada pelo Supabase Cron apenas depois de a rota candidata e o segredo estarem validados.
+A rota `/api/cron/integration-health` verifica as integrações e os heartbeats das rotas diárias. A única agenda ativa é a Vercel, em `0 18 * * *` (diariamente às 18:00 UTC).
 
-Essa combinação evita uma expressão subdiária incompatível com o plano Vercel e mantém um segundo agendador independente. Nenhuma rota existente é suspensa ou substituída durante o rollout.
+O health check usa a mesma janela de 1.560 minutos (26 horas) das demais rotas diárias. Isso tolera o intervalo normal entre duas execuções diárias e um pequeno atraso operacional: a pré-alerta ocorre após 75% da janela e o estado só é crítico depois de 26 horas sem heartbeat bem-sucedido.
 
-## Ativação em homologação
-
-Habilite `pg_cron` e `pg_net` somente no banco isolado. Grave no Vault, sem copiar valores para SQL versionado:
-
-- `integration_health_url`: URL absoluta de `/api/cron/integration-health` no ambiente candidato;
-- `integration_health_cron_secret`: o `CRON_SECRET` do mesmo ambiente.
-
-```sql
-select cron.schedule(
-  'integration-health-v1',
-  '0 */2 * * *',
-  $job$
-    select net.http_get(
-      url := (select decrypted_secret from vault.decrypted_secrets where name = 'integration_health_url'),
-      headers := jsonb_build_object(
-        'Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'integration_health_cron_secret')
-      ),
-      timeout_milliseconds := 30000
-    );
-  $job$
-);
-```
-
-O objetivo de serviço é: ausência de uma rota diária deve produzir alerta em **≤ 2 horas** após ultrapassar sua janela de 1.560 minutos. O próprio health check fica crítico após 180 minutos sem heartbeat; o fallback diário da Vercel permanece para detectar falha do agendador Supabase.
+Não há agendador de duas horas, extensão, cron, segredo ou configuração adicional de banco ativados por este contrato. Um eventual rollout para uma frequência maior precisa alterar, na mesma entrega planejada, o agendamento efetivamente ativo, o limiar, os testes e este runbook; até lá, a resposta da rota informa `cadence: "daily"`.
 
 ## Verificação
 
-```sql
-select jobid, jobname, schedule, active
-from cron.job
-where jobname = 'integration-health-v1';
+1. Confirme no `vercel.json` que a rota usa exatamente `0 18 * * *`.
+2. Após o deployment, confira o último heartbeat de `/api/cron/integration-health` nos registros operacionais autorizados.
+3. Interprete um heartbeat do dia anterior dentro da janela diária como `healthy` ou `warning`, nunca como `critical` apenas por não haver execução a cada duas horas.
+4. Mantenha a chamada protegida pelo mesmo `CRON_SECRET` e cabeçalho `Bearer`; não registre esses valores em logs, commits ou PRs.
 
-select route_path, status, executed_at, duration_ms, detail
-from public.scheduled_route_heartbeats
-where route_path = '/api/cron/integration-health'
-order by executed_at desc
-limit 24;
-```
+## Rollback
 
-Critérios: pelo menos um heartbeat a cada 150 minutos em operação normal, dedupe de alertas durante o mesmo incidente e alerta de recuperação ao voltar para `healthy`.
-
-## Rollback sem indisponibilidade
-
-Pause somente o job frequente; o cron diário da Vercel continua ativo:
-
-```sql
-select cron.alter_job(
-  job_id := (select jobid from cron.job where jobname = 'integration-health-v1'),
-  active := false
-);
-```
-
-Não remova heartbeats ou estados de incidente durante rollback. Reativar o job com o mesmo nome preserva a trilha e a deduplicação existentes.
+Se for necessário reverter esta mudança, reverta juntos a cadência anunciada e seu limiar. Não crie um segundo agendador como medida de rollback e não remova heartbeats ou estados de incidente, pois eles são a trilha de auditoria e a base da deduplicação de alertas.

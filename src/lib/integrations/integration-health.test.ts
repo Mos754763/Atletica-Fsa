@@ -55,11 +55,14 @@ describe("classifyIntegrationHealth", () => {
     expect(classifyCronRouteHealth({ routePath: "/api/cron/sympla-sync", status: "succeeded", executedAt: "2026-08-16T15:00:00.000Z" }, 1_560, now)).toBe("warning");
   });
 
-  it("mantém o heartbeat semanal saudável no horário previsto, alerta no atraso e detecta ausência prolongada", () => {
-    const now = new Date("2026-08-18T18:30:00.000Z");
-    expect(classifyCronRouteHealth({ routePath: "/api/cron/integration-health", status: "succeeded", executedAt: "2026-08-11T18:00:00.000Z" }, 13_500, now)).toBe("healthy");
-    expect(classifyCronRouteHealth({ routePath: "/api/cron/integration-health", status: "succeeded", executedAt: "2026-08-11T16:00:00.000Z" }, 13_500, now)).toBe("warning");
-    expect(classifyCronRouteHealth({ routePath: "/api/cron/integration-health", status: "succeeded", executedAt: "2026-08-08T18:00:00.000Z" }, 13_500, now)).toBe("critical");
+  it("trata o heartbeat diário da Vercel como a cadência ativa quando não há agendador de duas horas", () => {
+    const withinDailyTolerance = new Date("2026-08-18T12:00:00.000Z");
+    const afterMissedVercelRun = new Date("2026-08-18T18:30:00.000Z");
+    const heartbeat = { routePath: "/api/cron/integration-health" as const, status: "succeeded" as const, executedAt: "2026-08-17T18:00:00.000Z" };
+
+    expect(classifyCronRouteHealth(heartbeat, 1_560, withinDailyTolerance)).toBe("healthy");
+    expect(classifyCronRouteHealth(heartbeat, 1_560, afterMissedVercelRun)).toBe("warning");
+    expect(classifyCronRouteHealth({ ...heartbeat, executedAt: "2026-08-16T18:00:00.000Z" }, 1_560, afterMissedVercelRun)).toBe("critical");
   });
 
   it("usa apenas o último heartbeat anterior ao início da própria avaliação", () => {

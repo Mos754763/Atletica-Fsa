@@ -15,9 +15,9 @@ const CRON_ROUTE_LIMITS = [
   { path: "/api/cron/sympla-sync", maxAgeMinutes: 1_560 },
   { path: "/api/cron/event-reminders", maxAgeMinutes: 1_560 },
   { path: "/api/cron/member-interest-retention", maxAgeMinutes: 1_560 },
-  // O monitor frequente roda a cada duas horas pelo Supabase Cron. A Vercel
-  // mantém uma execução diária independente como fallback do agendador.
-  { path: "/api/cron/integration-health", maxAgeMinutes: 180 },
+  // A única agenda ativa é a diária da Vercel. A janela de 26 horas admite
+  // atraso operacional sem classificar como crítico a execução do dia anterior.
+  { path: "/api/cron/integration-health", maxAgeMinutes: 1_560 },
 ] as const;
 
 async function deliverHealthAlert(input: {
@@ -109,7 +109,7 @@ export async function GET(request: Request) {
       results[results.length - 1] = { ...results[results.length - 1], cronRoutes: { status: routeStatus, alert: routeAlert, routes: routeResults } };
     }
     await supabase.from("scheduled_route_heartbeats").insert({ route_path: "/api/cron/integration-health", status: "succeeded", duration_ms: Date.now() - startedAt.getTime() });
-    return NextResponse.json({ ok: true, cadence: "every_2_hours_with_daily_fallback", results }, { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json({ ok: true, cadence: "daily", results }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     const detail = error instanceof Error ? error.message.slice(0, 600) : "Falha desconhecida no health check.";
     await supabase.from("scheduled_route_heartbeats").insert({ route_path: "/api/cron/integration-health", status: "failed", duration_ms: Date.now() - startedAt.getTime(), detail });
