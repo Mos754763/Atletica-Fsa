@@ -1,5 +1,5 @@
 import { createServiceClient } from "@/lib/supabase/server";
-import { sendTransactionalEmail } from "@/lib/email/transactional";
+import { escapeEmailHtml, sendTransactionalEmail } from "@/lib/email/transactional";
 
 export type AutomationCondition = { field?: string; equals?: string };
 export type AutomationAction = { type?: "queue_email" | "log"; templateKey?: string; recipientField?: string; subject?: string; html?: string };
@@ -16,7 +16,7 @@ export async function runAutomationRules(input: { triggerKey: string; dedupeKey:
   const { data: rules, error } = await service.from("automation_rules").select("id,name,condition_json,action_json").eq("trigger_key", input.triggerKey).eq("enabled", true).is("deleted_at", null);
   if (error) throw new Error(`Não foi possível consultar automações: ${error.message}`);
 
-  let queued = 0; let skipped = 0;
+  let queued = 0; let skipped = 0; let failed = 0;
   for (const rule of rules ?? []) {
     const condition = (rule.condition_json ?? {}) as AutomationCondition;
     const action = (rule.action_json ?? {}) as AutomationAction;
@@ -31,15 +31,21 @@ export async function runAutomationRules(input: { triggerKey: string; dedupeKey:
       const recipient = asString(input.context[action.recipientField ?? "recipientEmail"]);
       if (!recipient || !action.templateKey) {
         await service.from("automation_runs").update({ status: "failed", error_message: "Ação de e-mail sem destinatário ou template.", executed_at: new Date().toISOString() }).eq("rule_id", rule.id).eq("dedupe_key", input.dedupeKey);
+        failed += 1;
         continue;
       }
       const variables = Object.fromEntries(Object.entries(input.context).map(([key, value]) => [key, asString(value)]));
-      const result = await sendTransactionalEmail({ to: recipient, templateKey: action.templateKey, dedupeKey: `rule:${rule.id}:${input.dedupeKey}`, variables, subject: action.subject ?? rule.name, html: action.html ?? `<p>${rule.name}</p>` });
-      await service.from("automation_runs").update({ status: result.queued ? "succeeded" : "skipped", outcome_json: { queued: result.queued, reason: result.reason ?? null }, executed_at: new Date().toISOString() }).eq("rule_id", rule.id).eq("dedupe_key", input.dedupeKey);
-      if (result.queued) queued += 1; else skipped += 1;
+      try {
+        const result = await sendTransactionalEmail({ to: recipient, templateKey: action.templateKey, dedupeKey: `rule:${rule.id}:${input.dedupeKey}`, variables, subject: action.subject ?? rule.name, html: action.html ?? `<p>${escapeEmailHtml(rule.name)}</p>` });
+        await service.from("automation_runs").update({ status: result.queued ? "succeeded" : "skipped", outcome_json: { queued: result.queued, reason: result.reason ?? null }, executed_at: new Date().toISOString() }).eq("rule_id", rule.id).eq("dedupe_key", input.dedupeKey);
+        if (result.queued) queued += 1; else skipped += 1;
+      } catch (queueError) {
+        await service.from("automation_runs").update({ status: "failed", error_message: queueError instanceof Error ? queueError.message.slice(0, 600) : "Falha desconhecida ao persistir o e-mail.", executed_at: new Date().toISOString() }).eq("rule_id", rule.id).eq("dedupe_key", input.dedupeKey);
+        failed += 1;
+      }
       continue;
     }
     await service.from("automation_runs").update({ status: "succeeded", outcome_json: { message: "Regra registrada sem ação externa." }, executed_at: new Date().toISOString() }).eq("rule_id", rule.id).eq("dedupe_key", input.dedupeKey);
   }
-  return { checked: (rules ?? []).length, queued, skipped };
+  return { checked: (rules ?? []).length, queued, skipped, failed };
 }
