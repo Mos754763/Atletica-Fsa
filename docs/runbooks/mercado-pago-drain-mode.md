@@ -9,9 +9,9 @@ Este runbook separa a criação de novas obrigações do processamento de evento
 | Teste interno sem pagamentos | false | false | Não cria nem processa pagamentos |
 | Drain / vendas fechadas | false | true | Não cria checkout; processa obrigações existentes |
 | Operação liberada | true | true | Cria checkout e processa eventos |
-| Estado proibido | true | false | Cria obrigação que não poderá ser conciliada |
+| Estado proibido | true | false | O runtime bloqueia o checkout antes de criar uma obrigação que não poderia ser conciliada. |
 
-O estado `true/false` é inválido e deve bloquear a promoção. `PAYMENTS_ENABLED` permanece temporariamente como fallback quando as duas variáveis novas não existirem.
+O estado `true/false` é inválido e deve bloquear a promoção. `PAYMENTS_ENABLED` permanece apenas como fallback de migração: cada flag nova ausente recorre a ele individualmente. Portanto, um ambiente pode inadvertidamente misturar uma flag explícita com outra herdada. Em todo rollout, defina **ambas** `ACCEPT_NEW_CHECKOUTS` e `PROCESS_PAYMENT_EVENTS` explicitamente e não dependa desse fallback.
 
 ## Fechamento sem indisponibilidade
 
@@ -39,12 +39,29 @@ Esta PR documenta as variáveis, mas não altera valores na Vercel nem promove d
 
 O endpoint de produção é exatamente `https://atleticafsa.site/api/payments/mercado-pago/webhook` (sem ponto final). A URL mostrada no screenshot com `.../webhook.` é inválida e retorna `404`.
 
-Para este Checkout Pro, o único produto necessário é **Pagamentos (legacy)**, com o tópico `payment`. **Pedidos comerciais** (`merchant_order`) é opcional: o endpoint confere assinatura e registra uma auditoria idempotente, mas nunca liquida pedido, ingresso ou estoque. Para reduzir ruído e consumo de quota, deixe desmarcados **Envios**, **Order (Mercado Pago)**, **Integrações Point** e todos os demais produtos/tópicos. Se forem selecionados por engano, eles recebem `200` com motivo sanitizado, sem consultar credenciais, Supabase ou a API Mercado Pago.
+Somente `payment` concilia financeiramente Checkout Pro. A matriz abaixo cobre todos os itens exibidos no painel do screenshot; os itens não aplicáveis retornam `200` com motivo sanitizado se uma notificação chegar, antes de consultar disponibilidade, Supabase ou a API Mercado Pago.
+
+| Item no painel Mercado Pago | Decisão | Comportamento deste endpoint |
+| --- | --- | --- |
+| **Pagamentos (legacy)** | **Selecionar** (`payment`) | Único tópico que consulta o provedor e pode conciliar pedido ou ingresso. |
+| **Pedidos comerciais** | Opcional (`merchant_order`) | Assinatura validada e auditoria idempotente; responde `200 ignored`, sem liquidação. |
+| **Envios** | Desmarcar | Não aplicável; `200 ignored` se enviado. |
+| **Order (Mercado Pago)** | Desmarcar | Não aplicável; `order` e `orders` recebem `200 ignored`. |
+| **Integrações Point** | Desmarcar | Não aplicável; `point_integration` recebe `200 ignored`. |
+| **Vinculação de aplicações** | Desmarcar | Não aplicável; `200 ignored` se enviado. |
+| **Reclamações** | Desmarcar | Não aplicável; `200 ignored` se enviado. |
+| **Alertas de fraude** | Desmarcar | Não aplicável; `200 ignored` se enviado. |
+| **Contestações** | Desmarcar | Não aplicável; `200 ignored` se enviado. |
+| **Planos e assinaturas** | Desmarcar | Não aplicável; `200 ignored` se enviado. |
+| **Delivery (proximity marketplace)** | Desmarcar | Não aplicável; `200 ignored` se enviado. |
+| **Wallet Connect** | Desmarcar | Não aplicável; `200 ignored` se enviado. |
+| **Card Updater** | Desmarcar | Não aplicável; `200 ignored` se enviado. |
+| **Self Service** | Desmarcar | Não aplicável; `200 ignored` se enviado. |
+| **Perfil de pago** | Desmarcar | Não aplicável; `200 ignored` se enviado. |
 
 ## Rollout seguro, ainda sem checkout real
 
-1. mantenha `ACCEPT_NEW_CHECKOUTS=false`; a liberação comercial exige autorização posterior explícita;
-2. defina e verifique `PROCESS_PAYMENT_EVENTS=true` no ambiente alvo;
+1. defina explicitamente `ACCEPT_NEW_CHECKOUTS=false` e `PROCESS_PAYMENT_EVENTS=true` no ambiente alvo; a liberação comercial exige autorização posterior explícita;
 3. verifique somente os nomes `MERCADO_PAGO_ACCESS_TOKEN` e `MERCADO_PAGO_WEBHOOK_SECRET` no ambiente correto, sem expor seus valores;
 4. corrija URL e tópicos conforme a seção anterior;
 5. use primeiro uma simulação sandbox/HML assinada; qualquer simulação ou checkout real em Production exige autorização separada.

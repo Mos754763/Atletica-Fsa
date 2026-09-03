@@ -4,13 +4,16 @@
 
 ## Regra de ativação
 
-O checkout só é iniciado quando as duas condições são verdadeiras: `PAYMENTS_ENABLED=true` e `MERCADO_PAGO_ACCESS_TOKEN` válido. A ausência de qualquer uma delas retorna uma resposta controlada, sem criar preferência de cobrança.
+O checkout só é iniciado quando `ACCEPT_NEW_CHECKOUTS=true`, `PROCESS_PAYMENT_EVENTS=true` e `MERCADO_PAGO_ACCESS_TOKEN` está válido. O runtime verifica essas condições antes de criar pedido, preferência ou outra obrigação. `PAYMENTS_ENABLED` não é um gate absoluto: ele é apenas o fallback individual de cada flag nova que estiver ausente. Quando as duas flags novas estão definidas, seu valor não altera a decisão.
 
 | Condição | Efeito |
 |---|---|
-| `PAYMENTS_ENABLED` ausente ou diferente de `true` | Checkout bloqueado por política de lançamento. |
+| `ACCEPT_NEW_CHECKOUTS` ausente | Usa `PAYMENTS_ENABLED` como fallback somente para esta flag. |
+| `PROCESS_PAYMENT_EVENTS` ausente | Usa `PAYMENTS_ENABLED` como fallback somente para esta flag. |
+| `ACCEPT_NEW_CHECKOUTS=false` | Checkout bloqueado por política comercial. |
+| `PROCESS_PAYMENT_EVENTS=false` | Checkout bloqueado antes de criar uma obrigação sem consumidor financeiro. |
 | Token do Mercado Pago ausente | Checkout bloqueado por configuração incompleta. |
-| Ambas as condições presentes | O código permite criar uma preferência; a operação ainda deve cumprir o checklist abaixo. |
+| Ambas as flags novas `true` e token presente | O código permite criar uma preferência; a operação ainda deve cumprir o checklist abaixo. |
 
 ## Checklist obrigatório antes da primeira cobrança
 
@@ -24,7 +27,7 @@ O checkout só é iniciado quando as duas condições são verdadeiras: `PAYMENT
 | UAT | Compra de baixo valor concluída: checkout, webhook, ODS, retirada e relatório. |
 | Operação | Responsável pela conta Mercado Pago, estorno e atendimento definido. |
 
-Não ative `PAYMENTS_ENABLED` para testes de interface. Para isso, utilize Sandbox Mercado Pago em ambiente de Preview ou uma implantação isolada.
+Não ative `ACCEPT_NEW_CHECKOUTS` para testes de interface. Defina sempre as duas flags novas explicitamente, mantenha `ACCEPT_NEW_CHECKOUTS=false` até a autorização de lançamento e use Sandbox Mercado Pago em Preview ou implantação isolada. O webhook somente concilia `payment`; `merchant_order` é auditado sem liquidação e Order, Point, Envios e demais tópicos são ignorados com HTTP 200.
 
 ## Referências
 

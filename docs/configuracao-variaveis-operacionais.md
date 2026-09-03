@@ -1,6 +1,6 @@
 # Configuração de Variáveis Operacionais — ATLETICA FSA
 
-**Atualizado em:** 15 de agosto de 2026  
+**Atualizado em:** 3 de setembro de 2026
 **Escopo:** Vercel, Supabase, Resend, Sympla, Slack e Mercado Pago.
 
 ## Princípios de segurança
@@ -27,12 +27,14 @@ Na Vercel, use **Production** e **Preview** para as integrações reais de homol
 
 | Variável | Tipo | Ambientes | Valor/origem correta | Estado de uso |
 | --- | --- | --- | --- | --- |
-| `PAYMENTS_ENABLED` | Servidor | Production e Preview | **`false`** durante homologação. | **Adicionar explicitamente agora.** A ausência também bloqueia pagamentos, mas o valor explícito elimina ambiguidades. |
+| `PAYMENTS_ENABLED` | Servidor | Production e Preview | Fallback legado temporário. | Não é gate absoluto quando as flags novas existem; não usar como controle de rollout. |
+| `ACCEPT_NEW_CHECKOUTS` | Servidor | Production e Preview | **`false`** durante homologação/drain. | Bloqueia criação e retomada de checkout antes de criar obrigação. Definir explicitamente. |
+| `PROCESS_PAYMENT_EVENTS` | Servidor | Production e Preview | **`true`** durante drain de obrigações existentes. | Permite somente a conciliação de `payment`; definir explicitamente. |
 | `MERCADO_PAGO_ACCESS_TOKEN` | Sensível | Production e Preview | Access Token de teste durante homologação; token produtivo apenas no lançamento. | Configurada. Exclusiva de servidor. |
 | `MERCADO_PAGO_WEBHOOK_SECRET` | Sensível | Production e Preview | Segredo de assinatura gerado para o endpoint de Webhooks configurado. | Configurada. Não é o Access Token. |
 | `NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY` | Pública | Somente se adotado | Public Key do Mercado Pago. | Não necessária ao Checkout Pro atual; só adicionar se um fluxo futuro no navegador exigir SDK do Mercado Pago. |
 
-Enquanto `PAYMENTS_ENABLED=false`, o checkout e a conciliação comercial respondem como indisponíveis. O endpoint continua protegido e pode ser avaliado em testes seguros, mas nenhum pedido, ingresso ou estoque será liquidado.
+Cada flag nova ausente herda `PAYMENTS_ENABLED` individualmente. Para evitar uma combinação herdada inesperada, defina **as duas** em Production e Preview. Com `ACCEPT_NEW_CHECKOUTS=false` e `PROCESS_PAYMENT_EVENTS=true`, nenhum checkout novo é criado, mas obrigações `payment` existentes podem ser conciliadas; `merchant_order` só é auditado, e Order, Point, Envios e os demais tópicos não aplicáveis recebem `200 ignored` sem liquidação.
 
 ## Valores exclusivamente locais ou de testes
 
@@ -60,7 +62,7 @@ O resultado é somente leitura e classifica cada rota como `healthy`, `stale`, `
 
 ## Checklist imediato na Vercel
 
-1. Adicione `PAYMENTS_ENABLED` com o valor literal `false` em **Production** e **Preview**.
+1. Adicione `ACCEPT_NEW_CHECKOUTS=false` e `PROCESS_PAYMENT_EVENTS=true` explicitamente em **Production** e **Preview**; mantenha `PAYMENTS_ENABLED=false` apenas como fallback legado enquanto a migração existir.
 2. Confirme que `SLACK_SYMPLA_ALERT_WEBHOOK_URL` continua marcada como **Sensitive** e aplicada a **Production** e **Preview**.
 3. Faça um novo deployment do commit que contém o diagnóstico de cron; variáveis novas somente chegam às funções em deployments posteriores.
 4. Não altere `MERCADO_PAGO_ACCESS_TOKEN`, `MERCADO_PAGO_WEBHOOK_SECRET`, `CRON_SECRET` nem `SUPABASE_SECRET_KEY` durante esta validação.
