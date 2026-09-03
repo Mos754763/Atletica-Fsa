@@ -15,9 +15,9 @@ const CRON_ROUTE_LIMITS = [
   { path: "/api/cron/sympla-sync", maxAgeMinutes: 1_560 },
   { path: "/api/cron/event-reminders", maxAgeMinutes: 1_560 },
   { path: "/api/cron/member-interest-retention", maxAgeMinutes: 1_560 },
-  // A única agenda ativa é a diária da Vercel. A janela de 26 horas admite
-  // atraso operacional sem classificar como crítico a execução do dia anterior.
-  { path: "/api/cron/integration-health", maxAgeMinutes: 1_560 },
+  // A única agenda ativa é a diária da Vercel. A janela de 36 horas mantém
+  // saudável o heartbeat anterior no disparo normal e tolera atraso operacional.
+  { path: "/api/cron/integration-health", maxAgeMinutes: 2_160 },
 ] as const;
 
 async function deliverHealthAlert(input: {

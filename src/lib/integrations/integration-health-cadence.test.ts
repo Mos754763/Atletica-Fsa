@@ -13,10 +13,11 @@ describe("cadência do health check", () => {
   });
 
   it("alinha o limiar e a resposta à execução diária enquanto o agendador de duas horas está desativado", () => {
-    expect(route).toContain("maxAgeMinutes: 1_560");
+    expect(route).toContain("maxAgeMinutes: 2_160");
     expect(route).toContain('cadence: "daily"');
     expect(route).not.toContain("verificação semanal");
     expect(runbook).toContain("0 18 * * *");
+    expect(runbook).toContain("36 horas");
     expect(runbook).not.toContain("0 */2 * * *");
     expect(runbook).not.toContain("Supabase Cron");
   });

@@ -56,13 +56,18 @@ describe("classifyIntegrationHealth", () => {
   });
 
   it("trata o heartbeat diário da Vercel como a cadência ativa quando não há agendador de duas horas", () => {
-    const withinDailyTolerance = new Date("2026-08-18T12:00:00.000Z");
-    const afterMissedVercelRun = new Date("2026-08-18T18:30:00.000Z");
+    const normalDailyRun = new Date("2026-08-18T18:00:00.000Z");
+    const warningBoundary = new Date("2026-08-18T21:00:00.000Z");
+    const operationalDelay = new Date("2026-08-18T21:01:00.000Z");
+    const criticalBoundary = new Date("2026-08-19T06:00:00.000Z");
+    const afterCriticalBoundary = new Date("2026-08-19T06:01:00.000Z");
     const heartbeat = { routePath: "/api/cron/integration-health" as const, status: "succeeded" as const, executedAt: "2026-08-17T18:00:00.000Z" };
 
-    expect(classifyCronRouteHealth(heartbeat, 1_560, withinDailyTolerance)).toBe("healthy");
-    expect(classifyCronRouteHealth(heartbeat, 1_560, afterMissedVercelRun)).toBe("warning");
-    expect(classifyCronRouteHealth({ ...heartbeat, executedAt: "2026-08-16T18:00:00.000Z" }, 1_560, afterMissedVercelRun)).toBe("critical");
+    expect(classifyCronRouteHealth(heartbeat, 2_160, normalDailyRun)).toBe("healthy");
+    expect(classifyCronRouteHealth(heartbeat, 2_160, warningBoundary)).toBe("healthy");
+    expect(classifyCronRouteHealth(heartbeat, 2_160, operationalDelay)).toBe("warning");
+    expect(classifyCronRouteHealth(heartbeat, 2_160, criticalBoundary)).toBe("warning");
+    expect(classifyCronRouteHealth(heartbeat, 2_160, afterCriticalBoundary)).toBe("critical");
   });
 
   it("usa apenas o último heartbeat anterior ao início da própria avaliação", () => {

@@ -26,7 +26,7 @@ Na documentação pública consultada não há um recurso de webhook ou callback
 | Migração `20260814210000_sympla_homologation_integration.sql` | Cria integrações, vínculos futuros, registros externos, execuções e fila de falhas. | RLS permite leitura operacional apenas a administradores; payload externo fica separado das tabelas nativas. |
 | `/admin/integracoes/sympla` | Painel administrativo para executar e auditar a sincronização manual. | A página e a ação de servidor exigem o papel `admin`. |
 | `/api/cron/sympla-sync` | Sincronização incremental diária às 14:00 UTC no plano Vercel Hobby; o painel administrativo permite execução manual imediata. | Requer `Authorization: Bearer CRON_SECRET`, processa somente leitura e devolve `503` em falha para observabilidade. |
-| `/api/cron/integration-health` | Avalia semanalmente a volumetria de falhas, taxa de erro e batimentos das rotas de sincronização e lembretes. | Requer `Authorization: Bearer CRON_SECRET`, persiste somente métricas sanitizadas e não altera dados de eventos, pedidos ou ingressos. |
+| `/api/cron/integration-health` | Avalia diariamente a volumetria de falhas, taxa de erro e batimentos das rotas de sincronização e lembretes. | Requer `Authorization: Bearer CRON_SECRET`, persiste somente métricas sanitizadas e não altera dados de eventos, pedidos ou ingressos. |
 | Migração `20260814240000_integration_health_and_recovery_alerts.sql` | Registra estado persistente de saúde e batimentos de cron; habilita alertas de pico e recuperação. | A chave única por integração, escopo, tipo e incidente impede alertas duplicados durante a mesma ocorrência. |
 | Migrações `20260814230000` e `20260814230500` | Criam a deduplicação persistente de alertas, o bloqueio de replay e o responsável pela resolução da falha. | A ocorrência não é resolvida até uma nova sincronização bem-sucedida; o administrador responsável é preservado. |
 | `src/lib/integrations/slack-alerts.ts` | Emite alerta sanitizado ao canal Slack para falhas terminais da sincronização. | Usa `SLACK_SYMPLA_ALERT_WEBHOOK_URL` somente no servidor, timeout de 8 segundos e não envia token, payload, QR ou dados de participantes. |
@@ -57,9 +57,9 @@ O administrador deve corrigir a causa antes de usar **Reprocessar** na tela de i
 
 Os testes cobrem geração de chave por janela, conteúdo sanitizado, entrega HTTP bem-sucedida, indisponibilidade do Slack, ausência de configuração, falha de rede, conexão real do webhook e isolamento do sincronizador Sympla.
 
-## Monitoramento semanal e recuperação
+## Monitoramento diário e recuperação
 
-A Vercel executa `/api/cron/integration-health` às segundas-feiras, 18:00 UTC. A rotina calcula as métricas da integração Sympla, grava o último estado em `integration_health_states` e consulta o último batimento de `/api/cron/sympla-sync` e `/api/cron/event-reminders` em `scheduled_route_heartbeats`. Os dois batimentos diários devem ocorrer em até 26 horas; falha registrada, ausência de batimento ou atraso além desse limite é classificado como crítico.
+A Vercel executa `/api/cron/integration-health` diariamente às 18:00 UTC. A rotina calcula as métricas da integração Sympla, grava o último estado em `integration_health_states` e consulta os últimos batimentos em `scheduled_route_heartbeats`. Os batimentos de sincronização e lembretes devem ocorrer em até 26 horas; falha registrada, ausência de batimento ou atraso além desse limite é classificado como crítico. O heartbeat anterior do próprio health check permanece saudável no disparo diário normal, passa a atenção após 27 horas e a crítico depois de 36 horas.
 
 | Nível | Critério de dead letters e falhas | Ação no Slack |
 |---|---|---|
@@ -67,7 +67,7 @@ A Vercel executa `/api/cron/integration-health` às segundas-feiras, 18:00 UTC. 
 | Atenção | Ao menos 3 dead letters abertas, 3 novas em 15 minutos, ocorrência aberta há mais de 30 minutos, taxa de falha acima de 10% ou cron próximo do atraso limite. | Alerta de pico uma única vez por incidente e escopo. |
 | Crítico | Ao menos 10 dead letters abertas, 6 novas em 15 minutos, ocorrência aberta há mais de 60 minutos, taxa de falha acima de 25%, cron falho, ausente ou atrasado. | Alerta de pico uma única vez por incidente e escopo. |
 
-Quando um estado de atenção ou crítico volta a saudável, a rotina envia `sympla_health_recovered` com o início do incidente anterior como chave de deduplicação e limpa `incident_started_at`. Dessa forma, um alerta de recuperação só existe para um incidente efetivamente observado e não é repetido em semanas saudáveis subsequentes. Os testes unitários cobrem os limiares, transições de recuperação e batimentos recente, atrasado, ausente ou falho.
+Quando um estado de atenção ou crítico volta a saudável, a rotina envia `sympla_health_recovered` com o início do incidente anterior como chave de deduplicação e limpa `incident_started_at`. Dessa forma, um alerta de recuperação só existe para um incidente efetivamente observado e não é repetido em dias saudáveis subsequentes. Os testes unitários cobrem os limiares, transições de recuperação e batimentos recente, atrasado, ausente ou falho.
 
 ## Próxima decisão operacional
 
