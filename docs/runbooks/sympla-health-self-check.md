@@ -2,7 +2,7 @@
 
 ## Contrato corrigido
 
-A rota `/api/cron/integration-health` avalia a cadência das rotas monitoradas, incluindo a própria rota semanal. Para evitar que a execução corrente seja usada como evidência de sua própria saúde, a coleta considera apenas heartbeats com `executed_at` estritamente anterior ao instante em que a avaliação começou.
+A rota `/api/cron/integration-health` avalia a cadência das rotas monitoradas, incluindo a própria rota diária da Vercel. A cadência ativa e o limiar correspondente são revisados juntos em qualquer rollout futuro; não são uma premissa semanal imutável. Para evitar que a execução corrente seja usada como evidência de sua própria saúde, a coleta considera apenas heartbeats com `executed_at` estritamente anterior ao instante em que a avaliação começou.
 
 > O estado da execução atual é registrado apenas ao final, como `succeeded` ou `failed`. Ele serve à próxima avaliação, nunca à avaliação em andamento.
 
@@ -12,7 +12,7 @@ A rota `/api/cron/integration-health` avalia a cadência das rotas monitoradas, 
 |---|---|---|
 | Não autoaprovar a execução corrente | Filtro de banco `executed_at < startedAt` e filtro defensivo em memória. | Heartbeat no instante de início é ignorado. |
 | Não aceitar evento futuro ou retry concorrente | Mesmo filtro estrito descarta tempos posteriores. | Heartbeat posterior ao início é ignorado. |
-| Preservar a última execução anterior | Mapa mantém o maior `executedAt` elegível por rota. | Heartbeat semanal da rodada anterior permanece selecionado. |
+| Preservar a última execução anterior | Mapa mantém o maior `executedAt` elegível por rota. | Heartbeat diário da rodada anterior permanece selecionado. |
 | Não esconder falhas reais | A classificação continua recebendo o status do último heartbeat anterior. | Os testes existentes preservam cenários ausente, falho, warning e crítico. |
 | Escalar e recuperar health da Sympla | Métricas de dead letters classificam o incidente e `shouldSendRecovery` exige estado anterior não saudável. | Fixture de pico crítico seguida de métricas saudáveis; não há recuperação para estado já saudável. |
 | Não duplicar alerta do mesmo incidente | Chave de deduplicação inclui integração, tipo de alerta e início do incidente. | A mesma entrada gera a mesma chave; tipo, integração ou instante diferentes geram chaves distintas. |

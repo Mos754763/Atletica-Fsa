@@ -15,9 +15,9 @@ const CRON_ROUTE_LIMITS = [
   { path: "/api/cron/sympla-sync", maxAgeMinutes: 1_560 },
   { path: "/api/cron/event-reminders", maxAgeMinutes: 1_560 },
   { path: "/api/cron/member-interest-retention", maxAgeMinutes: 1_560 },
-  // A rota roda semanalmente. A janela estendida impede que uma execução
-  // pontual seja classificada como warning pela pré-alerta genérica de 75%.
-  { path: "/api/cron/integration-health", maxAgeMinutes: 13_500 },
+  // A única agenda ativa é a diária da Vercel. A janela de 36 horas mantém
+  // saudável o heartbeat anterior no disparo normal e tolera atraso operacional.
+  { path: "/api/cron/integration-health", maxAgeMinutes: 2_160 },
 ] as const;
 
 async function deliverHealthAlert(input: {
@@ -89,7 +89,7 @@ export async function GET(request: Request) {
       if (status !== "healthy" && previous?.status !== status) {
         alert = await deliverHealthAlert({ integrationId: row.integration_id, alertType: "sympla_health_peak", severity: status, incidentStartedAt, lines: formatHealthMetrics(row) });
       } else if (shouldSendRecovery(previous?.status, status)) {
-        alert = await deliverHealthAlert({ integrationId: row.integration_id, alertType: "sympla_health_recovered", severity: "healthy", incidentStartedAt: previous?.incident_started_at ?? now, lines: ["A verificação semanal encontrou a integração novamente saudável.", ...formatHealthMetrics(row)] });
+        alert = await deliverHealthAlert({ integrationId: row.integration_id, alertType: "sympla_health_recovered", severity: "healthy", incidentStartedAt: previous?.incident_started_at ?? now, lines: ["A verificação de saúde encontrou a integração novamente saudável.", ...formatHealthMetrics(row)] });
       }
       results.push({ provider: row.provider, status, alert });
 
@@ -109,10 +109,10 @@ export async function GET(request: Request) {
       results[results.length - 1] = { ...results[results.length - 1], cronRoutes: { status: routeStatus, alert: routeAlert, routes: routeResults } };
     }
     await supabase.from("scheduled_route_heartbeats").insert({ route_path: "/api/cron/integration-health", status: "succeeded", duration_ms: Date.now() - startedAt.getTime() });
-    return NextResponse.json({ ok: true, cadence: "weekly", results }, { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json({ ok: true, cadence: "daily", results }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     const detail = error instanceof Error ? error.message.slice(0, 600) : "Falha desconhecida no health check.";
     await supabase.from("scheduled_route_heartbeats").insert({ route_path: "/api/cron/integration-health", status: "failed", duration_ms: Date.now() - startedAt.getTime(), detail });
-    return NextResponse.json({ error: "A verificação semanal de integrações falhou; consulte os logs." }, { status: 503 });
+    return NextResponse.json({ error: "A verificação de integrações falhou; consulte os logs." }, { status: 503 });
   }
 }

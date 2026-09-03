@@ -55,11 +55,19 @@ describe("classifyIntegrationHealth", () => {
     expect(classifyCronRouteHealth({ routePath: "/api/cron/sympla-sync", status: "succeeded", executedAt: "2026-08-16T15:00:00.000Z" }, 1_560, now)).toBe("warning");
   });
 
-  it("mantém o heartbeat semanal saudável no horário previsto, alerta no atraso e detecta ausência prolongada", () => {
-    const now = new Date("2026-08-18T18:30:00.000Z");
-    expect(classifyCronRouteHealth({ routePath: "/api/cron/integration-health", status: "succeeded", executedAt: "2026-08-11T18:00:00.000Z" }, 13_500, now)).toBe("healthy");
-    expect(classifyCronRouteHealth({ routePath: "/api/cron/integration-health", status: "succeeded", executedAt: "2026-08-11T16:00:00.000Z" }, 13_500, now)).toBe("warning");
-    expect(classifyCronRouteHealth({ routePath: "/api/cron/integration-health", status: "succeeded", executedAt: "2026-08-08T18:00:00.000Z" }, 13_500, now)).toBe("critical");
+  it("trata o heartbeat diário da Vercel como a cadência ativa quando não há agendador de duas horas", () => {
+    const normalDailyRun = new Date("2026-08-18T18:00:00.000Z");
+    const warningBoundary = new Date("2026-08-18T21:00:00.000Z");
+    const operationalDelay = new Date("2026-08-18T21:01:00.000Z");
+    const criticalBoundary = new Date("2026-08-19T06:00:00.000Z");
+    const afterCriticalBoundary = new Date("2026-08-19T06:01:00.000Z");
+    const heartbeat = { routePath: "/api/cron/integration-health" as const, status: "succeeded" as const, executedAt: "2026-08-17T18:00:00.000Z" };
+
+    expect(classifyCronRouteHealth(heartbeat, 2_160, normalDailyRun)).toBe("healthy");
+    expect(classifyCronRouteHealth(heartbeat, 2_160, warningBoundary)).toBe("healthy");
+    expect(classifyCronRouteHealth(heartbeat, 2_160, operationalDelay)).toBe("warning");
+    expect(classifyCronRouteHealth(heartbeat, 2_160, criticalBoundary)).toBe("warning");
+    expect(classifyCronRouteHealth(heartbeat, 2_160, afterCriticalBoundary)).toBe("critical");
   });
 
   it("usa apenas o último heartbeat anterior ao início da própria avaliação", () => {

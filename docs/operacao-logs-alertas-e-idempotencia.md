@@ -16,7 +16,7 @@ No painel Vercel, abra **ATLETICA FSA → Logs** e use a janela de tempo de 24 h
 | --- | --- | --- | --- |
 | Sincronização Sympla | Environment: `production`; Route: `/api/cron/sympla-sync`; Request type: `cron` | `200` e execução uma vez por dia. | `5xx`, timeout, ausência superior a 26 horas ou mensagens de token inválido. |
 | Lembretes de eventos | Route: `/api/cron/event-reminders`; Request type: `cron` | `200` diário. | `5xx` ou ausência superior a 26 horas. |
-| Saúde de integrações | Route: `/api/cron/integration-health`; Request type: `cron` | `200` semanal. | `503`, falha de banco ou ausência prolongada do relatório semanal. A própria rota também acompanha o heartbeat de sua execução anterior, sem alertar indevidamente quando executa no horário semanal previsto. |
+| Saúde de integrações | Route: `/api/cron/integration-health`; Request type: `cron` | `200` diário às 18:00 UTC. | `503`, falha de banco ou ausência do heartbeat por mais de 36 horas. A própria rota acompanha o heartbeat de sua execução anterior; a execução diária normal permanece saudável. |
 | Webhook Mercado Pago | Route: `/api/payments/mercado-pago/webhook`; Method: `POST`; Resource: `Vercel Functions` | `200` para eventos processados ou ignorados. | `5xx`, timeout ou crescimento de erros internos. |
 
 Após filtrar, selecione **Level: Error e Fatal** e **Status code: 5xx**. Abra cada linha para registrar o `RequestId`, o deployment, a rota, o horário UTC, o status e a exceção. Em seguida, compare com a tabela `scheduled_route_heartbeats` e com o log de atividade do CRM. A Vercel classifica respostas `5xx` como erro; respostas `4xx` aparecem como warning. [2]
@@ -62,9 +62,9 @@ O canal Slack foi validado com uma entrega controlada **HTTP 200**. A implementa
 | Origem de falha | Cobertura atual | Proteção contra ruído | Próximo comportamento esperado |
 | --- | --- | --- | --- |
 | Falha de sincronização Sympla / dead letter | **Coberta.** O alerta contém código, execução e ocorrência. | Chave de deduplicação por integração, código de erro e janela de hora. | Corrigir a causa no ERP e reprocessar a dead letter. |
-| Pico de falha de saúde Sympla | **Coberto.** A rota semanal envia alerta em mudança de estado. | Claim persistente em `integration_alerts`; não envia o mesmo incidente repetidamente. | Investigar token, logs e métricas. |
+| Pico de falha de saúde Sympla | **Coberto.** A rota diária envia alerta em mudança de estado. | Claim persistente em `integration_alerts`; não envia o mesmo incidente repetidamente. | Investigar token, logs e métricas. |
 | Recuperação Sympla | **Coberta.** Envia alerta quando o estado retorna a saudável. | Só dispara em transição para saudável. | Encerrar o incidente e monitorar. |
-| Heartbeat ausente ou falho de Sympla / lembretes | **Coberto pelo health check.** A rota semanal classifica ausência, falha ou atraso. | Deduplicação persistente por incidente de rotas cron. | Conferir logs Vercel e `scheduled_route_heartbeats`. |
+| Heartbeat ausente ou falho de Sympla / lembretes | **Coberto pelo health check.** A rota diária classifica ausência, falha ou atraso. | Deduplicação persistente por incidente de rotas cron. | Conferir logs Vercel e `scheduled_route_heartbeats`. |
 | Erro interno do Webhook Mercado Pago | **Ainda não envia Slack diretamente.** A rota possui respostas e auditoria, mas não publica alerta para cada erro. | Evita expor detalhes de pagamento e alertas por assinatura inválida. | Recomenda-se alertar apenas exceções `5xx` persistentes ou falha de conciliação, nunca `401/403/400` isolados. |
 | Erro genérico de Vercel Function | **Não há coleta automática pela aplicação.** | Não aplicável. | Usar filtros dos Runtime Logs; Log Drains é opção de plataforma quando disponível no plano. [1] |
 
