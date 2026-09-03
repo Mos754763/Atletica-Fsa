@@ -4,7 +4,7 @@ import { ORDER_STATUS_LABEL } from "@/lib/orders/workflow";
 import type { OrderState } from "@/types/domain";
 
 type Delivery = { to: string; templateKey: string; subject: string; html: string; variables?: Record<string, string>; dedupeKey?: string; priority?: number; relatedOrderId?: string; relatedRegistrationId?: string; recipientProfileId?: string };
-type QueueResult = { sent: false; queued: boolean; reason?: "duplicate" | "recipient_missing" };
+type QueueResult = { sent: false; queued: boolean; reason?: "duplicate" | "recipient_missing" | "suppressed" };
 
 export function escapeEmailHtml(value: string) {
   return value.replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[character] ?? character);
@@ -61,10 +61,29 @@ async function sendResendEmail(input: { id: string; to: string; subject: string;
   return payload.id;
 }
 
+async function getSuppressionReason(supabase: ReturnType<typeof createServiceClient>, recipient: string, priority: number) {
+  const { data: suppressions, error: suppressionError } = await supabase
+    .from("email_suppressions")
+    .select("reason")
+    .eq("recipient_email", recipient.trim().toLowerCase())
+    .eq("active", true);
+  if (suppressionError) throw new Error(`Não foi possível consultar suppressions de e-mail: ${suppressionError.message}`);
+  const reasons = new Set((suppressions ?? []).map((item) => item.reason));
+  const blockedForAll = reasons.has("hard_bounce") || reasons.has("provider_suppressed");
+  const blockedForNonEssential = reasons.has("complaint") && priority < 80;
+  return blockedForAll
+    ? "Destinatário bloqueado após hard bounce ou supressão do provedor."
+    : blockedForNonEssential
+      ? "Destinatário bloqueado para comunicação não essencial após complaint."
+      : null;
+}
+
 export async function sendTransactionalEmail(delivery: Delivery) {
   const recipient = delivery.to.trim();
   if (!recipient) return { sent: false, queued: false, reason: "recipient_missing" as const } satisfies QueueResult;
   const supabase = createServiceClient();
+  const priority = delivery.priority ?? (delivery.templateKey.startsWith("order_") ? 90 : 50);
+  const suppressionReason = await getSuppressionReason(supabase, recipient, priority);
   const relatedKey = delivery.relatedOrderId ?? delivery.relatedRegistrationId ?? "general";
   const dedupeKey = delivery.dedupeKey ?? `${delivery.templateKey}:${recipient.toLowerCase()}:${relatedKey}`;
   const { data: template, error: templateError } = await supabase.from("email_templates").select("subject_template,html_template").eq("template_key", delivery.templateKey).is("deleted_at", null).maybeSingle();
@@ -72,21 +91,33 @@ export async function sendTransactionalEmail(delivery: Delivery) {
   const variables = delivery.variables ?? {};
   const subject = sanitizeSubject(template ? renderTemplate(template.subject_template, variables, "subject") : delivery.subject);
   const html = template ? emailFrame(subject, renderTemplate(template.html_template, variables, "html")) : delivery.html;
-  const { error } = await supabase.from("email_outbox").insert({ dedupe_key: dedupeKey, recipient_email: recipient, recipient_profile_id: delivery.recipientProfileId ?? null, template_key: delivery.templateKey, subject, html, priority: delivery.priority ?? (delivery.templateKey.startsWith("order_") ? 90 : 50), related_order_id: delivery.relatedOrderId ?? null, related_registration_id: delivery.relatedRegistrationId ?? null });
+  const { error } = await supabase.from("email_outbox").insert({ dedupe_key: dedupeKey, recipient_email: recipient, recipient_profile_id: delivery.recipientProfileId ?? null, template_key: delivery.templateKey, subject, html, priority, status: suppressionReason ? "canceled" : "pending", last_error: suppressionReason, related_order_id: delivery.relatedOrderId ?? null, related_registration_id: delivery.relatedRegistrationId ?? null });
   if (error?.code === "23505") return { sent: false, queued: false, reason: "duplicate" as const } satisfies QueueResult;
   if (error) throw new Error(`Não foi possível persistir a intenção de e-mail: ${error.message}`);
+  if (suppressionReason) return { sent: false, queued: false, reason: "suppressed" as const } satisfies QueueResult;
   return { sent: false, queued: true } satisfies QueueResult;
 }
 
 export async function processEmailOutbox(limit = 50) {
-  if (!env.resendApiKey) return { processed: 0, sent: 0, failed: 0, deadLettered: 0, skipped: "not_configured" as const };
+  if (!env.resendApiKey) return { processed: 0, sent: 0, failed: 0, deadLettered: 0, suppressed: 0, skipped: "not_configured" as const };
   const supabase = createServiceClient();
   const { data: claimed, error: claimError } = await supabase.rpc("claim_email_outbox", { p_limit: limit });
   if (claimError) throw new Error(`Não foi possível obter a fila de e-mails: ${claimError.message}`);
 
-  let sent = 0; let failed = 0; let deadLettered = 0;
+  let sent = 0; let failed = 0; let deadLettered = 0; let suppressed = 0;
   for (const email of claimed ?? []) {
     try {
+      // O feedback pode ter chegado depois do enqueue ou entre itens do lote.
+      const suppressionReason = await getSuppressionReason(supabase, email.recipient_email, email.priority ?? 50);
+      if (suppressionReason) {
+        const { data: canceled, error: cancelError } = await supabase.from("email_outbox")
+          .update({ status: "canceled", locked_at: null, last_error: suppressionReason })
+          .eq("id", email.id).eq("status", "processing").select("id");
+        if (cancelError) throw new Error(`Não foi possível cancelar o envio bloqueado: ${cancelError.message}`);
+        if (canceled?.length !== 1) throw new Error("A mensagem não estava mais reivindicada ao cancelar o envio bloqueado.");
+        suppressed += 1;
+        continue;
+      }
       const providerMessageId = await sendResendEmail({ id: email.id, to: email.recipient_email, subject: email.subject, html: email.html });
       const sentAt = new Date().toISOString();
       const { data: finished, error: finishError } = await supabase.rpc("finish_email_outbox_delivery", { p_outbox_id: email.id, p_provider_message_id: providerMessageId, p_sent_at: sentAt });
@@ -105,7 +136,7 @@ export async function processEmailOutbox(limit = 50) {
   }
   const { error: expireError } = await supabase.rpc("expire_stale_email_outbox");
   if (expireError) throw new Error(`Não foi possível expirar mensagens esgotadas: ${expireError.message}`);
-  return { processed: (claimed ?? []).length, sent, failed, deadLettered };
+  return { processed: (claimed ?? []).length, sent, failed, deadLettered, suppressed };
 }
 
 export async function sendOrderStatusEmail(input: { to: string | null; profileId?: string | null; orderId: string; orderNumber: number; status: OrderState }) {

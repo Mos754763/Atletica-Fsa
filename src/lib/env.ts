@@ -6,6 +6,7 @@ export const env = {
   supabasePublishableKey: optional("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"),
   supabaseSecretKey: optional("SUPABASE_SECRET_KEY"),
   resendApiKey: optional("RESEND_API_KEY"),
+  resendWebhookSecret: optional("RESEND_WEBHOOK_SECRET"),
   emailFrom: optional("EMAIL_FROM") ?? "ATLETICA FSA <onboarding@resend.dev>",
   mercadoPagoAccessToken: optional("MERCADO_PAGO_ACCESS_TOKEN"),
   mercadoPagoWebhookSecret: optional("MERCADO_PAGO_WEBHOOK_SECRET"),
