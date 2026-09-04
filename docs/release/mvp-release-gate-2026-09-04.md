@@ -69,3 +69,18 @@ Auditar somente nomes e escopos das flags de pagamento na Vercel, sem revelar va
 2. confirmar que configurações de HML continuam restritas ao Preview/branch e que Production não aponta para o Supabase de homologação;
 3. não ler, copiar ou registrar valores de segredos;
 4. decidir com evidência se o item histórico de publicação pode ser atualizado ou deve permanecer aberto.
+
+## Auditoria de metadados Vercel/Supabase — PR #43
+
+A inspeção de metadados da Vercel, sem revelar valores, confirmou os seguintes nomes e escopos:
+
+- `ACCEPT_NEW_CHECKOUTS` existe em Production, no Preview global e em um override de branch para `fix/payment-drain-mode`.
+- `PROCESS_PAYMENT_EVENTS` existe em Production e no Preview global.
+- O fallback legado `PAYMENTS_ENABLED` existe em Production e no Preview global.
+- O contrato do código é individual: cada flag nova sobrescreve `PAYMENTS_ENABLED` quando presente; `PAYMENTS_ENABLED` só é usado como fallback quando a flag nova correspondente está ausente.
+
+O deployment Preview atual da PR #43, no host `atletica-wv4q6upu7-moises-faustino-rodrigues-s-projects.vercel.app`, está `READY` no SHA `89b4ef7086bacefe09dc0c92274e60eab4695654`. A atestação HML no Preview retornou HTTP 200, com `vercelEnvironment preview` e referência de projeto `gfnbdjdqumewspvfxicl`. A mesma atestação em Production (`atleticafsa.site`) retornou HTTP 404, `not_preview`.
+
+A Vercel não reportou erros de runtime nas últimas 2 horas, incluindo as rotas de pagamento. O projeto Supabase HML `gfnbdjdqumewspvfxicl` está `ACTIVE_HEALTHY`; no baseline somente leitura de `2026-09-04 20:03:28+00`, havia 3 orders, 2 payments, 6 eventos de webhook e 2 movimentos de inventário, com exatamente uma linha de payment e uma linha de webhook para a referência sandbox `177203869926`.
+
+Nenhum valor de flag foi revelado; portanto, esta auditoria somente de metadados não afirma valores booleanos. Nenhuma variável, deployment, segredo, linha de banco ou configuração de Production foi alterada. O override de branch é apenas candidato a limpeza futura; não há afirmação de que seja seguro removê-lo automaticamente.
