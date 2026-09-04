@@ -42,6 +42,12 @@ function removeAccessValues(environment) {
   for (const key of [...SOURCE_SECRET_KEYS, ...RESOLVED_ACCESS_KEYS]) delete environment[key];
 }
 
+export function protectedPreviewStatusLine(code, signal) {
+  return code === 0 && !signal
+    ? "[protected-preview] passed.\n"
+    : "[protected-preview] failed; detailed child output suppressed.\n";
+}
+
 export async function verifyProtectedPreviewIdentity(origin, headers, fetchImplementation = fetch, timeoutMs = 12_000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -91,7 +97,9 @@ export async function resolveProtectedPreviewRun(environment = process.env, fetc
   }
 
   const headers = await resolvePreviewRequestHeaders(bypassSecret, undefined, origin, fetchImplementation);
-  await verifyProtectedPreviewIdentity(origin, headers, fetchImplementation);
+  const identityHeaders = { ...headers };
+  delete identityHeaders["x-vercel-set-bypass-cookie"];
+  await verifyProtectedPreviewIdentity(origin, identityHeaders, fetchImplementation);
   const childEnvironment = { ...environment };
   removeAccessValues(childEnvironment);
   delete childEnvironment.QA_BASE_URL;
@@ -134,9 +142,11 @@ export async function runProtectedPreviewE2E({
     const child = spawnImplementation(
       process.execPath,
       [PLAYWRIGHT_CLI, "test", ...protectedPreviewPlaywrightArguments()],
-      { env: childEnvironment, stdio: "inherit", shell: false },
+      { env: childEnvironment, stdio: ["ignore", "ignore", "ignore"], shell: false },
     );
     const { code, signal } = await waitForChildExit(child);
+    const statusLine = protectedPreviewStatusLine(code, signal);
+    (code === 0 && !signal ? process.stdout : process.stderr).write(statusLine);
     return { mode: run.mode, origin: run.origin, exitCode: code ?? (signal ? 1 : 0) };
   } finally {
     removeAccessValues(childEnvironment);

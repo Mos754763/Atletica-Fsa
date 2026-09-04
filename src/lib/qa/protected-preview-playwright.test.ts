@@ -11,6 +11,7 @@ import {
   resolveProtectedPreviewRun,
   runProtectedPreviewE2E,
   verifyProtectedPreviewIdentity,
+  protectedPreviewStatusLine,
 } from "../../../scripts/run-protected-preview-e2e.mjs";
 import { protectedPreviewRequestHeaders } from "../../../tests/e2e/protected-preview.fixture";
 
@@ -117,18 +118,23 @@ describe("executor Playwright de Preview protegido", () => {
       return child;
     });
 
+    let preflightHeaders: Record<string, string> | undefined;
+    const identityFetch = vi.fn(async (_url: RequestInfo | URL, options?: RequestInit) => {
+      preflightHeaders = options?.headers as Record<string, string>;
+      return new Response(JSON.stringify({
+        environment: "preview",
+        projectId: EXPECTED_PREVIEW_PROJECT_ID,
+        deploymentId: "deployment-test",
+        gitCommitRef: "feature/test",
+      }), { status: 200 });
+    });
     const result = await runProtectedPreviewE2E({
       environment: {
         QA_BASE_URL: previewOrigin,
         QA_ENVIRONMENT: "homologation",
         VERCEL_AUTOMATION_BYPASS_SECRET: "test-only",
       },
-      fetchImplementation: vi.fn(async () => new Response(JSON.stringify({
-        environment: "preview",
-        projectId: EXPECTED_PREVIEW_PROJECT_ID,
-        deploymentId: "deployment-test",
-        gitCommitRef: "feature/test",
-      }), { status: 200 })),
+      fetchImplementation: identityFetch,
       spawnImplementation: spawnMock,
     });
 
@@ -136,7 +142,7 @@ describe("executor Playwright de Preview protegido", () => {
     expect(spawnMock).toHaveBeenCalledWith(
       process.execPath,
       [PLAYWRIGHT_CLI, "test", "--config", PROTECTED_PREVIEW_CONFIG, PROTECTED_PREVIEW_TEST, "--project=chromium", "--project=mobile-chromium"],
-      expect.objectContaining({ stdio: "inherit", shell: false }),
+      expect.objectContaining({ stdio: ["ignore", "ignore", "ignore"], shell: false }),
     );
     expect(PROTECTED_PREVIEW_PROJECTS).toEqual(["chromium", "mobile-chromium"]);
     expect(protectedPreviewPlaywrightArguments()).toEqual([
@@ -154,6 +160,9 @@ describe("executor Playwright de Preview protegido", () => {
     expect(childEnvironment).not.toHaveProperty("QA_PROTECTED_PREVIEW_USER_AGENT");
     expect(childEnvironment).not.toHaveProperty("QA_PROTECTED_PREVIEW_BYPASS_HEADER");
     expect(childEnvironment).not.toHaveProperty("QA_PROTECTED_PREVIEW_COOKIE");
+    expect(identityFetch).toHaveBeenCalledOnce();
+    expect(preflightHeaders).toMatchObject({ "x-vercel-protection-bypass": "test-only" });
+    expect(preflightHeaders).not.toHaveProperty("x-vercel-set-bypass-cookie");
   });
 
   it("aplica bypass somente ao origin exato do Preview", () => {
@@ -171,6 +180,12 @@ describe("executor Playwright de Preview protegido", () => {
       });
     expect(protectedPreviewRequestHeaders("https://other.example.test/redirect", sourceHeaders, previewOrigin, "test-only"))
       .toEqual({ accept: "text/html" });
+  });
+
+  it("deriva a única saída parental de status, sem depender de bytes do filho", () => {
+    expect(protectedPreviewStatusLine(0, null)).toBe("[protected-preview] passed.\n");
+    expect(protectedPreviewStatusLine(1, null)).toBe("[protected-preview] failed; detailed child output suppressed.\n");
+    expect(protectedPreviewStatusLine(null, "SIGTERM")).toBe("[protected-preview] failed; detailed child output suppressed.\n");
   });
 
   it("guarda a execução principal e mantém o modo remoto sem servidor ou relatório persistente", async () => {
@@ -191,5 +206,8 @@ describe("executor Playwright de Preview protegido", () => {
     expect(protectedConfig).toContain('trace: "off"');
     expect(protectedConfig).toContain('screenshot: "off"');
     expect(protectedConfig).toContain('video: "off"');
+    expect(protectedConfig).toContain("protected-preview-reporter.mjs");
+    expect(runner).not.toContain("child.stdout.on");
+    expect(runner).not.toContain("child.stderr.on");
   });
 });

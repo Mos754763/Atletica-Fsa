@@ -14,6 +14,5 @@ export default async function globalSetup() {
   await verifyProtectedPreviewIdentity(origin, {
     "User-Agent": userAgent,
     "x-vercel-protection-bypass": bypass,
-    "x-vercel-set-bypass-cookie": "true",
   });
 }

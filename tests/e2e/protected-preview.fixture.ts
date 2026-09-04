@@ -22,8 +22,12 @@ export async function installProtectedPreviewRouting(context: BrowserContext, pr
     const request = route.request();
     const headers = protectedPreviewRequestHeaders(request.url(), request.headers(), previewOrigin, bypassSecret);
     if (new URL(request.url()).origin === previewOrigin) {
-      const response = await route.fetch({ headers, maxRedirects: 0 });
-      await route.fulfill({ response });
+      try {
+        const response = await route.fetch({ headers, maxRedirects: 0 });
+        await route.fulfill({ response });
+      } catch (error) {
+        if (!(error instanceof Error) || !/Target page, context or browser has been closed/i.test(error.message)) throw error;
+      }
       return;
     }
     await route.continue({ headers });
@@ -43,7 +47,11 @@ export const test = base.extend({
     if (protectedMode) {
       await installProtectedPreviewRouting(context, previewOrigin as string, bypassSecret as string);
     }
-    await runPage(page);
+    try {
+      await runPage(page);
+    } finally {
+      if (protectedMode) await context.unrouteAll({ behavior: "wait" });
+    }
   },
 });
 

@@ -19,7 +19,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: 0,
-  reporter: [["list"]],
+  reporter: [["./protected-preview-reporter.mjs"]],
   globalSetup: "./playwright-protected-preview.global-setup.mjs",
   testMatch: "public-navigation.spec.ts",
   outputDir,

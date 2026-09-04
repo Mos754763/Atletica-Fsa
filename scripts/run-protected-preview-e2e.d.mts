@@ -20,7 +20,7 @@ export type PlaywrightChildProcess = {
 export type SpawnPlaywrightProcess = (
   command: string,
   arguments_: string[],
-  options: { env: RunnerEnvironment; stdio: "inherit"; shell: false },
+  options: { env: RunnerEnvironment; stdio: ["ignore", "ignore", "ignore"]; shell: false },
 ) => PlaywrightChildProcess;
 
 export function resolveProtectedPreviewRun(
@@ -33,6 +33,7 @@ export function verifyProtectedPreviewIdentity(
   fetchImplementation?: typeof fetch,
   timeoutMs?: number,
 ): Promise<void>;
+export function protectedPreviewStatusLine(code: number | null, signal: NodeJS.Signals | null): string;
 export function protectedPreviewPlaywrightArguments(): string[];
 export function waitForChildExit(
   child: PlaywrightChildProcess,

@@ -26,3 +26,5 @@ O config remoto repete essa atestação em `globalSetup`, portanto uma invocaç�
 ## Encerramento seguro
 
 Assim que o teste terminar, revogue imediatamente no painel da Vercel o bypass usado e remova a variável do shell. Não reutilize, versione, cole em tickets ou registre esse acesso. O runner cria um diretório temporário exclusivo para a execução e o remove em `finally`; o remoto mantém trace, screenshot, vídeo e relatório HTML desativados. O bypass é aplicado por roteamento de contexto somente às requisições cujo origin seja exatamente o Preview atestado, e é removido explicitamente de qualquer requisição cross-origin.
+
+O executor usa um reporter mínimo, descarta integralmente os fluxos stdout/stderr do filho e escreve apenas um status constante pelo processo pai. Ele não imprime detalhes de request, cabeçalhos, cookies ou mensagens de exceção do Playwright; isso impede que um bypass ou JWT temporário entre no log mesmo se uma rota falhar durante o encerramento.
