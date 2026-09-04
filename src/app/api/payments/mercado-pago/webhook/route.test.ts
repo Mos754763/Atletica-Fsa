@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   createServiceClient: vi.fn(),
@@ -13,6 +13,7 @@ vi.mock("@/lib/env", () => ({
   env: {
     acceptNewCheckouts: false,
     processPaymentEvents: true,
+    supabaseUrl: "https://gfnbdjdqumewspvfxicl.supabase.co",
     mercadoPagoAccessToken: "test-access-token",
     mercadoPagoWebhookSecret: "test-webhook-secret",
   },
@@ -30,7 +31,7 @@ vi.mock("@/lib/supabase/server", () => ({ createServiceClient: mocks.createServi
 vi.mock("@/lib/email/transactional", () => ({ sendOrderStatusEmail: mocks.sendOrderStatusEmail, sendRegistrationEmail: vi.fn() }));
 
 import { env } from "@/lib/env";
-import { POST } from "./route";
+import { GET, POST } from "./route";
 
 function webhookRequest(payload: unknown, query = "") {
   return new Request(`http://localhost/api/payments/mercado-pago/webhook${query}`, {
@@ -45,6 +46,7 @@ describe("POST /api/payments/mercado-pago/webhook", () => {
     vi.clearAllMocks();
     env.acceptNewCheckouts = false;
     env.processPaymentEvents = true;
+    env.supabaseUrl = "https://gfnbdjdqumewspvfxicl.supabase.co";
     env.mercadoPagoAccessToken = "test-access-token";
     env.mercadoPagoWebhookSecret = "test-webhook-secret";
     mocks.getMercadoPagoWebhookTimestamp.mockReturnValue(Date.now());
@@ -162,5 +164,53 @@ describe("POST /api/payments/mercado-pago/webhook", () => {
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({ ok: true, duplicate: true });
     expect(mocks.fetchMercadoPagoPayment).not.toHaveBeenCalled();
+  });
+});
+
+describe("GET /api/payments/mercado-pago/webhook", () => {
+  beforeEach(() => {
+    vi.stubEnv("VERCEL_ENV", "preview");
+    env.supabaseUrl = "https://gfnbdjdqumewspvfxicl.supabase.co";
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it("mantém o GET comum indisponível", async () => {
+    const response = await GET(new Request("http://localhost/api/payments/mercado-pago/webhook"));
+
+    expect(response.status).toBe(405);
+    expect(response.headers.get("allow")).toBe("POST");
+  });
+
+  it("atesta somente Preview ligado ao projeto HML esperado", async () => {
+    const response = await GET(new Request("http://localhost/api/payments/mercado-pago/webhook?attest=hml-settlement"));
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    await expect(response.json()).resolves.toEqual({
+      ok: true,
+      vercelEnvironment: "preview",
+      supabaseProjectRef: "gfnbdjdqumewspvfxicl",
+    });
+  });
+
+  it("rejeita Production antes de qualquer ensaio financeiro", async () => {
+    vi.stubEnv("VERCEL_ENV", "production");
+
+    const response = await GET(new Request("http://localhost/api/payments/mercado-pago/webhook?attest=hml-settlement"));
+
+    expect(response.status).toBe(404);
+    await expect(response.json()).resolves.toEqual({ error: "not_preview" });
+  });
+
+  it("rejeita Preview ligado a outro projeto Supabase", async () => {
+    env.supabaseUrl = "https://tbxihkzuyzszrfxqmleq.supabase.co";
+
+    const response = await GET(new Request("http://localhost/api/payments/mercado-pago/webhook?attest=hml-settlement"));
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toEqual({ error: "not_hml" });
   });
 });

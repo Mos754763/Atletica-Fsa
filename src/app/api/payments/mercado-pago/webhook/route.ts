@@ -8,6 +8,39 @@ import { canMoveOrderStatus } from "@/lib/orders/workflow";
 import { resolveMercadoPagoWebhookTopic } from "@/lib/payments/mercado-pago-webhook-routing";
 import { runPostSettlementEffect } from "@/lib/payments/post-settlement-effects";
 
+const MERCADO_PAGO_HML_PROJECT_REF = "gfnbdjdqumewspvfxicl";
+
+function getSupabaseProjectRef(url: string | undefined) {
+  if (!url) return null;
+  try {
+    const [projectRef, ...rest] = new URL(url).hostname.split(".");
+    return rest.join(".") === "supabase.co" && projectRef ? projectRef : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  if (url.searchParams.get("attest") !== "hml-settlement") {
+    return new NextResponse(null, { status: 405, headers: { Allow: "POST" } });
+  }
+
+  if (process.env.VERCEL_ENV !== "preview") {
+    return NextResponse.json({ error: "not_preview" }, { status: 404 });
+  }
+
+  const supabaseProjectRef = getSupabaseProjectRef(env.supabaseUrl);
+  if (supabaseProjectRef !== MERCADO_PAGO_HML_PROJECT_REF) {
+    return NextResponse.json({ error: "not_hml" }, { status: 409 });
+  }
+
+  return NextResponse.json(
+    { ok: true, vercelEnvironment: "preview", supabaseProjectRef },
+    { headers: { "Cache-Control": "no-store" } },
+  );
+}
+
 export async function POST(request: Request) {
   const url = new URL(request.url); const payload = await request.json().catch(() => ({})); const notificationId = String(payload?.data?.id ?? url.searchParams.get("data.id") ?? "");
   const topic = resolveMercadoPagoWebhookTopic({ payload, queryType: url.searchParams.get("type") });

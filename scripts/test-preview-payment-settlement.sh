@@ -44,6 +44,7 @@ fi
 webhook_secret="$MERCADO_PAGO_WEBHOOK_SECRET"
 vercel_bypass_secret="$VERCEL_PROTECTION_BYPASS_SECRET"
 endpoint="${preview_url%/}/api/payments/mercado-pago/webhook"
+attestation_endpoint="${endpoint}?attest=hml-settlement"
 timestamp="$(date +%s)"
 request_id="payment-settlement-$(openssl rand -hex 16)"
 manifest="id:${payment_id};request-id:${request_id};ts:${timestamp};"
@@ -52,9 +53,29 @@ payload="$(printf '{\"type\":\"payment\",\"data\":{\"id\":%s}}' "$payment_id")"
 
 umask 077
 response_file="$(mktemp "${TMPDIR:-/tmp}/test-preview-payment-settlement.XXXXXX")"
-trap 'rm -f -- "$response_file"' EXIT
+attestation_file="$(mktemp "${TMPDIR:-/tmp}/test-preview-payment-attestation.XXXXXX")"
+trap 'rm -f -- "$response_file" "$attestation_file"' EXIT
 trap 'exit 1' HUP INT TERM
-chmod 600 "$response_file"
+chmod 600 "$response_file" "$attestation_file"
+
+# Fail closed before the first financial POST. Vercel Preview alone is not a
+# sufficient boundary: the deployment must also attest that it is connected to
+# ATLETICA's dedicated HML Supabase project.
+if ! attestation_status="$(curl --silent \
+  --connect-timeout 10 \
+  --max-time 30 \
+  --output "$attestation_file" \
+  --write-out '%{http_code}' \
+  --header "x-vercel-protection-bypass: ${vercel_bypass_secret}" \
+  "$attestation_endpoint")"; then
+  fail "preview binding could not be verified (HTTP ${attestation_status:-000})"
+fi
+
+if [[ "$attestation_status" != '200' ]] \
+  || ! grep -Eq '"vercelEnvironment"[[:space:]]*:[[:space:]]*"preview"' "$attestation_file" \
+  || ! grep -Eq '"supabaseProjectRef"[[:space:]]*:[[:space:]]*"gfnbdjdqumewspvfxicl"' "$attestation_file"; then
+  fail "preview binding rejected: expected Vercel Preview connected to ATLETICA HML (HTTP ${attestation_status})"
+fi
 
 post_notification() {
   curl --silent \
