@@ -84,3 +84,15 @@ O deployment Preview atual da PR #43, no host `atletica-wv4q6upu7-moises-faustin
 A Vercel não reportou erros de runtime nas últimas 2 horas, incluindo as rotas de pagamento. O projeto Supabase HML `gfnbdjdqumewspvfxicl` está `ACTIVE_HEALTHY`; no baseline somente leitura de `2026-09-04 20:03:28+00`, havia 3 orders, 2 payments, 6 eventos de webhook e 2 movimentos de inventário, com exatamente uma linha de payment e uma linha de webhook para a referência sandbox `177203869926`.
 
 Nenhum valor de flag foi revelado; portanto, esta auditoria somente de metadados não afirma valores booleanos. Nenhuma variável, deployment, segredo, linha de banco ou configuração de Production foi alterada. O override de branch é apenas candidato a limpeza futura; não há afirmação de que seja seguro removê-lo automaticamente.
+
+## Verificação sanitizada do Turnstile — PR #43
+
+A documentação atual da Cloudflare mapeia o código público `400020` para **Invalid sitekey** e orienta verificar a sitekey no dashboard. A inspeção de metadados da API Cloudflare encontrou dois widgets separados, sem registrar seus valores: o widget de Production é restrito exatamente a `atleticafsa.site` e `www.atleticafsa.site`, enquanto o widget de Homologação inclui `homolog.atleticafsa.site`. Ambos estão gerenciados, com `no_clearance`, `bot_fight_mode false` e `ephemeral_id false`.
+
+No navegador, `https://homolog.atleticafsa.site/login` renderizou o widget, concluiu o desafio com sucesso e exibiu `Verificação concluída`. A mesma verificação em `https://atleticafsa.site/login` também exibiu sucesso do Turnstile e `Verificação concluída`. Nenhuma credencial foi preenchida e nenhum formulário foi enviado em qualquer ambiente.
+
+O código existente carrega o script oficial de renderização explícita, captura códigos públicos de erro de seis dígitos, limpa e reseta os tokens em erro, expiração e desmontagem, e envia `captchaToken` pelos fluxos de autenticação do Supabase. A evidência existente registra que o CAPTCHA do Supabase usa o segredo correspondente a cada ambiente.
+
+O `400020` histórico não é mais reproduzível. Com base no código documentado pela Cloudflare, ele é classificado como condição de sitekey inválida, obsoleta ou incompatível; esta classificação não afirma ter observado o valor histórico exato.
+
+Nenhum widget Cloudflare, variável Vercel, configuração Supabase, código da aplicação, sessão de login, linha de banco ou configuração de Production foi alterado nesta verificação.
