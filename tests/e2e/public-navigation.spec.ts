@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./protected-preview.fixture";
 
 test.describe("jornadas públicas sem escrita", () => {
   test("a landing apresenta a navegação principal e alcança a loja", async ({ page }) => {
