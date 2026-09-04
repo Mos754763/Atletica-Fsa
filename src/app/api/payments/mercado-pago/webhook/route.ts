@@ -1,26 +1,66 @@
 import { NextResponse } from "next/server";
 import { env } from "@/lib/env";
 import { fetchMercadoPagoPayment, getMercadoPagoWebhookTimestamp, isMercadoPagoAmountMatching, isMercadoPagoWebhookFresh, MercadoPagoApiError, verifyMercadoPagoWebhook } from "@/lib/payments/mercado-pago";
-import { getCheckoutAvailability } from "@/lib/payments/checkout-availability";
+import { getPaymentEventAvailability } from "@/lib/payments/payment-event-availability";
 import { createServiceClient } from "@/lib/supabase/server";
 import { sendOrderStatusEmail, sendRegistrationEmail } from "@/lib/email/transactional";
 import { canMoveOrderStatus } from "@/lib/orders/workflow";
-import { getMercadoPagoSignatureDataId, isMercadoPagoPointTopic, resolveMercadoPagoWebhookTopic } from "@/lib/payments/mercado-pago-webhook-routing";
+import { resolveMercadoPagoWebhookTopic } from "@/lib/payments/mercado-pago-webhook-routing";
 import { runPostSettlementEffect } from "@/lib/payments/post-settlement-effects";
+
+const MERCADO_PAGO_HML_PROJECT_REF = "gfnbdjdqumewspvfxicl";
+
+function getSupabaseProjectRef(url: string | undefined) {
+  if (!url) return null;
+  try {
+    const [projectRef, ...rest] = new URL(url).hostname.split(".");
+    return rest.join(".") === "supabase.co" && projectRef ? projectRef : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  if (url.searchParams.get("attest") !== "hml-settlement") {
+    return new NextResponse(null, { status: 405, headers: { Allow: "POST" } });
+  }
+
+  if (process.env.VERCEL_ENV !== "preview") {
+    return NextResponse.json({ error: "not_preview" }, { status: 404 });
+  }
+
+  const supabaseProjectRef = getSupabaseProjectRef(env.supabaseUrl);
+  if (supabaseProjectRef !== MERCADO_PAGO_HML_PROJECT_REF) {
+    return NextResponse.json({ error: "not_hml" }, { status: 409 });
+  }
+
+  return NextResponse.json(
+    { ok: true, vercelEnvironment: "preview", supabaseProjectRef },
+    { headers: { "Cache-Control": "no-store" } },
+  );
+}
 
 export async function POST(request: Request) {
   const url = new URL(request.url); const payload = await request.json().catch(() => ({})); const notificationId = String(payload?.data?.id ?? url.searchParams.get("data.id") ?? "");
   const topic = resolveMercadoPagoWebhookTopic({ payload, queryType: url.searchParams.get("type") });
   if (topic === "unsupported") return NextResponse.json({ ok: true, ignored: "unsupported_topic" });
-  const signature = request.headers.get("x-signature"); const requestId = request.headers.get("x-request-id"); const signatureTimestamp = getMercadoPagoWebhookTimestamp(signature);
-  const availability = getCheckoutAvailability({ paymentsEnabled: env.paymentsEnabled, mercadoPagoAccessToken: env.mercadoPagoAccessToken });
-  if (isMercadoPagoPointTopic(topic)) {
-    if (!availability.available) return NextResponse.json({ error: "Conciliação Mercado Pago indisponível para lançamento comercial.", code: availability.code }, { status: 503 });
-    return NextResponse.json({ error: "A integração Mercado Pago Point ainda não foi homologada para esta operação.", code: "point_not_implemented" }, { status: 503 });
+  if (topic === "payment") {
+    const availability = getPaymentEventAvailability({
+      processPaymentEvents: env.processPaymentEvents,
+      mercadoPagoAccessToken: env.mercadoPagoAccessToken,
+      mercadoPagoWebhookSecret: env.mercadoPagoWebhookSecret,
+    });
+    if (!availability.available) {
+      return NextResponse.json({ error: availability.message, code: availability.code }, { status: 503 });
+    }
+  } else if (!env.mercadoPagoWebhookSecret) {
+    // merchant_order never reconciles, so it does not require the provider token
+    // or financial-event gate. It still needs the signing secret before auditing.
+    return NextResponse.json({ error: "A assinatura do webhook Mercado Pago ainda não foi configurada.", code: "webhook_not_configured" }, { status: 503 });
   }
-  if (!availability.available || !env.mercadoPagoWebhookSecret) return NextResponse.json({ error: "Conciliação Mercado Pago indisponível para lançamento comercial.", code: availability.available ? "webhook_not_configured" : availability.code }, { status: 503 });
-  const signatureDataId = getMercadoPagoSignatureDataId(topic, notificationId);
-  const valid = verifyMercadoPagoWebhook({ signature, requestId, dataId: signatureDataId, secret: env.mercadoPagoWebhookSecret });
+  const signature = request.headers.get("x-signature"); const requestId = request.headers.get("x-request-id"); const signatureTimestamp = getMercadoPagoWebhookTimestamp(signature);
+  const valid = verifyMercadoPagoWebhook({ signature, requestId, dataId: notificationId, secret: env.mercadoPagoWebhookSecret! });
   if (!valid || !isMercadoPagoWebhookFresh(signature) || signatureTimestamp === null) return NextResponse.json({ error: "Assinatura inválida ou expirada." }, { status: 401 });
   const supabase = createServiceClient();
   const eventKey = `${topic}:${notificationId}:${signatureTimestamp}`;

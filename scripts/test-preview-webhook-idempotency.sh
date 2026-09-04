@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Verifica a reserva de evento e a resposta para replay no Preview.
+# Valida somente a idempotência da auditoria autenticada de merchant_order no
+# Preview; não valida a idempotência de liquidação financeira de payment.
 # Uso:
 # MERCADO_PAGO_WEBHOOK_SECRET='...' VERCEL_PROTECTION_BYPASS_SECRET='...' \
 #   ./scripts/test-preview-webhook-idempotency.sh https://preview.example.vercel.app
@@ -39,13 +40,13 @@ first_body="$(cat "$response_one")"
 second_body="$(cat "$response_two")"
 
 if [[ "$status_one" != "200" || "$first_body" != *'merchant_order_not_enabled'* ]]; then
-  printf 'Falha no primeiro webhook: HTTP %s; resposta: %s\n' "$status_one" "$first_body" >&2
+  printf 'Falha no primeiro merchant_order de auditoria: HTTP %s; resposta: %s\n' "$status_one" "$first_body" >&2
   exit 1
 fi
 
 if [[ "$status_two" != "200" || "$second_body" != *'"duplicate":true'* ]]; then
-  printf 'Falha na repetição do webhook: HTTP %s; resposta: %s\n' "$status_two" "$second_body" >&2
+  printf 'Falha na repetição do merchant_order de auditoria: HTTP %s; resposta: %s\n' "$status_two" "$second_body" >&2
   exit 1
 fi
 
-printf 'Idempotência confirmada no Preview. Evento: %s; primeira resposta: ignorado; repetição: duplicate=true.\n' "$event_id"
+printf 'Idempotência de auditoria merchant_order confirmada no Preview (não valida liquidação financeira de payment). Evento: %s; primeira resposta: ignorado; repetição: duplicate=true.\n' "$event_id"

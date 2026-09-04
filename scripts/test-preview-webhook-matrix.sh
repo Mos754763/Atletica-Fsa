@@ -3,6 +3,8 @@ set -euo pipefail
 
 # Exercita cenários não liquidáveis do webhook no Preview, sem criar pedido,
 # pagamento ou movimento de estoque. Nenhum segredo é persistido neste arquivo.
+# O caso payment com assinatura inválida usa somente o HTTP 401 como evidência
+# de bloqueio, sem consulta a banco ou ação de provedor.
 # Uso:
 # MERCADO_PAGO_WEBHOOK_SECRET='...' VERCEL_PROTECTION_BYPASS_SECRET='...' \
 #   ./scripts/test-preview-webhook-matrix.sh https://preview.example.vercel.app
@@ -47,8 +49,8 @@ invalid_signature="$(request \
   --header "x-vercel-protection-bypass: ${vercel_bypass_secret}" \
   --header "x-request-id: invalid-${timestamp}" \
   --header "x-signature: ts=${timestamp},v1=invalid" \
-  --data "{\"type\":\"merchant_order\",\"data\":{\"id\":\"invalid-${timestamp}\"}}")"
-assert_response 'assinatura inválida' '401' 'Assinatura inválida ou expirada.' "$invalid_signature"
+  --data "{\"type\":\"payment\",\"data\":{\"id\":\"invalid-${timestamp}\"}}")"
+assert_response 'assinatura payment inválida (sem ação)' '401' 'Assinatura inválida ou expirada.' "$invalid_signature"
 
 unsupported_topic="$(request \
   --request POST "$endpoint" \
@@ -62,7 +64,14 @@ point_topic="$(request \
   --header 'Content-Type: application/json' \
   --header "x-vercel-protection-bypass: ${vercel_bypass_secret}" \
   --data "{\"type\":\"point_integration\",\"data\":{\"id\":\"point-${timestamp}\"}}")"
-assert_response 'tópico Point bloqueado' '503' 'point_not_implemented' "$point_topic"
+assert_response 'tópico Point não suportado' '200' 'unsupported_topic' "$point_topic"
+
+shipment_topic="$(request \
+  --request POST "$endpoint" \
+  --header 'Content-Type: application/json' \
+  --header "x-vercel-protection-bypass: ${vercel_bypass_secret}" \
+  --data "{\"type\":\"shipment\",\"data\":{\"id\":\"shipment-${timestamp}\"}}")"
+assert_response 'alias Envios não suportado' '200' 'unsupported_topic' "$shipment_topic"
 
 merchant_first="$(request \
   --request POST "$endpoint" \

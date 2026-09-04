@@ -1,14 +1,14 @@
 # Auditoria de Eventos, Permissões e Webhooks — Mercado Pago
 
 **Projeto:** ATLETICA FSA  
-**Atualizado em:** 14 de agosto de 2026  
+**Atualizado em:** 3 de setembro de 2026
 **Responsável técnico:** Manus AI
 
 ## Decisão operacional
 
 A ATLETICA FSA já possui uma integração de **Checkout Pro** para vendas na loja e ingressos pagos. A preferência é criada exclusivamente no servidor, com itens, preços e referências externas obtidos do banco; a confirmação do pagamento ocorre somente após Webhook assinado, consulta direta ao provedor, validação de valor e liquidação idempotente de estoque ou ingresso.
 
-> **Regra de lançamento:** mantenha `PAYMENTS_ENABLED=false` em Production e Preview durante toda a configuração e homologação. Esse bloqueio impede a criação de novos checkouts e a conciliação comercial efetiva no código atual.
+> **Regra de lançamento:** mantenha `ACCEPT_NEW_CHECKOUTS=false` e `PROCESS_PAYMENT_EVENTS=true` explicitamente durante o drain em Production e Preview. O primeiro bloqueia novos checkouts antes de criar obrigação; o segundo preserva a conciliação de `payment` já emitido. `PAYMENTS_ENABLED` é somente fallback individual quando uma dessas flags novas está ausente, não um gate absoluto.
 
 Mercado Pago recomenda Webhooks em vez de IPN, pois os Webhooks fornecem assinatura secreta para validação da origem. Os tópicos dependem do produto integrado; habilitar tópicos sem um consumidor validado gera notificações desnecessárias e amplia a superfície operacional. [1]
 
@@ -18,26 +18,30 @@ Na aplicação Mercado Pago utilizada pelo projeto, abra **Webhooks → Configur
 
 | Ambiente | URL | Eventos a habilitar agora | Resultado esperado |
 | --- | --- | --- | --- |
-| Teste / homologação | URL pública de Preview que corresponda ao commit em teste | **Pagamentos** | Receber a notificação de Checkout Pro em ambiente de teste; o gate interno ainda responde `503` enquanto pagamentos estiverem bloqueados. |
-| Produção | `https://atletica-fsa.vercel.app/api/payments/mercado-pago/webhook` | **Pagamentos** | Preparar o endereço produtivo para a futura liberação após homologação completa. |
+| Teste / homologação | URL pública de Preview que corresponda ao commit em teste | **Pagamentos (legacy)** | Receber a notificação de Checkout Pro em ambiente de teste; novos checkouts continuam fechados até autorização explícita. |
+| Produção | `https://atleticafsa.site/api/payments/mercado-pago/webhook` | **Pagamentos (legacy)** | Preparar o endereço produtivo para futura liberação após homologação completa. Não use a variante com ponto final (`webhook.`), que é inválida/`404`. |
 
 Depois de salvar, copie o **segredo de assinatura gerado pelo painel** para a variável server-side `MERCADO_PAGO_WEBHOOK_SECRET`. Ele não deve ser exposto no navegador, no GitHub, em imagens ou mensagens. A assinatura recebida no cabeçalho `x-signature` é conferida por HMAC SHA-256, com `x-request-id`, `data.id` e janela de cinco minutos contra replay.
 
 ## Matriz de opções do painel
 
-| Opção exibida no painel | Tópico/documentação | Situação no código | Decisão atual | Ação no painel |
-| --- | --- | --- | --- | --- |
-| **Pagamentos** | `payment` | **Implementado.** Webhook consulta o pagamento, valida referência e valor, grava pagamento e liquida pedido/ingresso de modo idempotente. | Necessário para Checkout Pro. | **Habilitar agora** no ambiente que estiver sendo homologado. |
-| **Pedidos comerciais** | `merchant_order` | Rota reconhece, exige assinatura e grava o evento como `ignored` com o motivo `merchant_order_not_enabled`; não muda estado financeiro. | Redundante para a conciliação atual, que usa o pagamento como fonte de verdade. | **Não habilitar.** Só reavaliar se houver necessidade real de acompanhar o ciclo comercial do Mercado Pago além do pagamento. |
-| **Order (Mercado Pago)** | `order` / `orders` | Preparado para identificação e validação da grafia, mas **sem endpoint Point ativo**. A rota retorna `503` com `point_not_implemented` após a abertura do gate. | Necessário quando a integração Point por Orders API estiver implementada e homologada. | **Não habilitar ainda.** |
-| **Integrações Point** | `point_integration` | Reconhecido e bloqueado como Point não homologado. Este tópico se relaciona ao modelo Point legado. | Não é necessário para Checkout Pro; a estratégia futura prioriza Orders API. | **Não habilitar.** |
-| **Planos e assinaturas** | `subscription_*` | Não implementado. | Não há cobrança recorrente no escopo atual. | **Não habilitar.** |
-| **Application linking / Mercado Pago Connect** | `mp-connect` | Não implementado. | Apenas necessário se a plataforma operar em nome de múltiplos vendedores via OAuth. | **Não habilitar.** |
-| **Wallet Connect** | `wallet_connect` | Não implementado. | Não faz parte da operação da ATLETICA FSA. | **Não habilitar.** |
-| **Alertas de fraude** | `stop_delivery_op_wh` / cancelamento de entrega | Não implementado. | Pode ser relevante em uma evolução de antifraude para entregas, mas não deve mudar estoque ou entrega sem fluxo revisado. | **Manter desabilitado; reavaliar em fase de logística.** |
-| **Reclamações** | `topic_claims_integration_wh` | Não implementado. | Útil futuramente para atendimento financeiro, mas requer triagem, responsável e SLA. | **Manter desabilitado; planejar antes de ativar.** |
-| **Atualização de cartão** | `topic_card_id_wh` | Não implementado. | Não há armazenamento de cartão nem cobrança recorrente. | **Não habilitar.** |
-| **Chargebacks** | `topic_chargebacks_wh` | Não implementado. | Relevante para uma futura rotina de conciliação e evidências, mas não altera automaticamente pedidos ou estoque. | **Manter desabilitado até existir o fluxo financeiro de tratamento.** |
+| Opção exibida no painel | Situação no código | Ação no painel |
+| --- | --- | --- |
+| **Pagamentos (legacy)** | `payment` é o único tópico que consulta o provedor e pode conciliar pedido/ingresso. | **Selecionar.** |
+| **Pedidos comerciais** | `merchant_order` exige assinatura e é auditado idempotentemente, mas nunca liquida. | Opcional; normalmente desmarcado para reduzir ruído. |
+| **Envios** | Não aplicável; `200 ignored` se enviado. | **Desmarcar.** |
+| **Order (Mercado Pago)** | `order` e `orders` não são Checkout Pro; recebem `200 ignored`, não `503`. | **Desmarcar.** |
+| **Integrações Point** | `point_integration` recebe `200 ignored`, sem consulta ou liquidação. | **Desmarcar.** |
+| **Vinculação de aplicações** | Não aplicável; `200 ignored` se enviado. | **Desmarcar.** |
+| **Reclamações** | Não aplicável; `200 ignored` se enviado. | **Desmarcar.** |
+| **Alertas de fraude** | Não aplicável; `200 ignored` se enviado. | **Desmarcar.** |
+| **Contestações** | Não aplicável; `200 ignored` se enviado. | **Desmarcar.** |
+| **Planos e assinaturas** | Não aplicável; `200 ignored` se enviado. | **Desmarcar.** |
+| **Delivery (proximity marketplace)** | Não aplicável; `200 ignored` se enviado. | **Desmarcar.** |
+| **Wallet Connect** | Não aplicável; `200 ignored` se enviado. | **Desmarcar.** |
+| **Card Updater** | Não aplicável; `200 ignored` se enviado. | **Desmarcar.** |
+| **Self Service** | Não aplicável; `200 ignored` se enviado. | **Desmarcar.** |
+| **Perfil de pago** | Não aplicável; `200 ignored` se enviado. | **Desmarcar.** |
 
 Os nomes e tópicos da matriz são os documentados pelo Mercado Pago para notificações gerais. A documentação também associa `payment` ao Checkout Pro, `merchant_order` aos pedidos comerciais do Checkout Pro e `order` ao Checkout API, QR Code e Mercado Pago Point. [1] [2]
 
@@ -66,11 +70,11 @@ Antes de habilitar **Order (Mercado Pago)**, deve-se concluir estes critérios d
 3. Implementar os endpoints internos de criação, consulta e cancelamento de ordem Point.
 4. Estender o webhook para consultar e conciliar a ordem Point, validar referência externa, valor, terminal e transições idempotentes.
 5. Executar a matriz de testes de concorrência, reenvio de Webhook, valor divergente, evento duplicado, terminal indisponível, expiração e reembolso.
-6. Somente então habilitar **Order (Mercado Pago)** e simular todos os estados no painel do Mercado Pago antes de liberar `PAYMENTS_ENABLED=true`.
+6. Somente então redesenhar e homologar uma rota específica de Point; o endpoint Checkout Pro atual continuará ignorando Order. Qualquer rollout comercial futuro deve definir `ACCEPT_NEW_CHECKOUTS=true` e `PROCESS_PAYMENT_EVENTS=true` explicitamente.
 
 ## Alteração interna entregue nesta auditoria
 
-O webhook passou a classificar notificações por tópico antes de iniciar a conciliação. Eventos `payment` preservam o fluxo existente. Eventos `merchant_order` agora são validados e registrados como ignorados, sem confirmar pagamento. Eventos Point (`order`, `orders` e `point_integration`) são recusados explicitamente enquanto a operação não estiver homologada; eventos desconhecidos recebem resposta segura de ignorado e jamais são interpretados como pagamento.
+O webhook classifica notificações por tópico antes de iniciar disponibilidade, acesso a Supabase ou chamada ao provedor. Somente `payment` preserva o fluxo de conciliação. `merchant_order` é validado e registrado como ignorado, sem confirmar pagamento. Order, Point, Envios e todos os tópicos desconhecidos recebem `200 ignored` e jamais são interpretados como pagamento.
 
 Essa separação evita que uma notificação de produto não integrado seja enviada por engano à consulta de pagamento e cria uma barreira clara entre Checkout Pro atual e POS futuro.
 

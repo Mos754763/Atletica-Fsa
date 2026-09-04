@@ -9,7 +9,7 @@
 |---|---|---|
 | Branch | Feature/correção aprovada para preview | `main` somente após evidência de homologação |
 | Banco | Projeto `gfnbdjdqumewspvfxicl` | Projeto `tbxihkzuyzszrfxqmleq` |
-| Pagamento | Credenciais sandbox somente quando o ensaio for autorizado | `PAYMENTS_ENABLED=false` até aprovação específica |
+| Pagamento | Credenciais sandbox somente quando o ensaio for autorizado | `ACCEPT_NEW_CHECKOUTS=false` até aprovação comercial; preservar `PROCESS_PAYMENT_EVENTS=true` enquanto houver obrigações a conciliar |
 | Dados | Fixtures identificáveis e descartáveis | Nenhuma fixture, seed ou teste de escrita |
 | E-mail | Endereço de teste autorizado | Nenhum disparo de teste sem autorização |
 | Migração | Aplicada, verificada e reversível | Somente com janela, backup e aprovação da Presidência |
@@ -24,7 +24,7 @@ A pessoa responsável pelo projeto Vercel deve revisar os nomes e o escopo da va
 | Aplicação | `NEXT_PUBLIC_APP_URL`, URL pública e feature gates | URL do preview/homologação | `https://atleticafsa.site` | Callback e links de e-mail apontam ao ambiente correto |
 | Cron | `CRON_SECRET` | Valor isolado | Valor isolado | Rota sem token retorna negação; token nunca é exibido |
 | E-mail | `RESEND_API_KEY`, `EMAIL_FROM` | Sandbox/destinatário de teste | Domínio aprovado | Ensaio controlado e log sanitizado |
-| Mercado Pago | access token, webhook secret e gate | Somente sandbox se aprovado | Mantidos, mas gate desligado | `PAYMENTS_ENABLED=false` até decisão formal |
+| Mercado Pago | access token, webhook secret e gates | Somente sandbox se aprovado | Mantidos com criação fechada e drain ativo | Conferir `ACCEPT_NEW_CHECKOUTS=false`; manter `PROCESS_PAYMENT_EVENTS=true` para obrigações existentes; `PAYMENTS_ENABLED` é apenas fallback legado por flag ausente |
 | Sympla e Slack | token Sympla e webhook de alerta | Ambiente de teste quando disponível | Produção | Health e alertas não misturam ambientes |
 | Proteção de abuso | `MEMBER_INTEREST_ABUSE_HASH_SECRET` | Valor isolado | Valor isolado | Não depende de valor fraco/fallback não documentado |
 
@@ -52,7 +52,7 @@ A pessoa responsável pelo projeto Vercel deve revisar os nomes e o escopo da va
 
 | Sinal | Ação obrigatória |
 |---|---|
-| `PAYMENTS_ENABLED` habilitado sem ensaio sandbox e aprovação | Desabilitar o fluxo e não continuar a promoção. |
+| `ACCEPT_NEW_CHECKOUTS=true` sem ensaio sandbox e aprovação | Fechar somente a criação de novos checkouts e não continuar a promoção; não interromper a conciliação de obrigações existentes. |
 | Migration sem rollback ou sem teste de RLS/grant | Bloquear merge/promoção. |
 | Token, senha, chave privada ou payload pessoal em diff/log | Revogar/rotacionar segredo, remover exposição e abrir incidente. |
 | Teste toca host/projeto de produção | Abortar suite, analisar impacto e corrigir guardrail antes de reexecutar. |
@@ -61,7 +61,7 @@ A pessoa responsável pelo projeto Vercel deve revisar os nomes e o escopo da va
 
 ## 6. Rollback
 
-O rollback não é um `git reset` em produção. Para código, restaurar o deployment anteriormente saudável pela ferramenta de hosting após decisão registrada. Para banco, usar migration reversível previamente testada ou procedimento de restauração aprovado; não executar SQL destrutivo improvisado. Para credenciais, trocar o segredo no painel, invalidar o anterior e executar smoke test do serviço afetado. Para pagamento, o rollback padrão é preservar `PAYMENTS_ENABLED=false`.
+O rollback não é um `git reset` em produção. Para código, restaurar o deployment anteriormente saudável pela ferramenta de hosting após decisão registrada. Para banco, usar migration reversível previamente testada ou procedimento de restauração aprovado; não executar SQL destrutivo improvisado. Para credenciais, trocar o segredo no painel, invalidar o anterior e executar smoke test do serviço afetado. Para pagamento, o rollback padrão é preservar `ACCEPT_NEW_CHECKOUTS=false`; manter `PROCESS_PAYMENT_EVENTS=true` até conciliar as obrigações já criadas, salvo incidente financeiro que exija pausa controlada e decisão explícita.
 
 ## Referências
 

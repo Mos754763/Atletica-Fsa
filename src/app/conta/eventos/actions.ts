@@ -11,7 +11,7 @@ const idSchema = z.string().uuid();
 export async function startEventCheckout(formData: FormData) {
   const { supabase, userId, profile } = await requireRole(["admin", "backoffice", "caixa", "cliente"]);
   const registrationId = idSchema.parse(formData.get("registrationId"));
-  const availability = getCheckoutAvailability({ paymentsEnabled: env.paymentsEnabled, mercadoPagoAccessToken: env.mercadoPagoAccessToken });
+  const availability = getCheckoutAvailability({ acceptNewCheckouts: env.acceptNewCheckouts, processPaymentEvents: env.processPaymentEvents, mercadoPagoAccessToken: env.mercadoPagoAccessToken });
   if (!availability.available) redirect(`/conta/eventos?pagamento=indisponivel&registro=${registrationId}`);
   const { data: registration } = await supabase.from("event_registrations").select("id,status,amount_cents,events(title)").eq("id", registrationId).eq("customer_id", userId).single();
   if (!registration || registration.status !== "pendente" || registration.amount_cents <= 0) redirect(`/conta/eventos?pagamento=invalido&registro=${registrationId}`);

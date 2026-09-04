@@ -4,7 +4,7 @@ import { getApiProfile } from "@/lib/api/auth";
 import { POST } from "./route";
 
 vi.mock("@/lib/env", () => ({
-  env: { paymentsEnabled: true, mercadoPagoAccessToken: "test-token" },
+  env: { acceptNewCheckouts: true, mercadoPagoAccessToken: "test-token" },
 }));
 vi.mock("@/lib/api/auth", () => ({ getApiProfile: vi.fn() }));
 vi.mock("@/lib/payments/checkout-availability", () => ({
