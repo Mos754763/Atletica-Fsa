@@ -187,7 +187,7 @@
 - [x] Executar o teste de idempotência Mercado Pago com evento sandbox duplicado no Preview isolado
 - [x] Executar nova matriz de webhooks Mercado Pago no Preview: assinatura inválida, tópico ignorado, tópico Point bloqueado e duplicação válida
 - [x] Validar no Supabase de homologação os registros e efeitos de cada cenário de webhook testado
-- [ ] Executar liquidação end-to-end com pagamento sandbox aprovado após criar produto, pedido e pagador exclusivos de homologação
+- [x] Executar liquidação end-to-end com pagamento sandbox aprovado após criar produto, pedido e pagador exclusivos de homologação
 - [x] Auditar workflows, checks, gatilhos e integração de deploy do CI/CD GitHub-Vercel
 - [x] Preparar o executável do pnpm no workflow de CI e validar uma execução verde no GitHub Actions
 - [x] Tornar o teste unitário de resposta definitiva da Sympla independente de um token de ambiente do runner
@@ -389,14 +389,14 @@
 - [x] Executar uma validação controlada de entrega do alerta WCAG no canal Slack configurado no GitHub Actions
 - [x] Auditar e corrigir rate limiting, CORS, minimização de PII, JWT, enumeração de usuários, clickjacking, SQL Injection e IDOR com testes de regressão
 - [x] Revalidar tentativas de autenticação, CORS e tokens; repetir a suíte automatizada e registrar o roteiro de ativação CAPTCHA do Supabase
-- [ ] Implementar, testar em desenvolvimento e ativar controladamente Cloudflare Turnstile nos fluxos de autenticação por senha do Supabase
-- [ ] Diagnosticar e corrigir o estado Troubleshoot reproduzido do widget Turnstile no login de produção antes de concluir a ativação
+- [x] Implementar, testar em desenvolvimento e ativar controladamente Cloudflare Turnstile nos fluxos de autenticação por senha do Supabase
+- [x] Diagnosticar e corrigir o estado Troubleshoot reproduzido do widget Turnstile no login de produção antes de concluir a ativação
 - [x] Reorganizar os cards de setores da landing para enquadrar corretamente as fotos, padronizar a composição e validar desktop e mobile
 - [x] Diagnosticar a falha de deploy Vercel da PR de cards de setores e corrigir somente a causa comprovada
 - [x] Revalidar os testes da PR #29, confirmar o ambiente de destino e promover somente após autorização explícita compatível
 - [ ] Executar a remediação pós-auditoria em ordem de risco, preservando Production e pagamentos até aprovações específicas
 - [x] Preparar a rotação segura de credenciais historicamente expostas, sem registrar valores em código, tickets ou relatórios
-- [ ] Diagnosticar o Turnstile `400020` em branch isolada e homologação, preservando a proteção antirrobô em Production
+- [x] Diagnosticar o Turnstile `400020` em branch isolada e homologação, preservando a proteção antirrobô em Production
 - [ ] Criar cobertura Playwright versionada para jornadas públicas, autenticação QA e autorização administrativa em Preview controlado
 - [x] Adicionar gates de CI para E2E de Preview e auditoria de dependências de produção, com política explícita de falha
 - [ ] Validar login, recuperação de senha, Google OAuth e entrega de e-mail com dados QA e autorização reversível em homologação
