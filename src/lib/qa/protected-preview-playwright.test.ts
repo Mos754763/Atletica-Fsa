@@ -12,6 +12,8 @@ import {
   runProtectedPreviewE2E,
   verifyProtectedPreviewIdentity,
   protectedPreviewStatusLine,
+  protectedPreviewDiagnostic,
+  protectedPreviewCheckpoint,
 } from "../../../scripts/run-protected-preview-e2e.mjs";
 import { protectedPreviewRequestHeaders } from "../../../tests/e2e/protected-preview.fixture";
 
@@ -133,6 +135,8 @@ describe("executor Playwright de Preview protegido", () => {
         QA_BASE_URL: previewOrigin,
         QA_ENVIRONMENT: "homologation",
         VERCEL_AUTOMATION_BYPASS_SECRET: "test-only",
+        QA_PROTECTED_PREVIEW_DIAGNOSTIC_CASE: "D1",
+        QA_PROTECTED_PREVIEW_DIAGNOSTIC_PROJECT: "chromium",
       },
       fetchImplementation: identityFetch,
       spawnImplementation: spawnMock,
@@ -141,7 +145,7 @@ describe("executor Playwright de Preview protegido", () => {
     expect(result).toEqual({ mode: "remote", origin: previewOrigin, exitCode: 7 });
     expect(spawnMock).toHaveBeenCalledWith(
       process.execPath,
-      [PLAYWRIGHT_CLI, "test", "--config", PROTECTED_PREVIEW_CONFIG, PROTECTED_PREVIEW_TEST, "--project=chromium", "--project=mobile-chromium"],
+      [PLAYWRIGHT_CLI, "test", "--config", PROTECTED_PREVIEW_CONFIG, PROTECTED_PREVIEW_TEST, "--project=chromium", "--grep", "^.*jornadas públicas sem escrita a landing apresenta a navegação principal e alcança a loja$"],
       expect.objectContaining({ stdio: ["ignore", "ignore", "ignore"], shell: false }),
     );
     expect(PROTECTED_PREVIEW_PROJECTS).toEqual(["chromium", "mobile-chromium"]);
@@ -152,14 +156,25 @@ describe("executor Playwright de Preview protegido", () => {
       "--project=chromium",
       "--project=mobile-chromium",
     ]);
+    expect(protectedPreviewPlaywrightArguments({ code: "D1", project: "chromium", grep: "^landing$" })).toEqual([
+      "--config",
+      PROTECTED_PREVIEW_CONFIG,
+      PROTECTED_PREVIEW_TEST,
+      "--project=chromium",
+      "--grep",
+      "^landing$",
+    ]);
     expect(childEnvironment).not.toHaveProperty("VERCEL_AUTOMATION_BYPASS_SECRET");
     expect(spawnedEnvironment).toMatchObject({
       QA_PROTECTED_PREVIEW_USER_AGENT: "ATLETICA-FSA-Homologation-QA/1.0",
       QA_PROTECTED_PREVIEW_BYPASS_HEADER: "test-only",
+      QA_PROTECTED_PREVIEW_DIAGNOSTIC_CODE: "D1",
     });
     expect(childEnvironment).not.toHaveProperty("QA_PROTECTED_PREVIEW_USER_AGENT");
     expect(childEnvironment).not.toHaveProperty("QA_PROTECTED_PREVIEW_BYPASS_HEADER");
     expect(childEnvironment).not.toHaveProperty("QA_PROTECTED_PREVIEW_COOKIE");
+    expect(childEnvironment).not.toHaveProperty("QA_PROTECTED_PREVIEW_DIAGNOSTIC_CASE");
+    expect(childEnvironment).not.toHaveProperty("QA_PROTECTED_PREVIEW_DIAGNOSTIC_PROJECT");
     expect(identityFetch).toHaveBeenCalledOnce();
     expect(preflightHeaders).toMatchObject({ "x-vercel-protection-bypass": "test-only" });
     expect(preflightHeaders).not.toHaveProperty("x-vercel-set-bypass-cookie");
@@ -186,6 +201,24 @@ describe("executor Playwright de Preview protegido", () => {
     expect(protectedPreviewStatusLine(0, null)).toBe("[protected-preview] passed.\n");
     expect(protectedPreviewStatusLine(1, null)).toBe("[protected-preview] failed; detailed child output suppressed.\n");
     expect(protectedPreviewStatusLine(null, "SIGTERM")).toBe("[protected-preview] failed; detailed child output suppressed.\n");
+    expect(protectedPreviewStatusLine(1, null, "D1")).toBe("[protected-preview] D1:test:failed\n");
+  });
+
+  it("aceita somente um caso e projeto allowlisted para diagnóstico", () => {
+    expect(protectedPreviewDiagnostic({ QA_PROTECTED_PREVIEW_DIAGNOSTIC_CASE: "D1", QA_PROTECTED_PREVIEW_DIAGNOSTIC_PROJECT: "chromium" }))
+      .toEqual(expect.objectContaining({ code: "D1", project: "chromium" }));
+    expect(protectedPreviewDiagnostic({ QA_PROTECTED_PREVIEW_DIAGNOSTIC_CASE: "D1", QA_PROTECTED_PREVIEW_DIAGNOSTIC_PROJECT: "chromium" })?.grep)
+      .toBe("^.*jornadas públicas sem escrita a landing apresenta a navegação principal e alcança a loja$");
+    expect(() => protectedPreviewDiagnostic({ QA_PROTECTED_PREVIEW_DIAGNOSTIC_CASE: "D1" }))
+      .toThrow(/allowlisted/);
+    expect(() => protectedPreviewDiagnostic({ QA_PROTECTED_PREVIEW_DIAGNOSTIC_CASE: "unsafe", QA_PROTECTED_PREVIEW_DIAGNOSTIC_PROJECT: "chromium" }))
+      .toThrow(/allowlisted/);
+  });
+
+  it("aceita apenas checkpoints diagnósticos finitos", () => {
+    expect(protectedPreviewCheckpoint("D1:A3", "D1")).toBe("D1:A3");
+    expect(protectedPreviewCheckpoint("D1:A9", "D1")).toBeUndefined();
+    expect(protectedPreviewCheckpoint("D4:A1", "D1")).toBeUndefined();
   });
 
   it("guarda a execução principal e mantém o modo remoto sem servidor ou relatório persistente", async () => {

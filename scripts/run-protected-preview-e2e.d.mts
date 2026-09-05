@@ -33,8 +33,10 @@ export function verifyProtectedPreviewIdentity(
   fetchImplementation?: typeof fetch,
   timeoutMs?: number,
 ): Promise<void>;
-export function protectedPreviewStatusLine(code: number | null, signal: NodeJS.Signals | null): string;
-export function protectedPreviewPlaywrightArguments(): string[];
+export function protectedPreviewStatusLine(code: number | null, signal: NodeJS.Signals | null, diagnosticCode?: string): string;
+export function protectedPreviewDiagnostic(environment: RunnerEnvironment): { code: string; project: string; grep: string } | undefined;
+export function protectedPreviewCheckpoint(value: string | undefined, diagnosticCode: string): string | undefined;
+export function protectedPreviewPlaywrightArguments(diagnostic?: { code: string; project: string; grep: string }): string[];
 export function waitForChildExit(
   child: PlaywrightChildProcess,
 ): Promise<{ code: number | null; signal: NodeJS.Signals | null }>;

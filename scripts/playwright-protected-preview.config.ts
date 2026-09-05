@@ -11,6 +11,10 @@ const remoteBaseURL = assertProtectedPreviewTarget(requiredInternalValue("QA_PRO
 const remoteUserAgent = requiredInternalValue("QA_PROTECTED_PREVIEW_USER_AGENT");
 requiredInternalValue("QA_PROTECTED_PREVIEW_BYPASS_HEADER");
 const outputDir = requiredInternalValue("QA_PROTECTED_PREVIEW_OUTPUT_DIR");
+const diagnosticCode = process.env.QA_PROTECTED_PREVIEW_DIAGNOSTIC_CODE;
+if (diagnosticCode && !["D1", "D2", "D3", "D4", "D5"].includes(diagnosticCode)) {
+  throw new Error("O código interno de diagnóstico protegido é inválido.");
+}
 
 export default defineConfig({
   testDir: "../tests/e2e",

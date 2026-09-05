@@ -1,5 +1,7 @@
 import { expect, test as base } from "@playwright/test";
 import type { BrowserContext } from "@playwright/test";
+import { writeFile } from "node:fs/promises";
+import { join } from "node:path";
 
 const bypassHeaders = ["x-vercel-protection-bypass", "x-vercel-set-bypass-cookie"];
 
@@ -37,6 +39,7 @@ export async function installProtectedPreviewRouting(context: BrowserContext, pr
 const previewOrigin = process.env.QA_PROTECTED_PREVIEW_ORIGIN;
 const bypassSecret = process.env.QA_PROTECTED_PREVIEW_BYPASS_HEADER;
 const protectedMode = Boolean(previewOrigin || bypassSecret);
+const diagnosticCode = process.env.QA_PROTECTED_PREVIEW_DIAGNOSTIC_CODE;
 
 if (protectedMode && (!previewOrigin || !bypassSecret)) {
   throw new Error("Os marcadores internos do Preview protegido estão incompletos.");
@@ -56,3 +59,15 @@ export const test = base.extend({
 });
 
 export { expect };
+
+export async function diagnosticStep<T>(code: string, phase: string, action: () => Promise<T>) {
+  try {
+    return await action();
+  } catch (error) {
+    if (diagnosticCode !== code) throw error;
+    const allowed = (code === "D1" && /^(R1|A[1-5])$/.test(phase)) || (code === "D4" && /^(R1|A[1-4])$/.test(phase));
+    const outputDir = process.env.QA_PROTECTED_PREVIEW_OUTPUT_DIR;
+    if (allowed && outputDir) await writeFile(join(outputDir, "diagnostic-checkpoint"), `${code}:${phase}`, { flag: "w" });
+    throw new Error("protected-preview-diagnostic-failed");
+  }
+}

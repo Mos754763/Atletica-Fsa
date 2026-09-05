@@ -1,15 +1,15 @@
-import { expect, test } from "./protected-preview.fixture";
+import { diagnosticStep, expect, test } from "./protected-preview.fixture";
 
 test.describe("jornadas públicas sem escrita", () => {
   test("a landing apresenta a navegação principal e alcança a loja", async ({ page }) => {
-    await page.goto("/");
+    await diagnosticStep("D1", "R1", () => page.goto("/"));
 
-    await expect(page.getByRole("navigation", { name: "Navegação principal" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: /Veste\.\s*Vive\.\s*Vence\./i })).toBeVisible();
+    await diagnosticStep("D1", "A1", () => expect(page.getByRole("navigation", { name: "Navegação principal" })).toBeVisible());
+    await diagnosticStep("D1", "A2", () => expect(page.getByRole("heading", { name: /Veste\.\s*Vive\.\s*Vence\./i })).toBeVisible());
 
-    await page.getByRole("link", { name: /Ir para a loja/i }).click();
-    await expect(page).toHaveURL(/\/loja$/);
-    await expect(page.getByRole("heading", { name: /Vista a torcida/i })).toBeVisible();
+    await diagnosticStep("D1", "A3", () => page.getByRole("link", { name: /Ir para a loja/i }).click());
+    await diagnosticStep("D1", "A4", () => expect(page).toHaveURL(/\/loja$/));
+    await diagnosticStep("D1", "A5", () => expect(page.getByRole("heading", { name: /Vista a torcida/i })).toBeVisible());
   });
 
   test("a loja permite explorar detalhes e carrinho sem iniciar checkout", async ({ page }) => {
@@ -38,12 +38,12 @@ test.describe("jornadas públicas sem escrita", () => {
   });
 
   test("o login expõe controles públicos sem preencher ou enviar credenciais", async ({ page }) => {
-    await page.goto("/login");
+    await diagnosticStep("D4", "R1", () => page.goto("/login"));
 
-    await expect(page.getByRole("textbox", { name: "E-mail" })).toBeVisible();
-    await expect(page.getByLabel("Senha")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Entrar na FSA" })).toBeVisible();
-    await expect(page.getByText("400020")).toHaveCount(0);
+    await diagnosticStep("D4", "A1", () => expect(page.getByRole("textbox", { name: "E-mail" })).toBeVisible());
+    await diagnosticStep("D4", "A2", () => expect(page.getByLabel("Senha")).toBeVisible());
+    await diagnosticStep("D4", "A3", () => expect(page.getByRole("button", { name: "Entrar na FSA" })).toBeVisible());
+    await diagnosticStep("D4", "A4", () => expect(page.getByText("400020")).toHaveCount(0));
   });
 
   test("uma rota ERP anônima é redirecionada ao login sem expor o painel", async ({ page }) => {
