@@ -1,53 +1,19 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import { getBrowserClient } from "@/lib/supabase/client";
-import { requiresMfaChallenge } from "@/lib/auth/mfa-assurance";
 
 type MfaLoginChallengeProps = {
   nextPath: string;
+  /** The server only supplies this after it confirms an AAL2 TOTP step is required. */
+  factorId?: string;
 };
 
-export function MfaLoginChallenge({ nextPath }: MfaLoginChallengeProps) {
-  const [factorId, setFactorId] = useState<string | null>(null);
+export function MfaLoginChallenge({ nextPath, factorId }: MfaLoginChallengeProps) {
   const [code, setCode] = useState("");
-  const [busy, setBusy] = useState(true);
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let active = true;
-
-    async function prepareChallenge() {
-      try {
-        const supabase = await getBrowserClient();
-        const [{ data: assurance, error: assuranceError }, { data: factors, error: factorsError }] = await Promise.all([
-          supabase.auth.mfa.getAuthenticatorAssuranceLevel(),
-          supabase.auth.mfa.listFactors(),
-        ]);
-        if (assuranceError) throw assuranceError;
-        if (factorsError) throw factorsError;
-
-        if (!requiresMfaChallenge(assurance?.currentLevel ?? null, assurance?.nextLevel ?? null)) {
-          window.location.assign(nextPath);
-          return;
-        }
-
-        const totpFactor = factors?.totp?.[0];
-        if (!totpFactor) throw new Error("mfa-factor-unavailable");
-
-        if (active) setFactorId(totpFactor.id);
-      } catch (challengeError) {
-        console.error("[auth] mfa-challenge-setup-failure", { kind: challengeError instanceof Error ? challengeError.name : "unknown" });
-        if (active) setError("Não foi possível preparar a verificação em duas etapas. Entre novamente ou contate a Presidência para recuperar o acesso.");
-      } finally {
-        if (active) setBusy(false);
-      }
-    }
-
-    void prepareChallenge();
-    return () => { active = false; };
-  }, [nextPath]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -66,6 +32,18 @@ export function MfaLoginChallenge({ nextPath }: MfaLoginChallengeProps) {
     } finally {
       setBusy(false);
     }
+  }
+
+  if (!factorId) {
+    return (
+      <div className="auth-card">
+        <div className="auth-card__heading">
+          <span className="auth-card__eyebrow">VERIFICAÇÃO EM PAUSA</span>
+          <h1>Não foi possível preparar a verificação em duas etapas.</h1>
+          <p>Atualize a página ou entre novamente para tentar de novo.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
