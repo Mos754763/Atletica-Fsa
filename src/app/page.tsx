@@ -49,7 +49,6 @@ const management = [
   { name: "Leca", role: "Diretora de Sociais", image: institutionalAsset("gestao-2026-clean/leca.webp") },
   { name: "Raposo", role: "Diretora de Suprimentos", image: institutionalAsset("gestao-2026-clean/raposo.webp") },
   { name: "Pietro", role: "Diretor de Esportes", image: institutionalAsset("gestao-2026-clean/pietro.webp") },
-  { name: "Belote", role: "Diretor de Bateria", image: institutionalAsset("gestao-2026-clean/belote.webp") },
 ];
 
 export const dynamic = "force-dynamic";
