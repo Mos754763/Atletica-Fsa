@@ -44,6 +44,7 @@ function authenticatedClient({
   factorsError = null,
   accessToken = "server-validated-token",
   sessionError = null,
+  session = { access_token: accessToken },
 }: {
   assurance?: { currentLevel: string | null; nextLevel: string | null } | null;
   assuranceError?: Error | null;
@@ -51,11 +52,12 @@ function authenticatedClient({
   factorsError?: Error | null;
   accessToken?: string | null;
   sessionError?: Error | null;
+  session?: { access_token: string | null } | null;
 } = {}) {
   return {
     auth: {
       getSession: vi.fn().mockResolvedValue({
-        data: { session: accessToken ? { access_token: accessToken } : null },
+        data: { session },
         error: sessionError,
       }),
       mfa: {
@@ -69,6 +71,17 @@ function authenticatedClient({
 describe("MfaPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it("redireciona uma ausência normal de sessão para o login com next sanitizado", async () => {
+    const client = authenticatedClient({ session: null });
+    createServerAuthClient.mockResolvedValue(client);
+
+    await expect(MfaPage({ searchParams: Promise.resolve({ next: "https://exemplo.invalid" }) })).rejects.toThrow("redirect:/login?next=%2Fconta");
+
+    expect(redirect).toHaveBeenCalledWith("/login?next=%2Fconta");
+    expect(client.auth.mfa.getAuthenticatorAssuranceLevel).not.toHaveBeenCalled();
+    expect(client.auth.mfa.listFactors).not.toHaveBeenCalled();
   });
 
   it.each([

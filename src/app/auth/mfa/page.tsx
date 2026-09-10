@@ -14,6 +14,11 @@ export default async function MfaPage({ searchParams }: { searchParams: Promise<
   const query = await searchParams;
   const nextPath = resolveSafeRedirectPath(query.next, "/conta");
   const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+
+  if (!sessionError && !sessionData.session) {
+    redirect(`/login?next=${encodeURIComponent(nextPath)}`);
+  }
+
   const accessToken = sessionData.session?.access_token;
 
   // Passing the token makes auth-js validate it and fetch current factor data rather
