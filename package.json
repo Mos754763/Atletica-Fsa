@@ -30,7 +30,7 @@
     "@vercel/speed-insights": "^2.0.0",
     "framer-motion": "^13.1.0",
     "lucide-react": "^0.468.0",
-    "next": "16.3.1",
+    "next": "16.3.3",
     "pdfkit": "^0.19.1",
     "pg": "^8.13.1",
     "postcss": "8.5.26",
@@ -38,7 +38,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "resend": "^4.1.2",
-    "sharp": "0.35.3",
+    "sharp": "0.35.4",
     "zod": "^3.24.1"
   },
   "devDependencies": {
