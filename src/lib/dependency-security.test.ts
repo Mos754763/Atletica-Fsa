@@ -12,6 +12,7 @@ describe("dependências de produção", () => {
   it("não mantém SheetJS vulnerável e fixa os patches transitivos necessários", () => {
     expect(packageJson.dependencies?.xlsx).toBeUndefined();
     expect(packageJson.dependencies?.postcss).toBe("8.5.26");
-    expect(packageJson.dependencies?.sharp).toBe("0.35.3");
+    expect(packageJson.dependencies?.next).toBe("16.3.3");
+    expect(packageJson.dependencies?.sharp).toBe("0.35.4");
   });
 });
