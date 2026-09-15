@@ -102,7 +102,7 @@ Na implantação Ready `d4dd7c6` (`https://atletica-ar17wiera-moises-faustino-ro
 
 Na prévia local posterior, o enquadramento foi ampliado e deslocado para a região superior do asset. O mascote, suas orelhas, rosto, camiseta FSA e braços aparecem integralmente no viewport circular, sem a faixa inferior vazia; os CTAs continuam legíveis e não foram deslocados.
 
-Na revisão final da cena 3D, os retratos ativos de Raposo e Belote ficaram integralmente enquadrados no cartão central. Os cartões adjacentes permaneceram parcialmente visíveis em profundidade, sem competir com a leitura do nome e do cargo. O botão “Ver próximo integrante” avançou a cena de forma previsível, enquanto controles anteriores, indicadores e texto anunciável continuaram disponíveis.
+Na revisão final da cena 3D, os retratos ativos ficaram integralmente enquadrados no cartão central. Os cartões adjacentes permaneceram parcialmente visíveis em profundidade, sem competir com a leitura do nome e do cargo. O botão “Ver próximo integrante” avançou a cena de forma previsível, enquanto controles anteriores, indicadores e texto anunciável continuaram disponíveis.
 
 No deployment `e5eef0e`, o hero foi confirmado com o mascote enquadrado acima do orbe amarelo, sem a faixa inferior do asset. Na mesma versão, a âncora `#gestao` preservou no documento a descrição, os oito integrantes e o anúncio do estado ativo, porém o palco dos cartões ficou visualmente vazio. A correção deve restaurar a primeira pintura da cena sem remover controles, indicadores ou a alternativa de movimento reduzido.
 
@@ -116,7 +116,7 @@ No percurso até a gestão, a faixa de capacidades e os cinco cartões de setore
 
 Na produção, o cabeçalho da seção Gestão foi alcançado sem cortes ou deslocamentos: título, descrição, vínculo institucional e o início do palco de cartões voltaram a aparecer na mesma composição observada localmente. A confirmação final do cartão frontal e das laterais será feita no próximo enquadramento do viewport.
 
-No enquadramento completo em `https://atleticafsa.site/#gestao`, a falha visual foi resolvida: o cartão ativo de Belote foi exibido frontalmente, com foto, nome e cargo; um retrato adjacente ficou parcialmente visível à esquerda e os painéis laterais em profundidade foram preservados à direita. Os controles anterior/próximo e os oito indicadores permaneceram expostos, e o anúncio acessível identificou Belote como integrante 8 de 8. A cena não está mais vazia em produção.
+No enquadramento completo em `https://atleticafsa.site/#gestao`, a falha visual foi resolvida: o cartão ativo foi exibido frontalmente, com foto, nome e cargo; um retrato adjacente ficou parcialmente visível à esquerda e os painéis laterais em profundidade foram preservados à direita. Os controles anterior/próximo e os oito indicadores permaneceram expostos, e o anúncio acessível identificou a posição do integrante no conjunto. A cena não está mais vazia em produção.
 
 Na seleção direta pelo indicador de Rafa, a produção atualizou imediatamente o cartão frontal, o retrato e o anúncio para “Rafa, Presidente da Atlética, integrante 1 de 8”. A verificação de `ArrowRight` a partir desse indicador não alterou a seleção na sessão do navegador; a navegação por controles e indicadores permanece confirmada, enquanto a interação por setas deve ser conferida no elemento de foco previsto pelo componente antes de ser declarada como validada manualmente.
 
